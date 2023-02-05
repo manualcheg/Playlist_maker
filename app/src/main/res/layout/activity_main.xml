@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     android:background="@color/main_background_color"
     android:orientation="vertical"
-    android:paddingTop="14dp"
+    android:paddingTop="@dimen/dp14"
     android:paddingBottom="28dp"
-    android:paddingStart="16dp"
-    android:paddingEnd="14dp">
+    android:paddingStart="@dimen/dp16"
+    android:paddingEnd="@dimen/dp14">
 <TextView
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
@@ -47,7 +47,7 @@
             app:iconTint = "@color/black"
             app:iconGravity = "textStart"
             app:iconPadding = "@dimen/padding_icon_main_screen"
-            app:iconSize="19dp"
+            app:iconSize="@dimen/dp19"
             android:letterSpacing="0"
             tools:ignore="NestedWeights" />
         <Button
@@ -86,7 +86,7 @@
             app:iconTint = "@color/black"
             app:iconGravity = "textStart"
             app:iconPadding = "@dimen/padding_icon_main_screen"
-            app:iconSize="19dp"
+            app:iconSize="@dimen/dp19"
             android:fontFamily="@font/yandex_sans_display_regular"
             android:letterSpacing="0"
             />
