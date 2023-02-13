@@ -2,55 +2,53 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/LinearLayout"
+    android:background="?android:attr/colorBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical"
     android:paddingTop="10dp"
-    android:paddingBottom="28dp"
-    android:paddingStart="@dimen/dp16"
-    android:paddingEnd="@dimen/dp14"
-    >
+    android:paddingEnd="@dimen/dp14">
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:gravity="start"
         android:orientation="horizontal"
         tools:ignore="UseCompoundDrawables">
+
         <ImageView
             android:id="@+id/settings_arrow_back_like_button"
-            android:layout_width="@dimen/dp16"
-            android:layout_height="@dimen/dp16"
+            android:layout_width="@dimen/arrow_back_width"
+            android:layout_height="@dimen/arrow_back_height"
             android:layout_marginStart="4dp"
             android:layout_marginTop="10dp"
+            android:contentDescription="@string/descript_image_arrow_back_settings_screen"
             android:src="@drawable/icon_arrow_back"
-            app:tint="@color/black"
-            android:contentDescription="@string/descipt_image_arrow_back_settings_screen">
-        </ImageView>
+            app:tint="?attr/colorOnPrimary"
+            />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
-            android:text="@string/text_settings_header"
-            android:textSize="22sp"
-            android:textStyle="bold"
             android:layout_marginTop="4dp"
-            android:textColor="@color/text_color"
             android:fontFamily="@font/yandex_sans_display_regular"
-            >
-        </TextView>
+            android:text="@string/text_settings_header"
+            android:textSize="@dimen/textsize_title_settings_screen"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnPrimary"/>
     </LinearLayout>
 
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:orientation="vertical"
-            >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:orientation="vertical">
 
         <Switch
             android:id="@+id/switch1"
+            android:theme="@style/SCBSwitch"
             android:layout_width="match_parent"
             android:layout_height="@dimen/size_settings_menu"
             android:fontFamily="@font/yandex_sans_display_regular"
@@ -58,51 +56,34 @@
             android:text="@string/text_settings_switch"
             android:textSize="@dimen/size_text_settings_screen"
             android:textStyle="bold"
+            android:textColor="?attr/colorOnPrimary"
             tools:ignore="RtlSymmetry,UseSwitchCompatOrMaterialXml"
-        />
-
+            android:textColorHint="#FFFFFF"
+            />
 
         <TextView
+            style="@style/TextViewSettingsScreen"
             android:layout_width="match_parent"
             android:layout_height="@dimen/size_settings_menu"
-            android:text="@string/text_settings_share"
-            android:textColor="@color/text_color"
-            android:textStyle="bold"
-            android:fontFamily="@font/yandex_sans_display_regular"
-            android:textSize="@dimen/size_text_settings_screen"
-            android:gravity="center_vertical"
-            app:drawableEndCompat="@drawable/icon_settings_share"
             android:layout_marginEnd="2dp"
-            >
-        </TextView>
+            android:text="@string/text_settings_share"
+            app:drawableEndCompat="@drawable/icon_settings_share" />
 
         <TextView
+            style="@style/TextViewSettingsScreen"
             android:layout_width="match_parent"
             android:layout_height="@dimen/size_settings_menu"
-            android:text="@string/text_settings_support"
-            android:textColor="@color/text_color"
-            android:textStyle="bold"
-            android:fontFamily="@font/yandex_sans_display_regular"
-            android:textSize="@dimen/size_text_settings_screen"
-            android:gravity="center_vertical"
-            app:drawableEndCompat="@drawable/icon_settings_support"
             android:layout_marginEnd="0dp"
-            >
-        </TextView>
+            android:text="@string/text_settings_support"
+            app:drawableEndCompat="@drawable/icon_settings_support" />
 
         <TextView
+            style="@style/TextViewSettingsScreen"
             android:layout_width="match_parent"
             android:layout_height="@dimen/size_settings_menu"
-            android:text="@string/text_settings_agreements"
-            android:textColor="@color/text_color"
-            android:textStyle="bold"
-            android:fontFamily="@font/yandex_sans_display_regular"
-            android:textSize="@dimen/size_text_settings_screen"
-            android:gravity="center_vertical"
-            app:drawableEndCompat="@drawable/icon_settings_arrow_forward"
             android:layout_marginEnd="6dp"
-            >
-        </TextView>
+            android:text="@string/text_settings_agreements"
+            app:drawableEndCompat="@drawable/icon_settings_arrow_forward" />
     </LinearLayout>
 
 </LinearLayout>

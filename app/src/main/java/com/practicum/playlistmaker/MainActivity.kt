@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity() {
         buttonLibrary.setOnClickListener {
 //            Toast.makeText(this@MainActivity, "Нажали на кнопку медиатеки", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, MediaActivity::class.java))
-            Log.i( "MyLog", "Нажата кнопка поиск")
         }
 
 //        Способ 1: анонимный класс

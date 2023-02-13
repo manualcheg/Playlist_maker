@@ -9,5 +9,5 @@
     <string name="text_settings_agreements">Пользовательское соглашение</string>
     <string name="text_settings_header">Настройки</string>
     <string name="text_settings_switch">Тёмная тема</string>
-    <string name="descipt_image_arrow_back_settings_screen">Кнопка возврата на главный экран</string>
+    <string name="descript_image_arrow_back_settings_screen">Кнопка возврата на главный экран</string>
 </resources>
