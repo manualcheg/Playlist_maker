@@ -1,18 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="@color/main_background_color"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/dp14"
+    android:paddingBottom="28dp"
+    android:paddingStart="@dimen/dp16"
+    android:paddingEnd="@dimen/dp14">
+<TextView
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:text="@string/title"
+    android:layout_gravity="start"
+    android:textSize="22sp"
+    android:textStyle="bold"
+    android:textColor="@color/title_color"
+    android:letterSpacing="0"
+    android:fontFamily="@font/yandex_sans_display_regular"
+     />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="1dp"
+        android:layout_marginTop="40dp"
+        >
+        <Button
+            android:id="@+id/button_search"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:text="@string/button_search"
+            android:textSize="@dimen/size_text_button_main_screen"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:fontFamily="@font/yandex_sans_display_regular"
+            android:backgroundTint="@color/white"
+            android:textAllCaps="false"
+            app:cornerRadius="@dimen/button_corner_radius_main_screen"
+            app:icon = "@drawable/icon_search"
+            app:iconTint = "@color/black"
+            app:iconGravity = "textStart"
+            app:iconPadding = "@dimen/padding_icon_main_screen"
+            app:iconSize="@dimen/dp19"
+            android:letterSpacing="0"
+            tools:ignore="NestedWeights" />
+        <Button
+            android:id="@+id/button_library"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:text="@string/button_library"
+            android:textSize="@dimen/size_text_button_main_screen"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:backgroundTint="@color/white"
+            android:textAllCaps="false"
+            app:cornerRadius="@dimen/button_corner_radius_main_screen"
+            app:icon = "@drawable/icon_library"
+            app:iconTint = "@color/black"
+            app:iconGravity = "textStart"
+            app:iconPadding = "@dimen/padding_icon_main_screen"
+            app:iconSize="20dp"
+            android:fontFamily="@font/yandex_sans_display_regular"
+            android:letterSpacing="0"
+            />
+        <Button
+            android:id="@+id/button_settings"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:text="@string/button_settings"
+            android:textSize="@dimen/size_text_button_main_screen"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:backgroundTint="@color/white"
+            android:textAllCaps="false"
+            app:cornerRadius="@dimen/button_corner_radius_main_screen"
+            app:icon = "@drawable/icon_settings"
+            app:iconTint = "@color/black"
+            app:iconGravity = "textStart"
+            app:iconPadding = "@dimen/padding_icon_main_screen"
+            app:iconSize="@dimen/dp19"
+            android:fontFamily="@font/yandex_sans_display_regular"
+            android:letterSpacing="0"
+            />
+    </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

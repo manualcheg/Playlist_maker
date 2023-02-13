@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    <dimen name="text_size_settings_menu">16sp</dimen>-->
+    <dimen name="size_settings_menu">61dp</dimen>
+    <dimen name="padding_icon_main_screen">10dp</dimen>
+    <dimen name="size_text_button_main_screen">26sp</dimen>
+    <dimen name="button_corner_radius_main_screen">16dp</dimen>
+    <dimen name="size_text_settings_screen">16sp</dimen>
+    <dimen name="dp14">14dp</dimen>
+    <dimen name="dp16">16dp</dimen>
+    <dimen name="dp19">19dp</dimen>
+</resources>
