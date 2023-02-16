@@ -16,4 +16,7 @@
     <dimen name="textsize_title_main_screen">@dimen/sp22</dimen>
     <dimen name="sp22">22sp</dimen>
     <dimen name="textsize_title_settings_screen">@dimen/sp22</dimen>
+    <dimen name="dp9">9dp</dimen>
+    <dimen name="sp16">16sp</dimen>
+    <dimen name="search_activity_edittext_textsize">@dimen/sp16</dimen>
 </resources>

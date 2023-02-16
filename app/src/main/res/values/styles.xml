@@ -39,4 +39,16 @@
         <!-- inactive track color (30% transparency) -->
         <item name="android:colorForeground">@color/switch_inactive</item>
     </style>
+
+    <style name="search_screen_margins">
+        android:marginEnd="@dimen/dp16"
+        android:marginStart="@dimen/dp16"
+    </style>
+
+    <style name="search_activity_imageview">
+        <item name="android:layout_gravity">center</item>
+        <item name="tint">?android:attr/textColorHint</item>
+        app:tint="?android:attr/textColorHint"
+
+    </style>
 </resources>

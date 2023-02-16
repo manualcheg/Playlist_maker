@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources >
     <!-- Base application theme. -->
     <style name="Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -14,6 +14,8 @@
         <!-- Customize your theme here. -->
         <item name="android:colorBackground">@color/white</item>
         <item name="buttonStyle">@style/NotCapsButton</item>
+        <item name="android:textColor">@color/yp_black</item>
+        <item name="android:textColorHint">@color/yp_text_gray</item>
     </style>
 
     <style name="NotCapsButton" parent="Widget.AppCompat.Button">

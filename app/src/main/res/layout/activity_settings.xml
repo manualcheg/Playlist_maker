@@ -24,7 +24,7 @@
             android:layout_height="@dimen/arrow_back_height"
             android:layout_marginStart="4dp"
             android:layout_marginTop="10dp"
-            android:contentDescription="@string/descript_image_arrow_back_settings_screen"
+            android:contentDescription="@string/description_image_arrow_back_settings_screen"
             android:src="@drawable/icon_arrow_back"
             app:tint="?attr/colorOnPrimary"
             />
