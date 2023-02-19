@@ -6,7 +6,7 @@
     android:background="?android:attr/colorBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="10dp"
+    android:paddingTop="@dimen/dp10"
     android:paddingEnd="@dimen/dp14"
     tools:ignore="RtlSymmetry">
 
@@ -22,8 +22,8 @@
             android:id="@+id/settings_screen_arrow_back_like_button"
             android:layout_width="@dimen/arrow_back_width"
             android:layout_height="@dimen/arrow_back_height"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="@dimen/dp4"
+            android:layout_marginTop="@dimen/dp10"
             android:contentDescription="@string/description_image_arrow_back_settings_screen"
             android:src="@drawable/icon_arrow_back"
             app:tint="?attr/colorOnPrimary"
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/dp4"
             android:fontFamily="@font/yandex_sans_display_regular"
             android:text="@string/text_settings_header"
             android:textSize="@dimen/textsize_title_settings_screen"
@@ -47,25 +47,23 @@
         android:gravity="start"
         android:orientation="vertical">
 
-        <Switch
-            android:id="@+id/switch1"
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_dark_theme"
             android:layout_width="match_parent"
             android:layout_height="@dimen/size_settings_menu"
+            android:checked="false"
             android:fontFamily="@font/yandex_sans_display_regular"
             android:paddingEnd="-5dp"
             android:text="@string/text_settings_switch"
             android:textColor="?attr/colorOnPrimary"
-            android:textColorHint="#FFFFFF"
             android:textSize="@dimen/size_text_settings_screen"
             android:textStyle="bold"
             android:theme="@style/SCBSwitch"
-            tools:ignore="RtlSymmetry,UseSwitchCompatOrMaterialXml" />
+            />
 
         <TextView
             android:id="@+id/settings_screen_shareapp_textview"
             style="@style/TextViewSettingsScreen"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_settings_menu"
             android:layout_marginEnd="2dp"
             android:text="@string/text_settings_share"
             app:drawableEndCompat="@drawable/icon_settings_share" />
@@ -73,17 +71,12 @@
         <TextView
             android:id="@+id/settings_screen_send_mail_support_textview"
             style="@style/TextViewSettingsScreen"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_settings_menu"
-            android:layout_marginEnd="0dp"
             android:text="@string/text_settings_support"
             app:drawableEndCompat="@drawable/icon_settings_support" />
 
         <TextView
             android:id="@+id/settings_screen_user_agreement_textview"
             style="@style/TextViewSettingsScreen"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_settings_menu"
             android:layout_marginEnd="6dp"
             android:text="@string/text_settings_agreements"
             app:drawableEndCompat="@drawable/icon_settings_arrow_forward" />

@@ -12,6 +12,11 @@
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">@dimen/padding_icon_main_screen</item>
         <item name="android:letterSpacing">0</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        =""
+        ="1"
     </style>
 
     <style name="LinearLayout">
@@ -21,6 +26,8 @@
     </style>
 
     <style name="TextViewSettingsScreen">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/size_settings_menu</item>
         <item name="android:fontFamily">@font/yandex_sans_display_regular</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
@@ -48,7 +55,7 @@
     <style name="search_activity_imageview">
         <item name="android:layout_gravity">center</item>
         <item name="tint">?android:attr/textColorHint</item>
-        app:tint="?android:attr/textColorHint"
-
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 </resources>

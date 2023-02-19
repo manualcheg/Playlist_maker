@@ -19,4 +19,15 @@
     <dimen name="dp9">9dp</dimen>
     <dimen name="sp16">16sp</dimen>
     <dimen name="search_activity_edittext_textsize">@dimen/sp16</dimen>
+    <dimen name="dp13">13dp</dimen>
+    <dimen name="dp10">10dp</dimen>
+    <dimen name="dp4">4dp</dimen>
+    <dimen name="dp50">50dp</dimen>
+    <dimen name="dp6">6dp</dimen>
+    <dimen name="dp12">12dp</dimen>
+    <dimen name="dp36">36dp</dimen>
+    <dimen name="dp0">0dp</dimen>
+    <dimen name="dp1">1dp</dimen>
+    <dimen name="dp20">20dp</dimen>
+    <dimen name="dp40">40dp</dimen>
 </resources>

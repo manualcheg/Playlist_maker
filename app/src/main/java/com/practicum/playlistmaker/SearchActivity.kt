@@ -11,6 +11,12 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 
 class SearchActivity : AppCompatActivity() {
+    private var userInputText:String = ""
+
+    companion object {
+        const val USERTEXT = "USER_INPUT"   //константа-ключ для поиска в Bundle сохраненного состояния
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -20,6 +26,7 @@ class SearchActivity : AppCompatActivity() {
             findViewById<ImageView>(R.id.search_clear_edittext_imageview)
         val settingsArrowBack = findViewById<androidx.appcompat.widget.Toolbar>(R.id.search_activity_toolbar)
 
+//      Крестик очистки поля ввода
         searchClearEdittextImageview.setOnClickListener {
             editTextSearchActivity.setText("")
             val view: View? = this.currentFocus
@@ -34,9 +41,9 @@ class SearchActivity : AppCompatActivity() {
                 // empty
             }
 
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchClearEdittextImageview.visibility = clearButtonVisibility(s)
+                searchClearEdittextImageview.visibility = clearButtonVisibility(s)  //если строка ввода пуста, то спрятать крестик очистки и наоборот
+                userInputText = s.toString()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -47,6 +54,17 @@ class SearchActivity : AppCompatActivity() {
         settingsArrowBack.setNavigationOnClickListener{
             this.finish()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(USERTEXT,userInputText)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        userInputText = savedInstanceState.getString(USERTEXT,"")
+        findViewById<EditText>(R.id.search_activity_edittext).setText(userInputText)
     }
 }
 

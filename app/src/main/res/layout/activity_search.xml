@@ -9,8 +9,8 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/search_activity_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="6dp"
+        android:layout_height="@dimen/dp50"
+        android:layout_marginTop="@dimen/dp6"
         android:layout_marginBottom="@dimen/dp14"
         app:navigationIcon="@drawable/icon_arrow_back"
         app:navigationIconTint="?android:attr/textColor">
@@ -25,52 +25,44 @@
             android:textSize="@dimen/sp22" />
     </com.google.android.material.appbar.MaterialToolbar>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp16"
-        android:layout_marginEnd="@dimen/dp16"
-        android:background="@drawable/edittext_round_corners"
-        android:orientation="horizontal">
-
-        <ImageView
-            style="@style/search_activity_imageview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="13dp"
-            android:layout_marginTop="11dp"
-            android:layout_marginBottom="11dp"
-            android:src="@drawable/magnifier"
-            android:contentDescription="@string/magnifier_image_for_edittext" />
-
+        android:layout_height="wrap_content">
         <EditText
             android:id="@+id/search_activity_edittext"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/dp9"
-            android:layout_weight="1"
-            android:background="#00000000"
-            android:fontFamily="@font/yandex_sans_display_regular"
-            android:hint="@string/text_search"
-            android:inputType="text"
-            android:maxLength="23"
-            android:maxLines="1"
-            android:textColor="?attr/colorOnSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp36"
+            android:drawableStart="@drawable/magnifier"
+            android:layout_marginStart="@dimen/dp16"
+            android:layout_marginEnd="@dimen/dp16"
             android:textCursorDrawable="@drawable/cursor_edittext_blue"
+            android:drawablePadding="@dimen/dp9"
+            android:drawableTint="?android:attr/textColorHint"
+            android:textColorHint = "?android:attr/textColorHint"
+            android:hint="@string/text_search"
             android:textSize="@dimen/search_activity_edittext_textsize"
             android:textStyle="normal"
-            tools:ignore="Autofill" />
+            android:maxLines="1"
+            android:maxLength="22"
+            android:inputType="text"
+            android:layout_gravity="center"
+            tools:ignore="Autofill,RtlSymmetry"
+            android:background="@drawable/edittext_round_corners"
+            android:paddingStart="@dimen/dp13"
+            android:fontFamily="@font/yandex_sans_display_regular"
+            android:textColor="?attr/colorOnSecondary"
+            />
 
         <ImageView
             android:id="@+id/search_clear_edittext_imageview"
             style="@style/search_activity_imageview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
+            android:layout_margin="@dimen/dp12"
             android:contentDescription="@string/description_clear_edit_text_button"
             android:src="@drawable/x_cross"
-            android:visibility="gone" />
-    </LinearLayout>
+            android:layout_gravity="end"
+            android:paddingEnd="@dimen/dp16"
+            android:visibility="gone"
+            tools:ignore="RtlSymmetry" />
+    </FrameLayout>
 
 </LinearLayout>

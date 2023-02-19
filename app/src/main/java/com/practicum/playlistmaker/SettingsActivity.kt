@@ -1,18 +1,20 @@
 package com.practicum.playlistmaker
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.ImageView
-import android.widget.Switch
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
 
 class SettingsActivity : AppCompatActivity() {
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,17 +25,12 @@ class SettingsActivity : AppCompatActivity() {
                 this.finish()
         }
 
-        val switch_night_theme = findViewById<Switch>(R.id.switch1)
-//        Попытка проверки на включенность темной темы
-/*        if (getResources().getConfiguration().isNightModeActive){
-            switch_night_theme.isChecked
-        }*/
+        val switchDarkTheme = findViewById<SwitchCompat>(R.id.switch_dark_theme)
+//        Проверка на включенность темной темы и переключение switch
+        darkThemeCheck(switchDarkTheme)
 
-        when ((resources.configuration.uiMode)) {
-            Configuration.UI_MODE_NIGHT_YES -> switch_night_theme.isChecked
-            Configuration.UI_MODE_NIGHT_NO -> return
-        }
-        switch_night_theme.setOnCheckedChangeListener { _, isChecked ->
+//        работа switch
+        switchDarkTheme.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             } else {
@@ -44,7 +41,7 @@ class SettingsActivity : AppCompatActivity() {
 //      Кнопка "Пользовательское соглашение" с переходом на страницу
         val userAgreementTextView = findViewById<TextView>(R.id.settings_screen_user_agreement_textview)
         userAgreementTextView.setOnClickListener{
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://yandex.ru/legal/practicum_offer/")))
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.url_offer))))
         }
 
 //        Кнопка "Поделится приложением"
@@ -53,7 +50,7 @@ class SettingsActivity : AppCompatActivity() {
             val shareIntent = Intent.createChooser(Intent().apply {
                 action = Intent.ACTION_SEND
                 type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, "https://practicum.yandex.ru/android-developer/")
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.url_course))
             }, null)
             startActivity(shareIntent)
         }
@@ -63,18 +60,22 @@ class SettingsActivity : AppCompatActivity() {
         emailToSupport.setOnClickListener{
             val sendEmail = Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
-                putExtra(Intent.EXTRA_EMAIL, arrayOf("manualcheg@yandex.ru"))
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.email_address)))
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.text_mail_subject))
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.text_mail_body)) }
             startActivity(sendEmail)
         }
     }
 
-    //попытка создания метода, который проверяет включенность тёмной темы
-    @RequiresApi(Build.VERSION_CODES.R)
-    fun nightThemeCheck(switch:Switch){
-        if (getResources().getConfiguration().isNightModeActive){
-            switch.isChecked
+//     Метод, который проверяет включенность тёмной темы
+    fun darkThemeCheck(switch:SwitchCompat){
+        /*if (resources.configuration.isNightModeActive){ //требует api level 30
+            switch.isChecked = true
+        }*/
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        when ((currentNightMode)) {
+            Configuration.UI_MODE_NIGHT_YES -> switch.isChecked=true
+            Configuration.UI_MODE_NIGHT_NO -> switch.isChecked=false
         }
     }
 }

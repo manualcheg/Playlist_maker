@@ -15,4 +15,7 @@
     <string name="text_search">Поиск</string>
     <string name="description_clear_edit_text_button">clear_edit_text_button</string>
     <string name="magnifier_image_for_edittext">magnifier_image_for_edittext</string>
+    <string name="email_address">manualcheg@yandex.ru</string>
+    <string name="url_course">https://practicum.yandex.ru/android-developer/</string>
+    <string name="url_offer">https://yandex.ru/legal/practicum_offer/</string>
 </resources>
