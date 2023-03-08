@@ -1,4 +1,4 @@
-<resources >
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -14,6 +14,8 @@
         <!-- Customize your theme here. -->
         <item name="android:colorBackground">@color/yp_black</item>
         <item name="android:textColor">@color/white</item>
+        <item name="grayWhite">@color/white</item>
         <item name="android:textColorHint">@color/yp_black</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
     </style>
 </resources>
