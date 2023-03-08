@@ -1,10 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity">
+    android:orientation="vertical">
+    <!--    android:forceDarkAllowed="false"
+        tools:targetApi="q"-->
 
-  </androidx.constraintlayout.widget.ConstraintLayout>
+<com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/search_activity_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp50"
+        android:layout_marginTop="@dimen/dp6"
+        android:layout_marginBottom="@dimen/dp14"
+        app:navigationIcon="@drawable/icon_arrow_back"
+        app:navigationIconTint="?android:attr/textColor">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/yandex_sans_text_medium"
+            android:gravity="center_vertical"
+            android:text="@string/text_search"
+            android:textColor="?android:attr/textColor"
+            android:textSize="@dimen/sp22" />
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            style="@style/search_screen_margins"
+            android:id="@+id/search_activity_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp36"
+            android:drawableStart="@drawable/magnifier"
+
+            android:textCursorDrawable="@drawable/cursor_edittext_blue"
+            android:drawablePadding="@dimen/dp9"
+            android:drawableTint="?android:attr/textColorHint"
+            android:textColorHint = "?android:attr/textColorHint"
+            android:hint="@string/text_search"
+            android:textSize="@dimen/search_activity_edittext_textsize"
+            android:textStyle="normal"
+            android:maxLines="1"
+            android:maxLength="22"
+            android:inputType="text"
+            android:layout_gravity="center"
+            tools:ignore="Autofill,RtlSymmetry"
+            android:background="@drawable/edittext_round_corners"
+            android:paddingStart="@dimen/dp13"
+            android:fontFamily="@font/yandex_sans_display_regular"
+            android:textColor="?attr/colorOnSecondary"
+            />
+
+        <ImageView
+            android:id="@+id/search_clear_edittext_imageview"
+            style="@style/search_activity_imageview"
+            android:layout_margin="@dimen/dp12"
+            android:contentDescription="@string/description_clear_edit_text_button"
+            android:src="@drawable/x_cross"
+            android:layout_gravity="end"
+            android:paddingEnd="@dimen/dp16"
+            android:visibility="gone"
+            tools:ignore="RtlSymmetry" />
+    </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewSearch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp24"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+</LinearLayout>

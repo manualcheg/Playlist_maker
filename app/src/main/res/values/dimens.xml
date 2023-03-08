@@ -4,9 +4,35 @@
     <dimen name="size_settings_menu">61dp</dimen>
     <dimen name="padding_icon_main_screen">10dp</dimen>
     <dimen name="size_text_button_main_screen">26sp</dimen>
-    <dimen name="button_corner_radius_main_screen">16dp</dimen>
+    <dimen name="button_corner_radius_main_screen">@dimen/dp16</dimen>
     <dimen name="size_text_settings_screen">16sp</dimen>
+    <dimen name="arrow_back_width">@dimen/dp16</dimen>
+    <dimen name="arrow_back_height">@dimen/dp16</dimen>
+
     <dimen name="dp14">14dp</dimen>
     <dimen name="dp16">16dp</dimen>
     <dimen name="dp19">19dp</dimen>
+    <dimen name="padding_bottom_main_activity">28dp</dimen>
+    <dimen name="textsize_title_main_screen">@dimen/sp22</dimen>
+    <dimen name="sp22">22sp</dimen>
+    <dimen name="textsize_title_settings_screen">@dimen/sp22</dimen>
+    <dimen name="dp9">9dp</dimen>
+    <dimen name="sp16">16sp</dimen>
+    <dimen name="search_activity_edittext_textsize">@dimen/sp16</dimen>
+    <dimen name="dp13">13dp</dimen>
+    <dimen name="dp10">10dp</dimen>
+    <dimen name="dp4">4dp</dimen>
+    <dimen name="dp50">50dp</dimen>
+    <dimen name="dp6">6dp</dimen>
+    <dimen name="dp12">12dp</dimen>
+    <dimen name="dp36">36dp</dimen>
+    <dimen name="dp0">0dp</dimen>
+    <dimen name="dp1">1dp</dimen>
+    <dimen name="dp20">20dp</dimen>
+    <dimen name="dp40">40dp</dimen>
+    <dimen name="dp8">8dp</dimen>
+    <dimen name="dp15">15dp</dimen>
+    <dimen name="dp45">45dp</dimen>
+    <dimen name="dp61">61dp</dimen>
+    <dimen name="dp24">24dp</dimen>
 </resources>
