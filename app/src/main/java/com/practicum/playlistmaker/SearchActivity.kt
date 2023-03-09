@@ -9,76 +9,22 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 
 class SearchActivity : AppCompatActivity() {
-    private var userInputText: String = ""
-    private lateinit var editTextSearchActivity: EditText
-    private lateinit var searchClearEdittextImageview: ImageView
-    private lateinit var settingsArrowBack: androidx.appcompat.widget.Toolbar
-    private var trackList: ArrayList<Track> = ArrayList()
-    private lateinit var recyclerViewSearch: RecyclerView
+    private var userInputText:String = ""
 
     companion object {
-        const val USERTEXT =
-            "USER_INPUT"   //константа-ключ для поиска в Bundle сохраненного состояния
+        const val USERTEXT = "USER_INPUT"   //константа-ключ для поиска в Bundle сохраненного состояния
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        trackList.add(
-            Track(
-                getString(R.string.trackName1),
-                getString(R.string.artistName1),
-                getString(R.string.trackTime1),
-                getString(R.string.coverUrl1)
-            )
-        )
-        trackList.add(
-            Track(
-                getString(R.string.trackName2),
-                getString(R.string.artistName2),
-                getString(R.string.trackTime2),
-                getString(R.string.coverUrl2)
-            )
-        )
-        trackList.add(
-            Track(
-                getString(R.string.trackName3),
-                getString(R.string.artistName3),
-                getString(R.string.trackTime3),
-                getString(R.string.coverUrl3)
-            )
-        )
-        trackList.add(
-            Track(
-                getString(R.string.trackName4),
-                getString(R.string.artistName4),
-                getString(R.string.trackTime4),
-                getString(R.string.coverUrl4)
-            )
-        )
-        trackList.add(
-            Track(
-                getString(R.string.trackName5),
-                getString(R.string.artistName5),
-                getString(R.string.trackTime5),
-                getString(R.string.coverUrl5)
-            )
-        )
-
-
-        recyclerViewSearch = findViewById(R.id.recyclerViewSearch)
-        val trackListAdapter = TrackItemAdapter(trackList)
-        recyclerViewSearch.adapter = trackListAdapter
-
-        settingsArrowBack =
-            findViewById<androidx.appcompat.widget.Toolbar>(R.id.search_activity_toolbar)
-        searchClearEdittextImageview =
+        val editTextSearchActivity = findViewById<EditText>(R.id.search_activity_edittext)
+        val searchClearEdittextImageview =
             findViewById<ImageView>(R.id.search_clear_edittext_imageview)
-        editTextSearchActivity = findViewById<EditText>(R.id.search_activity_edittext)
+        val settingsArrowBack = findViewById<androidx.appcompat.widget.Toolbar>(R.id.search_activity_toolbar)
 
 //      Крестик очистки поля ввода
         searchClearEdittextImageview.setOnClickListener {
@@ -96,8 +42,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchClearEdittextImageview.visibility =
-                    clearButtonVisibility(s)  //если строка ввода пуста, то спрятать крестик очистки и наоборот
+                searchClearEdittextImageview.visibility = clearButtonVisibility(s)  //если строка ввода пуста, то спрятать крестик очистки и наоборот
                 userInputText = s.toString()
             }
 
@@ -105,22 +50,21 @@ class SearchActivity : AppCompatActivity() {
                 // empty
             }
         }
-
         editTextSearchActivity.addTextChangedListener(simpleTextWatcher)
-        settingsArrowBack.setNavigationOnClickListener {
+        settingsArrowBack.setNavigationOnClickListener{
             this.finish()
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(USERTEXT, userInputText)
+        outState.putString(USERTEXT,userInputText)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        userInputText = savedInstanceState.getString(USERTEXT, "")
-        editTextSearchActivity.setText(userInputText)
+        userInputText = savedInstanceState.getString(USERTEXT,"")
+        findViewById<EditText>(R.id.search_activity_edittext).setText(userInputText)
     }
 }
 

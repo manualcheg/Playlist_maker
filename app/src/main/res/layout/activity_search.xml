@@ -5,10 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <!--    android:forceDarkAllowed="false"
-        tools:targetApi="q"-->
 
-<com.google.android.material.appbar.MaterialToolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/search_activity_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp50"
@@ -31,12 +29,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <EditText
-            style="@style/search_screen_margins"
             android:id="@+id/search_activity_edittext"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp36"
             android:drawableStart="@drawable/magnifier"
-
+            android:layout_marginStart="@dimen/dp16"
+            android:layout_marginEnd="@dimen/dp16"
             android:textCursorDrawable="@drawable/cursor_edittext_blue"
             android:drawablePadding="@dimen/dp9"
             android:drawableTint="?android:attr/textColorHint"
@@ -66,12 +64,5 @@
             android:visibility="gone"
             tools:ignore="RtlSymmetry" />
     </FrameLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewSearch"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp24"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
 </LinearLayout>

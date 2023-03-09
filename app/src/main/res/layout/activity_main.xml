@@ -17,7 +17,8 @@
         android:layout_gravity="start"
         android:text="@string/title"
         android:textColor="?attr/colorSecondary"
-        android:textSize="@dimen/textsize_title_main_screen" />
+        android:textSize="@dimen/textsize_title_main_screen"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,9 +32,6 @@
         <Button
             android:id="@+id/button_search"
             style="@style/ButtonMainActivity"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp0"
-            android:layout_weight="1"
             android:text="@string/button_search"
             app:icon="@drawable/icon_search"
             app:iconSize="@dimen/dp19"
@@ -42,9 +40,6 @@
         <Button
             android:id="@+id/button_library"
             style="@style/ButtonMainActivity"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp0"
-            android:layout_weight="1"
             android:text="@string/button_library"
             app:icon="@drawable/icon_library"
             app:iconSize="@dimen/dp20" />
@@ -52,9 +47,6 @@
         <Button
             android:id="@+id/button_settings"
             style="@style/ButtonMainActivity"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp0"
-            android:layout_weight="1"
             android:text="@string/button_settings"
             app:icon="@drawable/icon_settings"
             app:iconSize="@dimen/dp19" />
