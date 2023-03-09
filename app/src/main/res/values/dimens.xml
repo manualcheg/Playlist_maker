@@ -30,4 +30,9 @@
     <dimen name="dp1">1dp</dimen>
     <dimen name="dp20">20dp</dimen>
     <dimen name="dp40">40dp</dimen>
+    <dimen name="dp8">8dp</dimen>
+    <dimen name="dp15">15dp</dimen>
+    <dimen name="dp45">45dp</dimen>
+    <dimen name="dp61">61dp</dimen>
+    <dimen name="dp24">24dp</dimen>
 </resources>
