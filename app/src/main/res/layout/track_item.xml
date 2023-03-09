@@ -43,14 +43,14 @@
 
                 <TextView
                     android:id="@+id/artist_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:ellipsize="end"
                     android:fontFamily="@font/yandex_sans_display_regular"
                     android:maxLines="1"
-                    android:layout_weight="0"
-                    android:maxLength="31"
+                    android:layout_weight="1"
+
                     android:textColor="?attr/grayWhite"
                     android:textSize="11sp"
                     tools:text="@string/tools_tint_artist_name" />
@@ -68,7 +68,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:layout_weight="1"
+
                     android:ellipsize="end"
                     android:fontFamily="@font/yandex_sans_display_regular"
                     android:textColor="?attr/grayWhite"
