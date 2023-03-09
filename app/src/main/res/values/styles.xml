@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources >
     <style name="ButtonMainActivity" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:textSize">@dimen/size_text_button_main_screen</item>
+<!--        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>-->
         <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/yandex_sans_display_regular</item>
@@ -12,22 +13,16 @@
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">@dimen/padding_icon_main_screen</item>
         <item name="android:letterSpacing">0</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0dp</item>
-        <item name="android:layout_weight">1</item>
-        =""
-        ="1"
     </style>
 
     <style name="LinearLayout">
         <item name="android:orientation">vertical</item>
         <item name="android:paddingStart">@dimen/dp16</item>
         <item name="android:paddingBottom">@dimen/padding_bottom_main_activity</item>
+<!--        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>-->
     </style>
 
     <style name="TextViewSettingsScreen">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/size_settings_menu</item>
         <item name="android:fontFamily">@font/yandex_sans_display_regular</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
@@ -48,8 +43,8 @@
     </style>
 
     <style name="search_screen_margins">
-        android:marginEnd="@dimen/dp16"
-        android:marginStart="@dimen/dp16"
+        <item name="android:layout_marginEnd">@dimen/dp16</item>
+        <item name="android:layout_marginStart">@dimen/dp16</item>
     </style>
 
     <style name="search_activity_imageview">

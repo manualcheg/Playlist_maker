@@ -51,19 +51,20 @@ class SettingsActivity : AppCompatActivity() {
                 action = Intent.ACTION_SEND
                 type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.url_course))
+                startActivity(this)
             }, null)
-            startActivity(shareIntent)
         }
 
 //        Кнопка "Написать в поддержку"
         val emailToSupport = findViewById<TextView>(R.id.settings_screen_send_mail_support_textview)
         emailToSupport.setOnClickListener{
-            val sendEmail = Intent(Intent.ACTION_SENDTO).apply {
+            Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.email_address)))
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.text_mail_subject))
-                putExtra(Intent.EXTRA_TEXT, getString(R.string.text_mail_body)) }
-            startActivity(sendEmail)
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.text_mail_body))
+                startActivity(this)
+            }
         }
     }
 
