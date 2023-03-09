@@ -3,15 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/LinearLayout"
+    android:background="?android:attr/colorBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground"
     android:paddingTop="@dimen/dp10"
     android:paddingEnd="@dimen/dp14"
-    tools:ignore="RtlSymmetry"
-    >
-    <!--    android:forceDarkAllowed="false"
-        tools:targetApi="q"-->
+    tools:ignore="RtlSymmetry">
 
     <LinearLayout
 
@@ -29,7 +26,8 @@
             android:layout_marginTop="@dimen/dp10"
             android:contentDescription="@string/description_image_arrow_back_settings_screen"
             android:src="@drawable/icon_arrow_back"
-            app:tint="?attr/colorOnPrimary" />
+            app:tint="?attr/colorOnPrimary"
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -38,9 +36,9 @@
             android:layout_marginTop="@dimen/dp4"
             android:fontFamily="@font/yandex_sans_display_regular"
             android:text="@string/text_settings_header"
-            android:textColor="?attr/colorOnPrimary"
             android:textSize="@dimen/textsize_title_settings_screen"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnPrimary"/>
     </LinearLayout>
 
     <LinearLayout
@@ -60,13 +58,12 @@
             android:textColor="?attr/colorOnPrimary"
             android:textSize="@dimen/size_text_settings_screen"
             android:textStyle="bold"
-            android:theme="@style/SCBSwitch" />
+            android:theme="@style/SCBSwitch"
+            />
 
         <TextView
             android:id="@+id/settings_screen_shareapp_textview"
             style="@style/TextViewSettingsScreen"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_settings_menu"
             android:layout_marginEnd="2dp"
             android:text="@string/text_settings_share"
             app:drawableEndCompat="@drawable/icon_settings_share" />
@@ -74,16 +71,12 @@
         <TextView
             android:id="@+id/settings_screen_send_mail_support_textview"
             style="@style/TextViewSettingsScreen"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_settings_menu"
             android:text="@string/text_settings_support"
             app:drawableEndCompat="@drawable/icon_settings_support" />
 
         <TextView
             android:id="@+id/settings_screen_user_agreement_textview"
             style="@style/TextViewSettingsScreen"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_settings_menu"
             android:layout_marginEnd="6dp"
             android:text="@string/text_settings_agreements"
             app:drawableEndCompat="@drawable/icon_settings_arrow_forward" />
