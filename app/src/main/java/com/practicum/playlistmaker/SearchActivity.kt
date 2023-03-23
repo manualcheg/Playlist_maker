@@ -5,84 +5,82 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
+import retrofit2.*
+import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
-    private var userInputText: String = ""
-    private lateinit var editTextSearchActivity: EditText
-    private lateinit var searchClearEdittextImageview: ImageView
-    private lateinit var settingsArrowBack: androidx.appcompat.widget.Toolbar
-    private var trackList: ArrayList<Track> = ArrayList()
-    private lateinit var recyclerViewSearch: RecyclerView
-
     companion object {
         const val USERTEXT =
             "USER_INPUT"   //константа-ключ для поиска в Bundle сохраненного состояния
     }
 
+    private val baseUrl = "https://itunes.apple.com/"
+
+    private lateinit var editTextSearchActivity: EditText
+    private lateinit var searchClearEdittextImageview: ImageView
+    private lateinit var settingsArrowBack: androidx.appcompat.widget.Toolbar
+    private lateinit var recyclerViewSearch: RecyclerView
+    private lateinit var placeholderMessage: TextView
+    private lateinit var placeholderImage: ImageView
+    private lateinit var placeholderButtonReload: AppCompatButton
+
+    private var userInputText: String = ""
+
+    private var retrofit =
+        Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+    private val itunesService = retrofit.create(itunesApi::class.java)
+    private var trackList = ArrayList<Track>()
+    private val trackListAdapter = TrackItemAdapter(trackList)
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        trackList.add(
-            Track(
-                getString(R.string.trackName1),
-                getString(R.string.artistName1),
-                getString(R.string.trackTime1),
-                getString(R.string.coverUrl1)
-            )
-        )
-        trackList.add(
-            Track(
-                getString(R.string.trackName2),
-                getString(R.string.artistName2),
-                getString(R.string.trackTime2),
-                getString(R.string.coverUrl2)
-            )
-        )
-        trackList.add(
-            Track(
-                getString(R.string.trackName3),
-                getString(R.string.artistName3),
-                getString(R.string.trackTime3),
-                getString(R.string.coverUrl3)
-            )
-        )
-        trackList.add(
-            Track(
-                getString(R.string.trackName4),
-                getString(R.string.artistName4),
-                getString(R.string.trackTime4),
-                getString(R.string.coverUrl4)
-            )
-        )
-        trackList.add(
-            Track(
-                getString(R.string.trackName5),
-                getString(R.string.artistName5),
-                getString(R.string.trackTime5),
-                getString(R.string.coverUrl5)
-            )
-        )
-
-
         recyclerViewSearch = findViewById(R.id.recyclerViewSearch)
-        val trackListAdapter = TrackItemAdapter(trackList)
-        recyclerViewSearch.adapter = trackListAdapter
+        settingsArrowBack = findViewById(R.id.search_activity_toolbar)
+        searchClearEdittextImageview = findViewById(R.id.search_clear_edittext_imageview)
+        editTextSearchActivity = findViewById(R.id.search_activity_edittext)
+        placeholderMessage = findViewById(R.id.placeholder_search_screen_text)
+        placeholderImage = findViewById(R.id.placeholder_search_screen_image)
+        placeholderButtonReload = findViewById(R.id.placeholder_search_button)
 
-        settingsArrowBack =
-            findViewById<androidx.appcompat.widget.Toolbar>(R.id.search_activity_toolbar)
-        searchClearEdittextImageview =
-            findViewById<ImageView>(R.id.search_clear_edittext_imageview)
-        editTextSearchActivity = findViewById<EditText>(R.id.search_activity_edittext)
+//        trackListAdapter.trackList = trackList  // ? масло масленное - выше инициализирован с trackList
+        recyclerViewSearch.adapter = trackListAdapter
+        //эмуляция кнопки для поиска. Изменяет тип кнопки ввода на клавиатуре:
+
+        editTextSearchActivity.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // ВЫПОЛНЯЙТЕ ПОИСКОВЫЙ ЗАПРОС ЗДЕСЬ
+                if (editTextSearchActivity.text.isNotEmpty()) {
+                    search()
+                }
+                true //в чём смысл?
+            }
+            false
+        }
 
 //      Крестик очистки поля ввода
         searchClearEdittextImageview.setOnClickListener {
             editTextSearchActivity.setText("")
+            trackList.clear()
+            trackListAdapter.notifyDataSetChanged()
+            placeholderMessage.visibility = View.GONE
+            placeholderImage.visibility = View.GONE
+            placeholderButtonReload.visibility = View.GONE
+
             val view: View? = this.currentFocus
             if (view != null) {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -110,6 +108,64 @@ class SearchActivity : AppCompatActivity() {
         settingsArrowBack.setNavigationOnClickListener {
             this.finish()
         }
+
+        placeholderButtonReload.setOnClickListener{
+            search()
+        }
+    }
+
+    private fun search() {
+        itunesService.search(userInputText)
+            .enqueue(object : Callback<TrackResponse> {
+                override fun onResponse(
+                    call: Call<TrackResponse>, response: Response<TrackResponse>
+                ) {
+                    when (response.code()) {
+                        200 -> {        //success
+                            if (response.body()?.results?.isNotEmpty() == true) {
+                                placeholderMessage.visibility = View.GONE
+                                placeholderImage.visibility = View.GONE
+                                placeholderButtonReload.visibility = View.GONE
+
+                                trackList.clear()
+                                trackList.addAll(response.body()?.results!!)
+                                trackListAdapter.notifyDataSetChanged()
+                                showMessage("", "")
+                            } else {
+                                showMessage(getString(R.string.nothing_found), "1")
+                            }
+                        }
+                        else -> {       //error with server answer
+                            showMessage(getString(R.string.something_went_wrong), "2")
+                        }
+                    }
+                }
+
+                override fun onFailure( //error without server answer
+                    call: Call<TrackResponse>, t: Throwable
+                ) {
+                    showMessage(getString(R.string.something_went_wrong), "2")
+                }
+
+            })
+    }
+
+    private fun showMessage(text: String, additionalMessage: String) {
+        if (text.isNotEmpty()) {
+            trackList.clear()
+            trackListAdapter.notifyDataSetChanged()
+            placeholderMessage.text = text
+
+            if (additionalMessage=="1") {
+                placeholderImage.setImageResource(R.drawable.placeholder_nothing_found)
+                placeholderButtonReload.visibility = View.GONE
+            } else if (additionalMessage=="2") {
+                placeholderImage.setImageResource(R.drawable.placeholder_no_network)
+                placeholderButtonReload.visibility = View.VISIBLE
+            }
+            placeholderMessage.visibility = View.VISIBLE
+            placeholderImage.visibility = View.VISIBLE
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -121,6 +177,7 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         userInputText = savedInstanceState.getString(USERTEXT, "")
         editTextSearchActivity.setText(userInputText)
+        search()
     }
 }
 

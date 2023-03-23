@@ -8,7 +8,7 @@
     <!--    android:forceDarkAllowed="false"
         tools:targetApi="q"-->
 
-<com.google.android.material.appbar.MaterialToolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/search_activity_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp50"
@@ -30,48 +30,106 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <EditText
-            style="@style/search_screen_margins"
             android:id="@+id/search_activity_edittext"
+            style="@style/search_screen_margins"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp36"
+            android:layout_gravity="center"
+            android:background="@drawable/edittext_round_corners"
             android:drawableStart="@drawable/magnifier"
-
-            android:textCursorDrawable="@drawable/cursor_edittext_blue"
             android:drawablePadding="@dimen/dp9"
             android:drawableTint="?android:attr/textColorHint"
-            android:textColorHint = "?android:attr/textColorHint"
+            android:fontFamily="@font/yandex_sans_display_regular"
             android:hint="@string/text_search"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLength="22"
+            android:maxLines="1"
+            android:paddingStart="@dimen/dp13"
+            android:singleLine="true"
+            android:textColor="?attr/colorOnSecondary"
+            android:textColorHint="?android:attr/textColorHint"
+            android:textCursorDrawable="@drawable/cursor_edittext_blue"
             android:textSize="@dimen/search_activity_edittext_textsize"
             android:textStyle="normal"
-            android:maxLines="1"
-            android:maxLength="22"
-            android:inputType="text"
-            android:layout_gravity="center"
-            tools:ignore="Autofill,RtlSymmetry"
-            android:background="@drawable/edittext_round_corners"
-            android:paddingStart="@dimen/dp13"
-            android:fontFamily="@font/yandex_sans_display_regular"
-            android:textColor="?attr/colorOnSecondary"
-            />
+            tools:ignore="Autofill,RtlSymmetry" />
 
         <ImageView
             android:id="@+id/search_clear_edittext_imageview"
             style="@style/search_activity_imageview"
+            android:layout_gravity="end"
             android:layout_margin="@dimen/dp12"
             android:contentDescription="@string/description_clear_edit_text_button"
-            android:src="@drawable/x_cross"
-            android:layout_gravity="end"
             android:paddingEnd="@dimen/dp16"
+            android:src="@drawable/x_cross"
             android:visibility="gone"
             tools:ignore="RtlSymmetry" />
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewSearch"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp24"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:layout_height="match_parent">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp24"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <LinearLayout
+            android:id="@+id/placeholder_search_screen_no_network"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:visibility="visible"
+            tools:visibility="visible">
+
+            <ImageView
+                android:id="@+id/placeholder_search_screen_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp8"
+                android:visibility="gone"
+                tools:text="test text"
+                tools:visibility="visible"
+                android:contentDescription="@string/error_of_loading" />
+
+            <TextView
+                android:id="@+id/placeholder_search_screen_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp8"
+                android:fontFamily="@font/yandex_sans_text_medium"
+                android:gravity="center_horizontal"
+                android:text=""
+                android:textSize="19sp"
+                android:visibility="gone"
+                tools:text="test text"
+                tools:visibility="visible" />
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/placeholder_search_button"
+                android:layout_width="@dimen/dp91"
+                android:layout_height="@dimen/dp36"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp24"
+                android:background="@drawable/placeholder_button_round_corners"
+                android:fontFamily="@font/yandex_sans_text_medium"
+                android:text="@string/button_placeholder_reload_search"
+                android:textAllCaps="false"
+                android:textColor="?attr/whiteBlack"
+                android:textSize="@dimen/sp14"
+                android:visibility="gone"
+                tools:text="test text"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+    </FrameLayout>
 </LinearLayout>
