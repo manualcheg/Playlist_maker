@@ -20,10 +20,11 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val USERTEXT =
             "USER_INPUT"   //константа-ключ для поиска в Bundle сохраненного состояния
+        const val NOTHING_FOUND = "1"
+        const val SOMETHING_WENT_WRONG = "2"
     }
 
     private val baseUrl = "https://itunes.apple.com/"
-
     private lateinit var editTextSearchActivity: EditText
     private lateinit var searchClearEdittextImageview: ImageView
     private lateinit var settingsArrowBack: androidx.appcompat.widget.Toolbar
@@ -33,41 +34,31 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var placeholderButtonReload: AppCompatButton
 
     private var userInputText: String = ""
-
     private var retrofit =
         Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-
     private val itunesService = retrofit.create(itunesApi::class.java)
     private var trackList = ArrayList<Track>()
     private val trackListAdapter = TrackItemAdapter(trackList)
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
-        recyclerViewSearch = findViewById(R.id.recyclerViewSearch)
-        settingsArrowBack = findViewById(R.id.search_activity_toolbar)
-        searchClearEdittextImageview = findViewById(R.id.search_clear_edittext_imageview)
-        editTextSearchActivity = findViewById(R.id.search_activity_edittext)
-        placeholderMessage = findViewById(R.id.placeholder_search_screen_text)
-        placeholderImage = findViewById(R.id.placeholder_search_screen_image)
-        placeholderButtonReload = findViewById(R.id.placeholder_search_button)
+        finderViewById()
 
 //        trackListAdapter.trackList = trackList  // ? масло масленное - выше инициализирован с trackList
         recyclerViewSearch.adapter = trackListAdapter
-        //эмуляция кнопки для поиска. Изменяет тип кнопки ввода на клавиатуре:
 
+        //эмуляция кнопки для поиска. Изменяет тип кнопки ввода на клавиатуре:
         editTextSearchActivity.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 // ВЫПОЛНЯЙТЕ ПОИСКОВЫЙ ЗАПРОС ЗДЕСЬ
                 if (editTextSearchActivity.text.isNotEmpty()) {
                     search()
                 }
-                true //в чём смысл?
+                true
             }
             false
         }
@@ -75,8 +66,7 @@ class SearchActivity : AppCompatActivity() {
 //      Крестик очистки поля ввода
         searchClearEdittextImageview.setOnClickListener {
             editTextSearchActivity.setText("")
-            trackList.clear()
-            trackListAdapter.notifyDataSetChanged()
+            trackListAdapter.setTracks(trackList, trackList)
             placeholderMessage.visibility = View.GONE
             placeholderImage.visibility = View.GONE
             placeholderButtonReload.visibility = View.GONE
@@ -109,9 +99,19 @@ class SearchActivity : AppCompatActivity() {
             this.finish()
         }
 
-        placeholderButtonReload.setOnClickListener{
+        placeholderButtonReload.setOnClickListener {
             search()
         }
+    }
+
+    private fun finderViewById() {
+        recyclerViewSearch = findViewById(R.id.recyclerViewSearch)
+        settingsArrowBack = findViewById(R.id.search_activity_toolbar)
+        searchClearEdittextImageview = findViewById(R.id.search_clear_edittext_imageview)
+        editTextSearchActivity = findViewById(R.id.search_activity_edittext)
+        placeholderMessage = findViewById(R.id.placeholder_search_screen_text)
+        placeholderImage = findViewById(R.id.placeholder_search_screen_image)
+        placeholderButtonReload = findViewById(R.id.placeholder_search_button)
     }
 
     private fun search() {
@@ -126,17 +126,14 @@ class SearchActivity : AppCompatActivity() {
                                 placeholderMessage.visibility = View.GONE
                                 placeholderImage.visibility = View.GONE
                                 placeholderButtonReload.visibility = View.GONE
-
-                                trackList.clear()
-                                trackList.addAll(response.body()?.results!!)
-                                trackListAdapter.notifyDataSetChanged()
+                                trackListAdapter.setTracks(trackList, response.body()?.results!!)
                                 showMessage("", "")
                             } else {
-                                showMessage(getString(R.string.nothing_found), "1")
+                                showMessage(getString(R.string.nothing_found), NOTHING_FOUND)
                             }
                         }
                         else -> {       //error with server answer
-                            showMessage(getString(R.string.something_went_wrong), "2")
+                            showMessage(getString(R.string.something_went_wrong), SOMETHING_WENT_WRONG)
                         }
                     }
                 }
@@ -144,22 +141,19 @@ class SearchActivity : AppCompatActivity() {
                 override fun onFailure( //error without server answer
                     call: Call<TrackResponse>, t: Throwable
                 ) {
-                    showMessage(getString(R.string.something_went_wrong), "2")
+                    showMessage(getString(R.string.something_went_wrong), SOMETHING_WENT_WRONG)
                 }
-
             })
     }
 
-    private fun showMessage(text: String, additionalMessage: String) {
+    private fun showMessage(text: String, myErrorCode: String) {
         if (text.isNotEmpty()) {
-            trackList.clear()
-            trackListAdapter.notifyDataSetChanged()
+            trackListAdapter.setTracks(trackList, trackList)
             placeholderMessage.text = text
-
-            if (additionalMessage=="1") {
+            if (myErrorCode == NOTHING_FOUND) {
                 placeholderImage.setImageResource(R.drawable.placeholder_nothing_found)
                 placeholderButtonReload.visibility = View.GONE
-            } else if (additionalMessage=="2") {
+            } else if (myErrorCode == SOMETHING_WENT_WRONG) {
                 placeholderImage.setImageResource(R.drawable.placeholder_no_network)
                 placeholderButtonReload.visibility = View.VISIBLE
             }
@@ -188,6 +182,8 @@ private fun clearButtonVisibility(s: CharSequence?): Int {
         View.VISIBLE
     }
 }
+
+
 
 
 

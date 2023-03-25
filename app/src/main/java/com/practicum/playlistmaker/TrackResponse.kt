@@ -1,4 +1,4 @@
 package com.practicum.playlistmaker
 
-class TrackResponse(val results: ArrayList<Track>) {
+class TrackResponse(val results: List<Track>) {
 }
