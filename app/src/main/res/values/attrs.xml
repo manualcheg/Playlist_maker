@@ -1,3 +1,4 @@
 <resources>
     <attr name="grayWhite" format="reference"/>
+    <attr name="whiteBlack" format="reference"/>
 </resources>

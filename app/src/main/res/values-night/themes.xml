@@ -17,5 +17,6 @@
         <item name="grayWhite">@color/white</item>
         <item name="android:textColorHint">@color/yp_black</item>
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+        <item name="whiteBlack">@color/yp_black</item>
     </style>
 </resources>
