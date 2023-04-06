@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -15,7 +16,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
@@ -42,6 +42,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var listOfFound: LinearLayout
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var searchHistoryClearButton: AppCompatButton
+    private lateinit var listener: SharedPreferences.OnSharedPreferenceChangeListener
 
     private var userInputText: String = ""
     private var retrofit =
@@ -53,7 +54,15 @@ class SearchActivity : AppCompatActivity() {
     private var trackList = ArrayList<Track>()
     private val trackListAdapter = TrackItemAdapter(trackList)
     private var selectedTracks = ArrayList<Track>()
-    private val selectedTracksAdapter = TrackItemAdapter(selectedTracks)      //адаптер для прослушанных треков
+    private var selectedTracksAdapter = TrackItemAdapter(selectedTracks)      //адаптер для прослушанных треков
+
+  /*  private var testTracks:ArrayList<Track> = arrayListOf(
+        Track("песенка1","Артист", "223093","https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg", "123456"),
+        Track("песенка2","Артист", "223093","https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg", "123456"),
+        Track("песенка3","Артист", "223093","https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg", "123456"),
+        Track("песенка4","Артист", "223093","https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg", "123456"),
+    )
+    private val selectedTracksAdapter = TrackItemAdapter(testTracks)*/
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,18 +73,24 @@ class SearchActivity : AppCompatActivity() {
         sharedPrefs = getSharedPreferences(SHARED_PREFS_SELECTED_TRACKS, MODE_PRIVATE)
         buildRecycleViewListenedTracks()
 
+        recyclerViewListenedTracks.adapter = selectedTracksAdapter
+        selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.size)
+
         /* Вывод слоя с историей выбранных треков */
         editTextSearchActivity.setOnFocusChangeListener { view, hasFocus ->
-            selectedTracksAdapter.notifyDataSetChanged()
             listOfFound.visibility =
                 if (hasFocus && editTextSearchActivity.text.isEmpty()) View.VISIBLE else View.GONE
-
         }
 
-        sharedPrefs.registerOnSharedPreferenceChangeListener { sharedPrefs, key ->
-//            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.size)
-            selectedTracksAdapter.notifyDataSetChanged()
+        /* Подписка на изменение SharedPreferences */
+        listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPrefs, key ->
+            selectedTracks = SearchHistory(sharedPrefs).read()
+            selectedTracksAdapter = TrackItemAdapter(selectedTracks)
+            recyclerViewListenedTracks.adapter = selectedTracksAdapter
+            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.size)
+            Log.d("MyLog", "Подписка сработала")
         }
+        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
 
 //        trackListAdapter.trackList = trackList  // ? масло масленное - выше инициализирован с trackList
         recyclerViewSearch.adapter = trackListAdapter
@@ -97,6 +112,7 @@ class SearchActivity : AppCompatActivity() {
         searchClearEdittextImageview.setOnClickListener {
             editTextSearchActivity.setText("")
             trackListAdapter.setTracks(trackList, trackList)
+            selectedTracksAdapter = TrackItemAdapter(selectedTracks)
             placeholderMessage.visibility = View.GONE
             placeholderImage.visibility = View.GONE
             placeholderButtonReload.visibility = View.GONE
@@ -106,7 +122,6 @@ class SearchActivity : AppCompatActivity() {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(view.windowToken, 0)
             }
-            selectedTracksAdapter.notifyDataSetChanged()
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -138,19 +153,22 @@ class SearchActivity : AppCompatActivity() {
             search()
         }
 
+        /* Кнопка очистки прослушанных треков */
         searchHistoryClearButton.setOnClickListener {
             SearchHistory(sharedPrefs).clear()
+            selectedTracks = SearchHistory(sharedPrefs).read()
+            selectedTracksAdapter = TrackItemAdapter(selectedTracks)
+            recyclerViewListenedTracks.adapter = selectedTracksAdapter
+            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.size)
+
             Toast.makeText(this@SearchActivity,"История очищена",Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun buildRecycleViewListenedTracks() {
         selectedTracks = SearchHistory(sharedPrefs).read()
-        recyclerViewListenedTracks.layoutManager = LinearLayoutManager(this,
-            LinearLayoutManager.VERTICAL, false)
-        recyclerViewListenedTracks.adapter = selectedTracksAdapter
-        selectedTracksAdapter.setTracks(selectedTracks, SearchHistory(sharedPrefs).read())
-        selectedTracksAdapter.notifyDataSetChanged()
+        selectedTracksAdapter = TrackItemAdapter(selectedTracks)
+        selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.size)
     }
 
 
@@ -168,38 +186,43 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search() {
-        itunesService.search(userInputText)
-            .enqueue(object : Callback<TrackResponse> {
-                override fun onResponse(
-                    call: Call<TrackResponse>, response: Response<TrackResponse>
-                ) {
-                    when (response.code()) {
-                        200 -> {        //success
-                            if (response.body()?.results?.isNotEmpty() == true) {
-                                placeholderMessage.visibility = View.GONE
-                                placeholderImage.visibility = View.GONE
-                                placeholderButtonReload.visibility = View.GONE
-                                trackListAdapter.setTracks(trackList, response.body()?.results!!)
-                                showMessage("", "")
-                            } else {
-                                showMessage(getString(R.string.nothing_found), NOTHING_FOUND)
+        if (userInputText.isNotEmpty()){
+            itunesService.search(userInputText)
+                .enqueue(object : Callback<TrackResponse> {
+                    override fun onResponse(
+                        call: Call<TrackResponse>, response: Response<TrackResponse>
+                    ) {
+                        when (response.code()) {
+                            200 -> {        //success
+                                if (response.body()?.results?.isNotEmpty() == true) {
+                                    placeholderMessage.visibility = View.GONE
+                                    placeholderImage.visibility = View.GONE
+                                    placeholderButtonReload.visibility = View.GONE
+                                    trackListAdapter.setTracks(
+                                        trackList,
+                                        response.body()?.results!!
+                                    )
+                                    showMessage("", "")
+                                } else {
+                                    showMessage(getString(R.string.nothing_found), NOTHING_FOUND)
+                                }
+                            }
+                            else -> {       //error with server answer
+                                showMessage(
+                                    getString(R.string.something_went_wrong),
+                                    SOMETHING_WENT_WRONG
+                                )
                             }
                         }
-                        else -> {       //error with server answer
-                            showMessage(
-                                getString(R.string.something_went_wrong),
-                                SOMETHING_WENT_WRONG
-                            )
-                        }
                     }
-                }
 
-                override fun onFailure( //error without server answer
-                    call: Call<TrackResponse>, t: Throwable
-                ) {
-                    showMessage(getString(R.string.something_went_wrong), SOMETHING_WENT_WRONG)
-                }
-            })
+                    override fun onFailure( //error without server answer
+                        call: Call<TrackResponse>, t: Throwable
+                    ) {
+                        showMessage(getString(R.string.something_went_wrong), SOMETHING_WENT_WRONG)
+                    }
+                })
+    }
     }
 
     private fun showMessage(text: String, myErrorCode: String) {

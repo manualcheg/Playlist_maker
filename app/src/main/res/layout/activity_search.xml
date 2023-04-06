@@ -134,26 +134,29 @@
         <LinearLayout
             android:id="@+id/list_of_found"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
             tools:visibility="visible">
 
             <TextView
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="0"
                 android:fontFamily="@font/yandex_sans_text_medium"
                 android:gravity="center"
                 android:text="@string/you_listened"
-                android:textSize="@dimen/sp19" />
+                android:textSize="@dimen/sp19"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewListenedTracks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -161,7 +164,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp36"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/dp24"
+                android:layout_marginBottom="@dimen/dp24"
                 android:layout_weight="0"
                 android:background="@drawable/placeholder_button_round_corners"
                 android:fontFamily="@font/yandex_sans_text_medium"
@@ -170,7 +173,7 @@
                 android:textAllCaps="false"
                 android:textColor="?attr/whiteBlack"
                 android:textSize="@dimen/sp14"
- />
+                />
         </LinearLayout>
 
     </FrameLayout>

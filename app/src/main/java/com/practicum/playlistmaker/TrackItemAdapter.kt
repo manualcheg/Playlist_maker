@@ -26,7 +26,7 @@ class TrackItemAdapter(
         holder.itemView.setOnClickListener {
             val sharedPrefs: SharedPreferences = holder.itemView.context.getSharedPreferences(SHARED_PREFS_SELECTED_TRACKS, MODE_PRIVATE)
             SearchHistory(sharedPrefs).save(trackList[position])
-            Toast.makeText(holder.itemView.context,"Добавлен трек:\n${trackList[position].trackName}",Toast.LENGTH_SHORT).show()
+//            Toast.makeText(it.context,"Добавлен трек:\n${trackList[position].trackName}",Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -38,6 +38,6 @@ class TrackItemAdapter(
     fun setTracks(currentTrackList: ArrayList<Track>, newTracks: List<Track>) {
         currentTrackList.clear()
         currentTrackList.addAll(newTracks)
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0,newTracks.lastIndex)
     }
 }

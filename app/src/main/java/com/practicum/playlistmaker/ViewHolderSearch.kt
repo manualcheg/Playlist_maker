@@ -30,6 +30,7 @@ class ViewHolderSearch(private val track_item: View): RecyclerView.ViewHolder(tr
             .transform(RoundedCorners(track_item.resources.getDimensionPixelSize(R.dimen.dp4)))
             .into(imageCover)
 
+//        Можно нажатие обрабатывать в ViewHolder
 //        track_item.setOnClickListener{
 //            Toast.makeText(itemView.context, "Tapped!",Toast.LENGTH_SHORT).show()
 //        }
