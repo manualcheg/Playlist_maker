@@ -14,16 +14,15 @@ class SearchHistory(sharedPrefs: SharedPreferences) {
 
     fun save(track: Track) {
         var theSame = Track("","","","","")
-        if (selectedTracks.size == 10) {
-            selectedTracks.removeAt(9)
-        }
         for ((index,i) in selectedTracks.withIndex()) {
             if (track.trackId == i.trackId) {
-//                selectedTracks.removeAt(index)
                 theSame = selectedTracks[index]
             }
         }
         selectedTracks.remove(theSame)
+        if (selectedTracks.size >= 10) {
+            selectedTracks.removeAt(selectedTracks.lastIndex)
+        }
         selectedTracks.add(0, track)
 
         sPrefs.edit()

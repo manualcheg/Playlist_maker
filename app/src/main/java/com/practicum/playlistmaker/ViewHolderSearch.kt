@@ -19,9 +19,10 @@ class ViewHolderSearch(private val track_item: View): RecyclerView.ViewHolder(tr
         trackName.text = model.trackName.trimEnd()
         artistName.text = model.artistName.trimEnd()
 //        trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTime)
+//        костыль из-за нулевого времени при поиске по букве g:
         trackTime.text = model.trackTime?.let {
             SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.toInt()) }
-        //        надо прочитать про ?.let
+
 
         Glide.with(imageCover)
             .load(model.artworkUrl100)
@@ -29,11 +30,6 @@ class ViewHolderSearch(private val track_item: View): RecyclerView.ViewHolder(tr
             .centerCrop()
             .transform(RoundedCorners(track_item.resources.getDimensionPixelSize(R.dimen.dp4)))
             .into(imageCover)
-
-//        Можно нажатие обрабатывать в ViewHolder
-//        track_item.setOnClickListener{
-//            Toast.makeText(itemView.context, "Tapped!",Toast.LENGTH_SHORT).show()
-//        }
     }
 
 

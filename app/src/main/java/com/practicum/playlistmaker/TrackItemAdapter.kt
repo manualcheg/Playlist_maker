@@ -4,7 +4,6 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
 
@@ -26,7 +25,6 @@ class TrackItemAdapter(
         holder.itemView.setOnClickListener {
             val sharedPrefs: SharedPreferences = holder.itemView.context.getSharedPreferences(SHARED_PREFS_SELECTED_TRACKS, MODE_PRIVATE)
             SearchHistory(sharedPrefs).save(trackList[position])
-//            Toast.makeText(it.context,"Добавлен трек:\n${trackList[position].trackName}",Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -38,6 +36,6 @@ class TrackItemAdapter(
     fun setTracks(currentTrackList: ArrayList<Track>, newTracks: List<Track>) {
         currentTrackList.clear()
         currentTrackList.addAll(newTracks)
-        notifyItemRangeChanged(0,newTracks.lastIndex)
+        notifyDataSetChanged()
     }
 }

@@ -30,20 +30,20 @@ class SearchActivity : AppCompatActivity() {
         const val SOMETHING_WENT_WRONG = "2"
     }
 
-    private val baseUrl = "https://itunes.apple.com/"
     private lateinit var editTextSearchActivity: EditText
     private lateinit var searchClearEdittextImageview: ImageView
-    private lateinit var settingsArrowBack: androidx.appcompat.widget.Toolbar
+    private lateinit var searchArrowBack: androidx.appcompat.widget.Toolbar
     private lateinit var recyclerViewSearch: RecyclerView
     private lateinit var recyclerViewListenedTracks: RecyclerView
     private lateinit var placeholderMessage: TextView
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderButtonReload: AppCompatButton
-    private lateinit var listOfFound: LinearLayout
+    private lateinit var layoutOfListenedTracks: LinearLayout
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var searchHistoryClearButton: AppCompatButton
     private lateinit var listener: SharedPreferences.OnSharedPreferenceChangeListener
 
+    private val baseUrl = "https://itunes.apple.com/"
     private var userInputText: String = ""
     private var retrofit =
         Retrofit.Builder()
@@ -52,17 +52,9 @@ class SearchActivity : AppCompatActivity() {
             .build()
     private val itunesService = retrofit.create(itunesApi::class.java)
     private var trackList = ArrayList<Track>()
-    private val trackListAdapter = TrackItemAdapter(trackList)
+    private var trackListAdapter = TrackItemAdapter(trackList)
     private var selectedTracks = ArrayList<Track>()
     private var selectedTracksAdapter = TrackItemAdapter(selectedTracks)      //адаптер для прослушанных треков
-
-  /*  private var testTracks:ArrayList<Track> = arrayListOf(
-        Track("песенка1","Артист", "223093","https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg", "123456"),
-        Track("песенка2","Артист", "223093","https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg", "123456"),
-        Track("песенка3","Артист", "223093","https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg", "123456"),
-        Track("песенка4","Артист", "223093","https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg", "123456"),
-    )
-    private val selectedTracksAdapter = TrackItemAdapter(testTracks)*/
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,15 +62,14 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
         finderViewById()
 
+        recyclerViewSearch.adapter = trackListAdapter
         sharedPrefs = getSharedPreferences(SHARED_PREFS_SELECTED_TRACKS, MODE_PRIVATE)
         buildRecycleViewListenedTracks()
 
-        recyclerViewListenedTracks.adapter = selectedTracksAdapter
-        selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.size)
 
         /* Вывод слоя с историей выбранных треков */
         editTextSearchActivity.setOnFocusChangeListener { view, hasFocus ->
-            listOfFound.visibility =
+            layoutOfListenedTracks.visibility =
                 if (hasFocus && editTextSearchActivity.text.isEmpty()) View.VISIBLE else View.GONE
         }
 
@@ -87,19 +78,16 @@ class SearchActivity : AppCompatActivity() {
             selectedTracks = SearchHistory(sharedPrefs).read()
             selectedTracksAdapter = TrackItemAdapter(selectedTracks)
             recyclerViewListenedTracks.adapter = selectedTracksAdapter
-            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.size)
+            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
             Log.d("MyLog", "Подписка сработала")
         }
         sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
 
-//        trackListAdapter.trackList = trackList  // ? масло масленное - выше инициализирован с trackList
-        recyclerViewSearch.adapter = trackListAdapter
 
         /* эмуляция кнопки для поиска. Изменяет тип кнопки ввода на клавиатуре: */
         editTextSearchActivity.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 // ВЫПОЛНЯЙТЕ ПОИСКОВЫЙ ЗАПРОС ЗДЕСЬ
-//                if (editTextSearchActivity.text.isNotEmpty()) {
                 if (userInputText.isNotEmpty()) {
                     search()
                 }
@@ -112,7 +100,7 @@ class SearchActivity : AppCompatActivity() {
         searchClearEdittextImageview.setOnClickListener {
             editTextSearchActivity.setText("")
             trackListAdapter.setTracks(trackList, trackList)
-            selectedTracksAdapter = TrackItemAdapter(selectedTracks)
+            trackListAdapter.notifyItemRangeChanged(0,trackList.lastIndex)
             placeholderMessage.visibility = View.GONE
             placeholderImage.visibility = View.GONE
             placeholderButtonReload.visibility = View.GONE
@@ -134,7 +122,7 @@ class SearchActivity : AppCompatActivity() {
                     clearButtonVisibility(s)    //если строка ввода пуста, то спрятать крестик очистки и наоборот
                 userInputText = s.toString()
                 // Скрытие слоя с историей выбранных треков, если есть ввод
-                listOfFound.visibility =
+                layoutOfListenedTracks.visibility =
                     if (editTextSearchActivity.hasFocus() && s?.isEmpty() == true) View.VISIBLE else View.GONE
             }
 
@@ -142,10 +130,9 @@ class SearchActivity : AppCompatActivity() {
                 // empty
             }
         }
-
         editTextSearchActivity.addTextChangedListener(simpleTextWatcher)
 
-        settingsArrowBack.setNavigationOnClickListener {
+        searchArrowBack.setNavigationOnClickListener {
             this.finish()
         }
 
@@ -159,29 +146,30 @@ class SearchActivity : AppCompatActivity() {
             selectedTracks = SearchHistory(sharedPrefs).read()
             selectedTracksAdapter = TrackItemAdapter(selectedTracks)
             recyclerViewListenedTracks.adapter = selectedTracksAdapter
-            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.size)
+            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
 
-            Toast.makeText(this@SearchActivity,"История очищена",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"История очищена",Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun buildRecycleViewListenedTracks() {
         selectedTracks = SearchHistory(sharedPrefs).read()
         selectedTracksAdapter = TrackItemAdapter(selectedTracks)
-        selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.size)
+        recyclerViewListenedTracks.adapter = selectedTracksAdapter
+        selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
     }
 
 
     private fun finderViewById() {
         recyclerViewSearch = findViewById(R.id.recyclerViewSearch)
         recyclerViewListenedTracks = findViewById(R.id.recyclerViewListenedTracks)
-        settingsArrowBack = findViewById(R.id.search_activity_toolbar)
+        searchArrowBack = findViewById(R.id.search_activity_toolbar)
         searchClearEdittextImageview = findViewById(R.id.search_clear_edittext_imageview)
         editTextSearchActivity = findViewById(R.id.search_activity_edittext)
         placeholderMessage = findViewById(R.id.placeholder_search_screen_text)
         placeholderImage = findViewById(R.id.placeholder_search_screen_image)
         placeholderButtonReload = findViewById(R.id.placeholder_search_button)
-        listOfFound = findViewById(R.id.list_of_found)
+        layoutOfListenedTracks = findViewById(R.id.layout_of_listened_tracks)
         searchHistoryClearButton = findViewById(R.id.search_history_clear_button)
     }
 
