@@ -21,21 +21,16 @@ class TrackItemAdapter(
 
     override fun onBindViewHolder(holder: ViewHolderSearch, position: Int) {
         holder.bind(trackList[position])
+        val sharedPrefs: SharedPreferences = holder.itemView.context.getSharedPreferences(SHARED_PREFS_SELECTED_TRACKS, MODE_PRIVATE)
 
         holder.itemView.setOnClickListener {
-            val sharedPrefs: SharedPreferences = holder.itemView.context.getSharedPreferences(SHARED_PREFS_SELECTED_TRACKS, MODE_PRIVATE)
             SearchHistory(sharedPrefs).save(trackList[position])
         }
     }
 
-    //     функция setTracks() вместо такого кода в SearchActivity:
-    //     trackList.clear()
-    //     trackList.addAll(response.body()?.results!!)
-    //     trackListAdapter.notifyDataSetChanged()
-
-    fun setTracks(currentTrackList: ArrayList<Track>, newTracks: List<Track>) {
-        currentTrackList.clear()
-        currentTrackList.addAll(newTracks)
+    fun setTracks(newTracks: List<Track>) {
+        trackList.clear()
+        trackList.addAll(newTracks)
         notifyDataSetChanged()
     }
 }

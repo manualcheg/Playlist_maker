@@ -12,16 +12,16 @@ class SearchHistory(sharedPrefs: SharedPreferences) {
     private val typeToken = object : TypeToken<ArrayList<Track>>() {}.type
     private var selectedTracks: ArrayList<Track> = Gson().fromJson(json, typeToken)
 
-    fun save(track: Track) {
-        var theSame = Track("","","","","")
-        for ((index,i) in selectedTracks.withIndex()) {
-            if (track.trackId == i.trackId) {
-                theSame = selectedTracks[index]
+    init{
+            if (sPrefs != null){
+                sPrefs = sharedPrefs
             }
-        }
-        selectedTracks.remove(theSame)
+    }
+        fun save(track: Track) {
+        selectedTracks.remove(selectedTracks.find {it.trackId == track.trackId})
+
         if (selectedTracks.size >= 10) {
-            selectedTracks.removeAt(selectedTracks.lastIndex)
+            selectedTracks.removeLast()
         }
         selectedTracks.add(0, track)
 

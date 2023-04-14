@@ -12,11 +12,12 @@ class App: Application() {
     override fun onCreate() {
         super.onCreate()
         val sharedPrefs = getSharedPreferences(THEME_PREFS, MODE_PRIVATE)
-//        Восстанавливаем сохраненную тему
+        /* Восстанавливаем сохраненную тему */
         darkTheme = sharedPrefs.getBoolean(DARK_THEME,darkThemeCheck(this))
         switchTheme(darkTheme)
     }
 
+    /* работа switch */
     fun switchTheme(darkThemeEnabled: Boolean) {
         darkTheme = darkThemeEnabled
         AppCompatDelegate.setDefaultNightMode(

@@ -42,15 +42,6 @@ class SettingsActivity : AppCompatActivity() {
                 .apply()
         }
 
-//        работа switch //логика теперь реализуется в классе App
-/*        switchDarkTheme.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-        }*/
-
 //      Кнопка "Пользовательское соглашение" с переходом на страницу
         val userAgreementTextView = findViewById<TextView>(R.id.settings_screen_user_agreement_textview)
         userAgreementTextView.setOnClickListener{
@@ -84,11 +75,6 @@ class SettingsActivity : AppCompatActivity() {
     //     Метод, который проверяет включенность тёмной темы
     companion object{
         fun darkThemeCheck(context: Context):Boolean{
-            /*if (resources.configuration.isNightModeActive){ //требует api level 30
-                switch.isChecked = true
-            }*/
-
-
             val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
             val isNight = when ((currentNightMode)) {
                 Configuration.UI_MODE_NIGHT_YES -> true

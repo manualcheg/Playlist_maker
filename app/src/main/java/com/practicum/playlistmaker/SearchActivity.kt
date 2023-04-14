@@ -99,7 +99,7 @@ class SearchActivity : AppCompatActivity() {
 //      Крестик очистки поля ввода
         searchClearEdittextImageview.setOnClickListener {
             editTextSearchActivity.setText("")
-            trackListAdapter.setTracks(trackList, trackList)
+            trackListAdapter.setTracks(trackList)
             trackListAdapter.notifyItemRangeChanged(0,trackList.lastIndex)
             placeholderMessage.visibility = View.GONE
             placeholderImage.visibility = View.GONE
@@ -123,7 +123,7 @@ class SearchActivity : AppCompatActivity() {
                 userInputText = s.toString()
                 // Скрытие слоя с историей выбранных треков, если есть ввод
                 layoutOfListenedTracks.visibility =
-                    if (editTextSearchActivity.hasFocus() && s?.isEmpty() == true) View.VISIBLE else View.GONE
+                    if (editTextSearchActivity.hasFocus() && s?.isEmpty() == true && selectedTracks.isNotEmpty()) View.VISIBLE else View.GONE
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -187,7 +187,6 @@ class SearchActivity : AppCompatActivity() {
                                     placeholderImage.visibility = View.GONE
                                     placeholderButtonReload.visibility = View.GONE
                                     trackListAdapter.setTracks(
-                                        trackList,
                                         response.body()?.results!!
                                     )
                                     showMessage("", "")
@@ -215,7 +214,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showMessage(text: String, myErrorCode: String) {
         if (text.isNotEmpty()) {
-            trackListAdapter.setTracks(trackList, trackList)
+            trackListAdapter.setTracks(trackList)
             placeholderMessage.text = text
             if (myErrorCode == NOTHING_FOUND) {
                 placeholderImage.setImageResource(R.drawable.placeholder_nothing_found)
