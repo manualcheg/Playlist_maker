@@ -28,4 +28,6 @@
     <string name="track_cover_art">track cover art</string>
     <string name="separator">separator</string>
     <string name="arrow_back">arrow back</string>
+    <string name="clear_history">Очистить историю</string>
+    <string name="you_listened">Вы искали</string>
 </resources>

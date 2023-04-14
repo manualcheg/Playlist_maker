@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
@@ -10,8 +11,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
+
+const val THEME_PREFS = "Theme prefs"
 
 class SettingsActivity : AppCompatActivity() {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -27,15 +29,17 @@ class SettingsActivity : AppCompatActivity() {
 
         val switchDarkTheme = findViewById<SwitchCompat>(R.id.switch_dark_theme)
 //        Проверка на включенность темной темы и переключение switch
-        darkThemeCheck(switchDarkTheme)
+//        darkThemeCheck(switchDarkTheme)
+        switchDarkTheme.isChecked = darkThemeCheck(this)
 
-//        работа switch
-        switchDarkTheme.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
+
+//        работа switch теперь тут
+        switchDarkTheme.setOnCheckedChangeListener{  switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+            val sharedPrefs = getSharedPreferences(THEME_PREFS, MODE_PRIVATE)
+            sharedPrefs.edit()
+                .putBoolean(DARK_THEME, darkTheme)
+                .apply()
         }
 
 //      Кнопка "Пользовательское соглашение" с переходом на страницу
@@ -47,7 +51,7 @@ class SettingsActivity : AppCompatActivity() {
 //        Кнопка "Поделится приложением"
         val shareApp = findViewById<TextView>(R.id.settings_screen_shareapp_textview)
         shareApp.setOnClickListener{
-            val shareIntent = Intent.createChooser(Intent().apply {
+            Intent.createChooser(Intent().apply {
                 action = Intent.ACTION_SEND
                 type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.url_course))
@@ -68,15 +72,17 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-//     Метод, который проверяет включенность тёмной темы
-    fun darkThemeCheck(switch:SwitchCompat){
-        /*if (resources.configuration.isNightModeActive){ //требует api level 30
-            switch.isChecked = true
-        }*/
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        when ((currentNightMode)) {
-            Configuration.UI_MODE_NIGHT_YES -> switch.isChecked=true
-            Configuration.UI_MODE_NIGHT_NO -> switch.isChecked=false
+    //     Метод, который проверяет включенность тёмной темы
+    companion object{
+        fun darkThemeCheck(context: Context):Boolean{
+            val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            val isNight = when ((currentNightMode)) {
+                Configuration.UI_MODE_NIGHT_YES -> true
+                else -> false
+            }
+            return isNight
         }
     }
+
+
 }
