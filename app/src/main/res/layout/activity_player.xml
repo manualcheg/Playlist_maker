@@ -33,11 +33,11 @@
         android:layout_height="@dimen/dp16"
         android:layout_marginStart="4dp"
         android:layout_marginTop="@dimen/dp20"
+        android:contentDescription="@string/text_button_exit_from_screen_descript"
         android:src="@drawable/icon_arrow_back"
         app:layout_constraintStart_toEndOf="@id/guideline_start"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="?attr/colorOnPrimary"
-        android:contentDescription="@string/text_button_exit_from_screen_descript" />
+        app:tint="?attr/colorOnPrimary" />
 
     <!-- Обложка -->
     <ImageView
@@ -47,6 +47,7 @@
         android:layout_marginStart="@dimen/dp4"
         android:layout_marginTop="26dp"
         android:layout_marginEnd="@dimen/dp4"
+        android:contentDescription="@string/text_cover_image_descript"
         app:layout_constraintBottom_toTopOf="@id/player_track_name"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -54,8 +55,7 @@
         app:layout_constraintTop_toBottomOf="@id/player_activity_arrow_back"
         tools:layout_height="0dp"
         tools:layout_width="0dp"
-        tools:src="@drawable/placeholder_album_cover"
-        android:contentDescription="@string/text_cover_image_descript" />
+        tools:src="@drawable/placeholder_album_cover" />
     <!-- Название трека -->
     <TextView
         android:id="@+id/player_track_name"
@@ -99,6 +99,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="38dp"
         android:layout_marginBottom="@dimen/dp12"
+        android:contentDescription="@string/text_play_pause_button_descript"
+        app:elevation="0dp"
         android:src="@drawable/play_button"
         app:backgroundTint="?attr/whiteBlack"
         app:fabCustomSize="83dp"
@@ -107,36 +109,37 @@
         app:layout_constraintStart_toEndOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/player_artist"
         app:maxImageSize="83dp"
-        app:tint="?attr/colorOnPrimary"
-        android:contentDescription="@string/text_play_pause_button_descript" />
+        app:tint="?attr/colorOnPrimary" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/player_button_plus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/yp_text_gray"
+        android:contentDescription="@string/text_button_add_track_descript"
+        app:elevation="0dp"
         android:src="@drawable/player_button_plus"
         app:fabCustomSize="51dp"
         app:layout_constraintBottom_toBottomOf="@id/play_pause_button"
         app:layout_constraintEnd_toStartOf="@id/play_pause_button"
         app:layout_constraintStart_toEndOf="@id/guideline_start"
         app:layout_constraintTop_toTopOf="@id/play_pause_button"
-        app:tint="@color/white"
-        android:contentDescription="@string/text_button_add_track_descript" />
+        app:tint="@color/white" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/player_button_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/yp_text_gray"
+        android:contentDescription="@string/text_button_like_descript"
+        app:elevation="0dp"
         android:src="@drawable/player_button_heart_like"
         app:fabCustomSize="51dp"
         app:layout_constraintBottom_toBottomOf="@id/play_pause_button"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toEndOf="@id/play_pause_button"
         app:layout_constraintTop_toTopOf="@id/play_pause_button"
-        app:tint="@color/white"
-        android:contentDescription="@string/text_button_like_descript" />
+        app:tint="@color/white" />
 
     <!-- Отсчёт времени вопроизведения -->
     <TextView
@@ -269,8 +272,8 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        tools:text="@string/tools_text_country"
         app:layout_constraintBottom_toBottomOf="@+id/guideline_bottom"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end" />
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        tools:text="@string/tools_text_country" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
