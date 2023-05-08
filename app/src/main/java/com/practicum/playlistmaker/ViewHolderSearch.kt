@@ -20,9 +20,8 @@ class ViewHolderSearch(private val track_item: View): RecyclerView.ViewHolder(tr
         artistName.text = model.artistName.trimEnd()
 //        trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTime)
 //        костыль из-за нулевого времени при поиске по букве g:
-        trackTime.text = model.trackTime?.let {
+        trackTime.text = model.trackTime.let {
             SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.toInt()) }
-
 
         Glide.with(imageCover)
             .load(model.artworkUrl100)

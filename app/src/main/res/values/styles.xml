@@ -53,4 +53,15 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+
+    <style name="player_left_block_text_style">
+        <item name="android:textColor">@color/yp_text_gray</item>
+        <item name="android:fontFamily">@font/yandex_sans_display_regular</item>
+        <item name="android:textSize">@dimen/sp13</item>
+    </style>
+
+    <style name="player_right_block_text_style">
+        <item name="android:fontFamily">@font/yandex_sans_display_regular</item>
+        <item name="android:textSize">@dimen/sp13</item>
+    </style>
 </resources>

@@ -19,7 +19,7 @@
     <string name="url_course">https://practicum.yandex.ru/android-developer/</string>
     <string name="url_offer">https://yandex.ru/legal/practicum_offer/</string>
     <string name="tools_tint_artist_name">Имя исполнителя</string>
-    <string name="tools_tint_track_time">11:22</string>
+    <string name="tools_tint_track_time">01:22</string>
     <string name="tools_tint_song_name">Название композиции</string>
     <string name="nothing_found">Ничего не нашлось</string>
     <string name="something_went_wrong">Проблемы со связью \n\nЗагрузка не удалась. \nПроверьте подключение к интернету</string>
@@ -30,4 +30,18 @@
     <string name="arrow_back">arrow back</string>
     <string name="clear_history">Очистить историю</string>
     <string name="you_listened">Вы искали</string>
+    <string name="Country">Страна</string>
+    <string name="genre">Жанр</string>
+    <string name="year">Год</string>
+    <string name="text_album">Альбом</string>
+    <string name="text_tracktime">Длительность</string>
+    <string name="tools_text_value_album">Название альбома</string>
+    <string name="tools_text_value_year">2009</string>
+    <string name="tools_text_value_genre">Классическая музыка</string>
+    <string name="tools_text_country">Азорские острова</string>
+    <string name="text_button_like_descript">button like</string>
+    <string name="text_button_add_track_descript">button add track</string>
+    <string name="text_button_exit_from_screen_descript">button exit from screen</string>
+    <string name="text_cover_image_descript">Cover image</string>
+    <string name="text_play_pause_button_descript">Play pause button</string>
 </resources>
