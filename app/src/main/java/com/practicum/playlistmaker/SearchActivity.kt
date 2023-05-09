@@ -47,6 +47,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var listener: SharedPreferences.OnSharedPreferenceChangeListener
     private lateinit var progressBar: ProgressBar
 
+
     private val baseUrl = "http://itunes.apple.com/"
     private var userInputText: String = ""
     private var retrofit =
@@ -78,7 +79,7 @@ class SearchActivity : AppCompatActivity() {
         /* Вывод слоя с историей выбранных треков */
         editTextSearchActivity.setOnFocusChangeListener { view, hasFocus ->
             layoutOfListenedTracks.visibility =
-                if (hasFocus && editTextSearchActivity.text.isEmpty() && selectedTracks.isNotEmpty()) View.VISIBLE else View.GONE
+                if (hasFocus && userInputText.isEmpty() && selectedTracks.isNotEmpty()) View.VISIBLE else View.GONE
         }
 
         /* Подписка на изменение SharedPreferences */
@@ -103,12 +104,12 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
-//      Крестик очистки поля ввода
+        /* Крестик очистки поля ввода */
         searchClearEdittextImageview.setOnClickListener {
             editTextSearchActivity.setText("")
             hideUnnecessary()
 
-//      Скрытие клавиатуры после ввода
+            /* Скрытие клавиатуры после ввода */
             val view: View? = this.currentFocus
             if (view != null) {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -131,22 +132,14 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 // Скрытие слоя с историей выбранных треков, если есть ввод
-                if (editTextSearchActivity.hasFocus() && userInputText.isEmpty() == true) View.VISIBLE else View.GONE
-/*                if (editTextSearchActivity.hasFocus() && s?.isEmpty() == true && selectedTracks.isNotEmpty()) {
-                    layoutOfListenedTracks.visibility = View.VISIBLE
-                    hideUnnecessary()
-                } else {
-                    layoutOfListenedTracks.visibility = View.GONE
+                layoutOfListenedTracks.visibility = if (editTextSearchActivity.hasFocus() && userInputText.isNotEmpty() == true && selectedTracks.isNotEmpty()) View.GONE else View.VISIBLE
+
+                if (userInputText.isEmpty()==true && selectedTracks.isNotEmpty()){
+                    trackList.clear()
+                    trackListAdapter.setTracks(trackList)
+                    trackListAdapter.notifyItemRangeChanged(0, trackList.lastIndex)
                     hideUnnecessary()
                 }
-
-                if (editTextSearchActivity.text.equals("") && selectedTracks.isEmpty()) {
-                    layoutOfListenedTracks.visibility = View.GONE
-                }*/
-                /*                                if (editTextSearchActivity.hasFocus() && s?.isEmpty() == true && selectedTracks.isNotEmpty()) {
-                                                    layoutOfListenedTracks.visibility = View.VISIBLE
-
-                                                } else {layoutOfListenedTracks.visibility = View.GONE}*/
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -170,6 +163,7 @@ class SearchActivity : AppCompatActivity() {
             selectedTracksAdapter = TrackItemAdapter(selectedTracks)
             recyclerViewListenedTracks.adapter = selectedTracksAdapter
             selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+            hideUnnecessary()
 
             Toast.makeText(this, "История очищена", Toast.LENGTH_SHORT).show()
         }
@@ -203,6 +197,7 @@ class SearchActivity : AppCompatActivity() {
         placeholderMessage.visibility = View.GONE
         placeholderImage.visibility = View.GONE
         placeholderButtonReload.visibility = View.GONE
+        layoutOfListenedTracks.visibility = View.GONE
     }
 
     private fun search() {
