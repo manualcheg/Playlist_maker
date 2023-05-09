@@ -12,6 +12,7 @@ data class Track(
     var releaseDate: String,
     var primaryGenreName: String,
     var country: String,
+    var previewUrl: String,
 ) {
     fun getCoverArtwork() = artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
 

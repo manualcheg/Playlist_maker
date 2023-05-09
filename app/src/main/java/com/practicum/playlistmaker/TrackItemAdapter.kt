@@ -36,6 +36,7 @@ class TrackItemAdapter(
             intent.putExtra("releaseDate",track.releaseDate)
             intent.putExtra("primaryGenreName",track.primaryGenreName)
             intent.putExtra("collectionName",track.collectionName)
+            intent.putExtra("previewUrl",track.previewUrl)
             holder.itemView.context.startActivity(intent)
         }
     }
