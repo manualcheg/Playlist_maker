@@ -13,8 +13,11 @@ import androidx.constraintlayout.widget.Group
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Locale
+
+private var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var playerArrowBack: ImageView
@@ -31,7 +34,6 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var playbackTime: TextView
 
     private var mediaPlayer = MediaPlayer()
-    private var mainThreadHandler: Handler? = null
     private var playerState = STATE_DEFAULT
     private var url = ""
 
@@ -42,56 +44,39 @@ class PlayerActivity : AppCompatActivity() {
 
         setViews()
 
-        val startOfDataExpression = 0
-        val fourNumberOfYear = 4
-
-        val intent = intent
-        val trackName = intent.getStringExtra("trackName")
-        val artistName = intent.getStringExtra("artistName")
-        val trackTime = intent.getStringExtra("trackTime")
-        val artworkUrl500 = intent.getStringExtra("artworkUrl500")
-        val collectionName = intent.getStringExtra("collectionName")
-        val releaseDate = intent.getStringExtra("releaseDate")
-        val primaryGenreName = intent.getStringExtra("primaryGenreName")
-        val country = intent.getStringExtra("country")
-        val previewUrl = intent.getStringExtra("previewUrl")
+        val track = Gson().fromJson(intent.getStringExtra("track"), Track::class.java)
 
         Glide.with(imageCover)
-            .load(artworkUrl500)
+            .load(track.getCoverArtwork())
             .placeholder(R.drawable.placeholder_album_cover)
             .centerCrop()
             .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.dp4)))
             .into(imageCover)
-        trackNameView.text = trackName
+        trackNameView.text = track.trackName
         trackNameView.isSelected = true
-        artistNameView.text = artistName
+        artistNameView.text = track.artistName
         artistNameView.isSelected = true
-        trackTimeView.text = trackTime?.let {
+        trackTimeView.text = track.trackTime?.let {
             SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.toInt())
         }
-        collectionNameView.text = collectionName?.let {
+        collectionNameView.text = track.collectionName?.let {
             group.visibility = View.VISIBLE
-            collectionName
+            track.collectionName
         }
         releaseDateView.text =
-            releaseDate?.substring(startOfDataExpression, fourNumberOfYear) ?: "-"
-        primaryGenreNameView.text = primaryGenreName ?: "-"
-        countryView.text = country ?: "-"
+            track.releaseDate?.substring(START_OF_DATA_EXPRESSION, FOUR_NUMBER_OF_YEAR) ?: "-"
+        primaryGenreNameView.text = track.primaryGenreName ?: "-"
+        countryView.text = track.country ?: "-"
 
         playerArrowBack.setOnClickListener {
             this.finish()
         }
 
-        mainThreadHandler = Handler(Looper.getMainLooper())
-        url = previewUrl.toString()
+        url = track.previewUrl.toString()
 
         preparePlayer()
         buttonPlay.setOnClickListener {
-            val newThread = Thread {
-//                looper = Looper()
-                playbackControl()
-            }
-            newThread.start()
+            playbackControl()
         }
     }
 
@@ -115,7 +100,9 @@ class PlayerActivity : AppCompatActivity() {
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
-        private const val PLAYBACK_TIME_RENEW_DELAY = 300L
+        private const val PLAYBACK_TIME_RENEW_DELAY_MS = 300L
+        private const val START_OF_DATA_EXPRESSION = 0
+        private const val FOUR_NUMBER_OF_YEAR = 4
     }
 
     private fun preparePlayer() {
@@ -127,7 +114,7 @@ class PlayerActivity : AppCompatActivity() {
         }
         mediaPlayer.setOnCompletionListener {
             playerState = STATE_PREPARED
-            mainThreadHandler?.removeCallbacks(runPlaybackTime)
+            mainThreadHandler.removeCallbacks(runPlaybackTime)
             playbackTime.text = getString(R.string._00_00)
             buttonPlay.setImageResource(R.drawable.play_button)
         }
@@ -137,14 +124,14 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.start()
         buttonPlay.setImageResource(R.drawable.image_pause_button)
         playerState = STATE_PLAYING
-        mainThreadHandler?.post(runPlaybackTime)
+        mainThreadHandler.post(runPlaybackTime)
     }
 
     private fun pausePlayer() {
         mediaPlayer.pause()
         buttonPlay.setImageResource(R.drawable.play_button)
         playerState = STATE_PAUSED
-        mainThreadHandler?.removeCallbacks(runPlaybackTime)
+        mainThreadHandler.removeCallbacks(runPlaybackTime)
     }
 
     private fun playbackControl() {
@@ -157,13 +144,13 @@ class PlayerActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         pausePlayer()
-        mainThreadHandler?.removeCallbacks(runPlaybackTime)
+        mainThreadHandler.removeCallbacks(runPlaybackTime)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayer.release()
-        mainThreadHandler?.removeCallbacks(runPlaybackTime)
+        mainThreadHandler.removeCallbacks(runPlaybackTime)
     }
 
     private val runPlaybackTime =
@@ -173,7 +160,7 @@ class PlayerActivity : AppCompatActivity() {
                     "mm:ss",
                     Locale.getDefault()
                 ).format(mediaPlayer.currentPosition)
-                mainThreadHandler?.postDelayed(this, PLAYBACK_TIME_RENEW_DELAY)
+                mainThreadHandler.postDelayed(this, PLAYBACK_TIME_RENEW_DELAY_MS)
             }
         }
 

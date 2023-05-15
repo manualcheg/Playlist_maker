@@ -104,6 +104,8 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
+//        var holder : ViewHolderSearch
+
         /* Крестик очистки поля ввода */
         searchClearEdittextImageview.setOnClickListener {
             editTextSearchActivity.setText("")
