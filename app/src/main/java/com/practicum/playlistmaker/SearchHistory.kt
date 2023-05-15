@@ -7,7 +7,7 @@ import com.google.gson.reflect.TypeToken
 const val SHARED_PREFS_SELECTED_TRACKS = "Shared prefs selected tracks"
 
 class SearchHistory(sharedPrefs: SharedPreferences) {
-    var sPrefs = sharedPrefs
+    private var sPrefs = sharedPrefs
     private val json = sPrefs.getString(SELECTED_TRACKS, "[]") // костыль - null по умолчанию быть не должно
     private val typeToken = object : TypeToken<ArrayList<Track>>() {}.type
     private var selectedTracks: ArrayList<Track> = Gson().fromJson(json, typeToken)

@@ -3,13 +3,11 @@ package com.practicum.playlistmaker
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Bundle
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
-import java.io.Serializable
 
 var isClickAllowed = true
 
@@ -47,8 +45,8 @@ class TrackItemAdapter(
         notifyDataSetChanged()
     }
 
-    fun isMakedClickable(): Boolean {
-        var currentState = isClickAllowed
+    private fun isMakedClickable(): Boolean {
+        val currentState = isClickAllowed
         val handler = android.os.Handler(Looper.getMainLooper())
         if (isClickAllowed) {
             isClickAllowed = false

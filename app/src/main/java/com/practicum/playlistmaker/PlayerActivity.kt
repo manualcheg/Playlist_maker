@@ -72,7 +72,7 @@ class PlayerActivity : AppCompatActivity() {
             this.finish()
         }
 
-        url = track.previewUrl.toString()
+        url = track.previewUrl
 
         preparePlayer()
         buttonPlay.setOnClickListener {

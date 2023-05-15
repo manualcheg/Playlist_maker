@@ -55,7 +55,7 @@ class SearchActivity : AppCompatActivity() {
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-    private val itunesService = retrofit.create(itunesApi::class.java)
+    private val itunesService = retrofit.create(ItunesApi::class.java)
     private var trackList = ArrayList<Track>()
     private var trackListAdapter = TrackItemAdapter(trackList)
     private var selectedTracks = ArrayList<Track>()
@@ -134,9 +134,9 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 // Скрытие слоя с историей выбранных треков, если есть ввод
-                layoutOfListenedTracks.visibility = if (editTextSearchActivity.hasFocus() && userInputText.isNotEmpty() == true && selectedTracks.isNotEmpty()) View.GONE else View.VISIBLE
+                layoutOfListenedTracks.visibility = if (editTextSearchActivity.hasFocus() && userInputText.isNotEmpty() && selectedTracks.isNotEmpty()) View.GONE else View.VISIBLE
 
-                if (userInputText.isEmpty()==true && selectedTracks.isNotEmpty()){
+                if (userInputText.isEmpty() && selectedTracks.isNotEmpty()){
                     trackList.clear()
                     trackListAdapter.setTracks(trackList)
                     trackListAdapter.notifyItemRangeChanged(0, trackList.lastIndex)
