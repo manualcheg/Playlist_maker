@@ -37,7 +37,8 @@
         android:src="@drawable/icon_arrow_back"
         app:layout_constraintStart_toEndOf="@id/guideline_start"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="?attr/colorOnPrimary" />
+        app:tint="?attr/colorOnPrimary"
+        />
 
     <!-- Обложка -->
     <ImageView
@@ -94,13 +95,14 @@
         tools:text="Симфонический камерный оркестр города-героя Симерополь имени кого-то очень известного" />
     <!-- Блок кнопок -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:enabled="false"
         android:id="@+id/play_pause_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="38dp"
         android:layout_marginBottom="@dimen/dp12"
         android:contentDescription="@string/text_play_pause_button_descript"
-        app:elevation="0dp"
+        app:elevation="@dimen/dp0"
         android:src="@drawable/play_button"
         app:backgroundTint="?attr/whiteBlack"
         app:fabCustomSize="83dp"
@@ -117,9 +119,9 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/yp_text_gray"
         android:contentDescription="@string/text_button_add_track_descript"
-        app:elevation="0dp"
+        app:elevation="@dimen/dp0"
         android:src="@drawable/player_button_plus"
-        app:fabCustomSize="51dp"
+        app:fabCustomSize="@dimen/dp51"
         app:layout_constraintBottom_toBottomOf="@id/play_pause_button"
         app:layout_constraintEnd_toStartOf="@id/play_pause_button"
         app:layout_constraintStart_toEndOf="@id/guideline_start"
@@ -132,9 +134,9 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/yp_text_gray"
         android:contentDescription="@string/text_button_like_descript"
-        app:elevation="0dp"
+        app:elevation="@dimen/dp0"
         android:src="@drawable/player_button_heart_like"
-        app:fabCustomSize="51dp"
+        app:fabCustomSize="@dimen/dp51"
         app:layout_constraintBottom_toBottomOf="@id/play_pause_button"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toEndOf="@id/play_pause_button"
@@ -146,9 +148,8 @@
         android:id="@+id/playback_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="39dp"
+        android:layout_marginBottom="@dimen/dp40"
         android:fontFamily="@font/yandex_sans_display_regular"
-        android:text="@string/tools_tint_track_time"
         android:textSize="@dimen/sp14"
         app:layout_constraintBottom_toTopOf="@id/text_tracktime"
         app:layout_constraintEnd_toStartOf="@id/guideline_end"

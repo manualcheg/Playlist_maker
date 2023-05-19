@@ -3,10 +3,13 @@ package com.practicum.playlistmaker
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 
+var isClickAllowed = true
 
 class TrackItemAdapter(
     private val trackList: MutableList<Track>
@@ -23,20 +26,16 @@ class TrackItemAdapter(
     override fun onBindViewHolder(holder: ViewHolderSearch, position: Int) {
         val track = trackList[position]
         holder.bind(track)
-        val sharedPrefs: SharedPreferences = holder.itemView.context.getSharedPreferences(SHARED_PREFS_SELECTED_TRACKS, MODE_PRIVATE)
+        val sharedPrefs: SharedPreferences =
+            holder.itemView.context.getSharedPreferences(SHARED_PREFS_SELECTED_TRACKS, MODE_PRIVATE)
 
         holder.itemView.setOnClickListener {
-            SearchHistory(sharedPrefs).save(track)
-            val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-            intent.putExtra("artistName", track.artistName)
-            intent.putExtra("trackName",track.trackName)
-            intent.putExtra("trackTime",track.trackTime)
-            intent.putExtra("artworkUrl500",track.getCoverArtwork())
-            intent.putExtra("country",track.country)
-            intent.putExtra("releaseDate",track.releaseDate)
-            intent.putExtra("primaryGenreName",track.primaryGenreName)
-            intent.putExtra("collectionName",track.collectionName)
-            holder.itemView.context.startActivity(intent)
+            if (isMakedClickable()) {
+                SearchHistory(sharedPrefs).save(track)
+                val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
+                intent.putExtra("track", Gson().toJson(track))
+                holder.itemView.context.startActivity(intent)
+            }
         }
     }
 
@@ -44,5 +43,15 @@ class TrackItemAdapter(
         trackList.clear()
         trackList.addAll(newTracks)
         notifyDataSetChanged()
+    }
+
+    private fun isMakedClickable(): Boolean {
+        val currentState = isClickAllowed
+        val handler = android.os.Handler(Looper.getMainLooper())
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, 1000L)
+        }
+        return currentState
     }
 }

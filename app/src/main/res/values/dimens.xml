@@ -42,4 +42,7 @@
     <dimen name="dp28">28dp</dimen>
     <dimen name="dp17">17dp</dimen>
     <dimen name="sp13">13sp</dimen>
+    <dimen name="dp51">51dp</dimen>
+    <dimen name="start_of_data_note">0</dimen>
+    <dimen name="four_number_of_year">4</dimen>
 </resources>

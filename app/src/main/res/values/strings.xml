@@ -44,4 +44,5 @@
     <string name="text_button_exit_from_screen_descript">button exit from screen</string>
     <string name="text_cover_image_descript">Cover image</string>
     <string name="text_play_pause_button_descript">Play pause button</string>
+    <string name="_00_00">00:00</string>
 </resources>
