@@ -75,7 +75,6 @@ class SearchActivity : AppCompatActivity() {
         sharedPrefs = getSharedPreferences(SHARED_PREFS_SELECTED_TRACKS, MODE_PRIVATE)
         buildRecycleViewListenedTracks()
 
-
         /* Вывод слоя с историей выбранных треков */
         editTextSearchActivity.setOnFocusChangeListener { view, hasFocus ->
             layoutOfListenedTracks.visibility =
@@ -103,8 +102,6 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
-
-//        var holder : ViewHolderSearch
 
         /* Крестик очистки поля ввода */
         searchClearEdittextImageview.setOnClickListener {
