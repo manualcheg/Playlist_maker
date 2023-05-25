@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PlayerActivity">
+    tools:context="com.practicum.playlistmaker.player.presentation.PlayerActivity">
     <!-- Guideline start-->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
@@ -154,7 +154,8 @@
         app:layout_constraintBottom_toTopOf="@id/text_tracktime"
         app:layout_constraintEnd_toStartOf="@id/guideline_end"
         app:layout_constraintStart_toEndOf="@id/guideline_start"
-        tools:text="@string/tools_tint_track_time" />
+        tools:text="@string/tools_tint_track_time"
+        android:visibility="invisible"/>
 
     <!-- Длительность -->
     <TextView

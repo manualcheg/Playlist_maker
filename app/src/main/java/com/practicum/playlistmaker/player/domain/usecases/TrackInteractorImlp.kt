@@ -11,22 +11,25 @@ class TrackInteractorImlp(private val trackRepository: TrackRepository) : TrackI
         return trackRepository.getTrack()
     }
 
-    override fun preparePlayer() {
+    override fun preparePlayer():Int {
         playerState = trackRepository.preparePlayer()
+        return playerState
     }
 
-    override fun startPlayer() {
+    override fun startPlayer():Int {
         playerState = trackRepository.startPlayer()
+        return playerState
     }
 
-    override fun pausePlayer() {
+    override fun pausePlayer():Int {
         playerState = trackRepository.pausePlayer()
+        return playerState
     }
 
     override fun playbackControl():Int {
         when (playerState) {
-            STATE_PLAYING -> pausePlayer()
-            STATE_PAUSED, STATE_PREPARED -> startPlayer()
+            STATE_PLAYING -> playerState = pausePlayer()
+            STATE_PAUSED, STATE_PREPARED -> playerState = startPlayer()
         }
         return playerState
     }

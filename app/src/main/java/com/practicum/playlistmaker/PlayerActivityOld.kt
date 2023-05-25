@@ -19,7 +19,7 @@ import java.util.Locale
 
 private var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerActivityOld : AppCompatActivity() {
     private lateinit var playerArrowBack: ImageView
     private lateinit var imageCover: ImageView
     private lateinit var trackNameView: TextView

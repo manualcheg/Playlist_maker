@@ -7,8 +7,7 @@ import com.practicum.playlistmaker.player.domain.entities.Track
 
 
 class TrackIntentDAOImpl(val intent: Intent): TrackIntentDAO {
-    override fun getTrack():Track{
-        val track = Gson().fromJson(intent.getStringExtra("track"), Track::class.java)
-        return track
+    override fun getTrack(): Track {
+        return Gson().fromJson(intent.getStringExtra("track"), Track::class.java)
     }
 }

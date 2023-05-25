@@ -5,6 +5,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -35,27 +36,19 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var buttonPlay: FloatingActionButton
     private lateinit var playbackTime: TextView
 
-    //    private var mediaPlayer = MediaPlayer()
+    private val mediaPlayer = MediaPlayer()
     private var playerState = STATE_DEFAULT
-    private var url = ""
-
-    //    private val trackIntentDAOImpl = TrackIntentDAOImpl(intent)
-//    private val getTrackUseCase = GetTrackUseCase(trackIntentDAOImpl)
-//    private val trackRepositoryImpl = TrackRepositoryImpl(trackIntentDAOImpl)
-    private val trackRepositoryImpl = TrackRepositoryImpl(intent)
-    private val trackInteractorImlp = TrackInteractorImlp(trackRepository = trackRepositoryImpl)
+    private val trackRepositoryImpl by lazy { TrackRepositoryImpl(intent,mediaPlayer) }
+    private val trackInteractorImlp by lazy { TrackInteractorImlp(trackRepository = trackRepositoryImpl) }
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
-        setViews()
-
-        //получение трека теперь через Data Access Object в data слое
-        // через UseCase в слое domain
-//        val track = trackRepositoryImpl.getTrack(intent)
+        trackRepositoryImpl //Костыль для lazy - первый вызов для инициализации. Нужен для инициализации trackInteractorImpl
         val track = trackInteractorImlp.getTrack()
+        setViews()
 
         Glide.with(imageCover)
             .load(track.getCoverArtwork())
@@ -83,26 +76,36 @@ class PlayerActivity : AppCompatActivity() {
             this.finish()
         }
 
-        url = track.previewUrl
-
-        trackInteractorImlp.preparePlayer()
+        playerState = trackInteractorImlp.preparePlayer()
         prepareViewsAfterPreparePlayer()
 
         buttonPlay.setOnClickListener {
             playerState = trackInteractorImlp.playbackControl()
+
+//            Log.d("myLog", "playerState after click is $playerState")
+            playbackTime.visibility=View.VISIBLE
             when (playerState) {
                 STATE_PLAYING -> {
                     buttonPlay.setImageResource(R.drawable.image_pause_button)
                     mainThreadHandler.post(runPlaybackTime)
+                    Log.d("myLog", "STATE_PLAYING playerState after click is $playerState")
                 }
-
-                STATE_PAUSED, STATE_PREPARED -> {
-                    buttonPlay.setImageResource(R.drawable.play_button)
+                STATE_PAUSED -> {
                     mainThreadHandler.removeCallbacks(runPlaybackTime)
+                    buttonPlay.setImageResource(R.drawable.play_button)
+                    Log.d("myLog", "STATE_PAUSED playerState after click is $playerState")
+                }
+                STATE_PREPARED -> { //не помогло(((
+                    Log.d("myLog", "PREPARED playerState is $playerState")
+                    mainThreadHandler.removeCallbacks(runPlaybackTime)
+                    buttonPlay.setImageResource(R.drawable.play_button)
+                    playbackTime.text = getString(R.string._00_00)
                 }
             }
         }
+        Log.d("myLog", "playerState after click is $playerState")
     }
+
 
     private fun setViews() {
         playerArrowBack = findViewById(R.id.player_activity_arrow_back)
@@ -119,60 +122,17 @@ class PlayerActivity : AppCompatActivity() {
         playbackTime = findViewById(R.id.playback_time)
     }
 
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-        private const val PLAYBACK_TIME_RENEW_DELAY_MS = 300L
-        private const val START_OF_DATA_EXPRESSION = 0
-        private const val FOUR_NUMBER_OF_YEAR = 4
-    }
-
-    /*
-        private fun preparePlayer() {
-            mediaPlayer.setDataSource(url)
-            mediaPlayer.prepareAsync()
-            mediaPlayer.setOnPreparedListener {
-                playerState = STATE_PREPARED
-            }
-            mediaPlayer.setOnCompletionListener {
-                playerState = STATE_PREPARED
-                mainThreadHandler.removeCallbacks(runPlaybackTime)
-            }
-        }
-
-        private fun startPlayer() {
-            mediaPlayer.start()
-            buttonPlay.setImageResource(R.drawable.image_pause_button)
-            playerState = STATE_PLAYING
-            mainThreadHandler.post(runPlaybackTime)
-        }
-
-        private fun pausePlayer() {
-            mediaPlayer.pause()
-            buttonPlay.setImageResource(R.drawable.play_button)
-            playerState = STATE_PAUSED
-            mainThreadHandler.removeCallbacks(runPlaybackTime)
-        }
-
-        private fun playbackControl() {
-            when (playerState) {
-                STATE_PLAYING -> pausePlayer()
-                STATE_PAUSED, STATE_PREPARED -> startPlayer()
-            }
-        }
-    */
-
     private fun prepareViewsAfterPreparePlayer() {
         buttonPlay.isEnabled = true
         playbackTime.text = getString(R.string._00_00)
         buttonPlay.setImageResource(R.drawable.play_button)
+        mainThreadHandler.removeCallbacks(runPlaybackTime)
     }
 
     override fun onPause() {
         super.onPause()
         trackInteractorImlp.pausePlayer()
+        buttonPlay.setImageResource(R.drawable.play_button)
         mainThreadHandler.removeCallbacks(runPlaybackTime)
     }
 
@@ -193,4 +153,13 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
+    companion object {
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val PLAYBACK_TIME_RENEW_DELAY_MS = 300L
+        private const val START_OF_DATA_EXPRESSION = 0
+        private const val FOUR_NUMBER_OF_YEAR = 4
+    }
 }
