@@ -14,12 +14,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.player.data.intent.TrackIntentDAOImpl
-import com.practicum.playlistmaker.player.domain.usecases.GetTrackUseCase
+import com.practicum.playlistmaker.player.data.repository.TrackRepositoryImpl
+import com.practicum.playlistmaker.player.domain.usecases.TrackInteractorImlp
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-private var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
+var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var playerArrowBack: ImageView
@@ -35,12 +35,15 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var buttonPlay: FloatingActionButton
     private lateinit var playbackTime: TextView
 
-    private var mediaPlayer = MediaPlayer()
+    //    private var mediaPlayer = MediaPlayer()
     private var playerState = STATE_DEFAULT
     private var url = ""
 
-    private val trackIntentDAOImpl = TrackIntentDAOImpl(intent)
-    private val getTrackUseCase = GetTrackUseCase(trackIntentDAOImpl)
+    //    private val trackIntentDAOImpl = TrackIntentDAOImpl(intent)
+//    private val getTrackUseCase = GetTrackUseCase(trackIntentDAOImpl)
+//    private val trackRepositoryImpl = TrackRepositoryImpl(trackIntentDAOImpl)
+    private val trackRepositoryImpl = TrackRepositoryImpl(intent)
+    private val trackInteractorImlp = TrackInteractorImlp(trackRepository = trackRepositoryImpl)
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +54,8 @@ class PlayerActivity : AppCompatActivity() {
 
         //получение трека теперь через Data Access Object в data слое
         // через UseCase в слое domain
-        val track = getTrackUseCase.execute()
+//        val track = trackRepositoryImpl.getTrack(intent)
+        val track = trackInteractorImlp.getTrack()
 
         Glide.with(imageCover)
             .load(track.getCoverArtwork())
@@ -81,10 +85,22 @@ class PlayerActivity : AppCompatActivity() {
 
         url = track.previewUrl
 
-        preparePlayer()
+        trackInteractorImlp.preparePlayer()
+        prepareViewsAfterPreparePlayer()
 
         buttonPlay.setOnClickListener {
-            playbackControl()
+            playerState = trackInteractorImlp.playbackControl()
+            when (playerState) {
+                STATE_PLAYING -> {
+                    buttonPlay.setImageResource(R.drawable.image_pause_button)
+                    mainThreadHandler.post(runPlaybackTime)
+                }
+
+                STATE_PAUSED, STATE_PREPARED -> {
+                    buttonPlay.setImageResource(R.drawable.play_button)
+                    mainThreadHandler.removeCallbacks(runPlaybackTime)
+                }
+            }
         }
     }
 
@@ -113,51 +129,56 @@ class PlayerActivity : AppCompatActivity() {
         private const val FOUR_NUMBER_OF_YEAR = 4
     }
 
-    private fun preparePlayer() {
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            buttonPlay.isEnabled = true
-            playerState = STATE_PREPARED
+    /*
+        private fun preparePlayer() {
+            mediaPlayer.setDataSource(url)
+            mediaPlayer.prepareAsync()
+            mediaPlayer.setOnPreparedListener {
+                playerState = STATE_PREPARED
+            }
+            mediaPlayer.setOnCompletionListener {
+                playerState = STATE_PREPARED
+                mainThreadHandler.removeCallbacks(runPlaybackTime)
+            }
         }
-        mediaPlayer.setOnCompletionListener {
-            playerState = STATE_PREPARED
-            mainThreadHandler.removeCallbacks(runPlaybackTime)
-            playbackTime.text = getString(R.string._00_00)
+
+        private fun startPlayer() {
+            mediaPlayer.start()
+            buttonPlay.setImageResource(R.drawable.image_pause_button)
+            playerState = STATE_PLAYING
+            mainThreadHandler.post(runPlaybackTime)
+        }
+
+        private fun pausePlayer() {
+            mediaPlayer.pause()
             buttonPlay.setImageResource(R.drawable.play_button)
+            playerState = STATE_PAUSED
+            mainThreadHandler.removeCallbacks(runPlaybackTime)
         }
-    }
 
-    private fun startPlayer() {
-        mediaPlayer.start()
-        buttonPlay.setImageResource(R.drawable.image_pause_button)
-        playerState = STATE_PLAYING
-        mainThreadHandler.post(runPlaybackTime)
-    }
+        private fun playbackControl() {
+            when (playerState) {
+                STATE_PLAYING -> pausePlayer()
+                STATE_PAUSED, STATE_PREPARED -> startPlayer()
+            }
+        }
+    */
 
-    private fun pausePlayer() {
-        mediaPlayer.pause()
+    private fun prepareViewsAfterPreparePlayer() {
+        buttonPlay.isEnabled = true
+        playbackTime.text = getString(R.string._00_00)
         buttonPlay.setImageResource(R.drawable.play_button)
-        playerState = STATE_PAUSED
-        mainThreadHandler.removeCallbacks(runPlaybackTime)
-    }
-
-    private fun playbackControl() {
-        when (playerState) {
-            STATE_PLAYING -> pausePlayer()
-            STATE_PAUSED, STATE_PREPARED -> startPlayer()
-        }
     }
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        trackInteractorImlp.pausePlayer()
         mainThreadHandler.removeCallbacks(runPlaybackTime)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        trackRepositoryImpl.mediaPlayer.release()
         mainThreadHandler.removeCallbacks(runPlaybackTime)
     }
 
@@ -167,7 +188,7 @@ class PlayerActivity : AppCompatActivity() {
                 playbackTime.text = SimpleDateFormat(
                     "mm:ss",
                     Locale.getDefault()
-                ).format(mediaPlayer.currentPosition)
+                ).format(trackRepositoryImpl.mediaPlayer.currentPosition)
                 mainThreadHandler.postDelayed(this, PLAYBACK_TIME_RENEW_DELAY_MS)
             }
         }

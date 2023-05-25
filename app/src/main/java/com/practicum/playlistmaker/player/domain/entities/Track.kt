@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.player.domain.models
+package com.practicum.playlistmaker.player.domain.entities
 
 import com.google.gson.annotations.SerializedName
 
