@@ -18,7 +18,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name="com.practicum.playlistmaker.player.presentation.PlayerActivity"
+            android:name="com.practicum.playlistmaker.playerActivity.presentation.PlayerActivity"
             android:exported="false" />
         <activity
             android:name=".SearchActivity"
