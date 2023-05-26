@@ -95,7 +95,7 @@
         tools:text="Симфонический камерный оркестр города-героя Симерополь имени кого-то очень известного" />
     <!-- Блок кнопок -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:enabled="false"
+        android:enabled="true"
         android:id="@+id/play_pause_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -111,7 +111,8 @@
         app:layout_constraintStart_toEndOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/player_artist"
         app:maxImageSize="83dp"
-        app:tint="?attr/colorOnPrimary" />
+        app:tint="?attr/colorOnPrimary"
+        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/player_button_plus"
