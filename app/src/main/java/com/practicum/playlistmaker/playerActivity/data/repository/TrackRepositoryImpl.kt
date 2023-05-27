@@ -8,8 +8,9 @@ import com.practicum.playlistmaker.playerActivity.domain.entities.Track
 import com.practicum.playlistmaker.playerActivity.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.playerActivity.domain.interfaces.TrackRepository
 
-class TrackRepositoryImpl(private val intent: Intent, val mediaPlayer: MediaPlayer) :
+class TrackRepositoryImpl(private val intent: Intent) :
     TrackRepository {
+    var mediaPlayer = MediaPlayer()
     var playerState = MediaPlayerState.STATE_DEFAULT
     override fun getTrack(): Track {
         val trackIntentDAOImpl = TrackIntentDAOImpl(intent)
@@ -40,5 +41,13 @@ class TrackRepositoryImpl(private val intent: Intent, val mediaPlayer: MediaPlay
         mediaPlayer.pause()
         playerState = MediaPlayerState.STATE_PAUSED
         return playerState
+    }
+
+    fun playerRelease(){
+        mediaPlayer.release()
+    }
+
+    fun playerGetCurrentPosition():Int {
+        return mediaPlayer.currentPosition
     }
 }

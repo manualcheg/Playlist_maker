@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.playerActivity.presentation
 
 import android.annotation.SuppressLint
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -36,9 +35,8 @@ class PlayerActivity : AppCompatActivity(), MediaPlayerPrepare {
     private lateinit var buttonPlay: FloatingActionButton
     private lateinit var playbackTime: TextView
 
-    private val mediaPlayer = MediaPlayer()
     private var playerState = MediaPlayerState.STATE_DEFAULT
-    private val trackRepositoryImpl by lazy { TrackRepositoryImpl(intent,mediaPlayer) }
+    private val trackRepositoryImpl by lazy { TrackRepositoryImpl(intent) }
 
 
     @SuppressLint("MissingInflatedId")
@@ -133,7 +131,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayerPrepare {
     override fun onDestroy() {
         super.onDestroy()
         mainThreadHandler.removeCallbacks(runPlaybackTime)
-        trackRepositoryImpl.mediaPlayer.release()
+        trackRepositoryImpl.playerRelease()
     }
 
     override fun onPrepared() {
@@ -156,7 +154,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayerPrepare {
                 playbackTime.text = SimpleDateFormat(
                     "mm:ss",
                     Locale.getDefault()
-                ).format(trackRepositoryImpl.mediaPlayer.currentPosition)
+                ).format(trackRepositoryImpl.playerGetCurrentPosition())
                 mainThreadHandler.postDelayed(this, PLAYBACK_TIME_RENEW_DELAY_MS)
             }
         }
