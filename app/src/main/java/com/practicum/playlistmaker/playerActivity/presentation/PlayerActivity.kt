@@ -1,25 +1,27 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.playerActivity.presentation
 
 import android.annotation.SuppressLint
-import android.media.MediaPlayer
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.gson.Gson
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.playerActivity.data.repository.TrackRepositoryImpl
+import com.practicum.playlistmaker.playerActivity.domain.entities.MediaPlayerState
+import com.practicum.playlistmaker.playerActivity.domain.interfaces.MediaPlayerPrepare
+import com.practicum.playlistmaker.playerActivity.domain.usecases.TrackInteractorImlp
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-private var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
-
-class PlayerActivity : AppCompatActivity() {
+class PlayerActivity : AppCompatActivity(), MediaPlayerPrepare {
+    var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
     private lateinit var playerArrowBack: ImageView
     private lateinit var imageCover: ImageView
     private lateinit var trackNameView: TextView
@@ -33,18 +35,20 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var buttonPlay: FloatingActionButton
     private lateinit var playbackTime: TextView
 
-    private var mediaPlayer = MediaPlayer()
-    private var playerState = STATE_DEFAULT
-    private var url = ""
+    private var playerState = MediaPlayerState.STATE_DEFAULT
+    private val trackRepositoryImpl by lazy { TrackRepositoryImpl(intent) }
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
-        setViews()
+        var trackInteractorImlp = TrackInteractorImlp(trackRepository = trackRepositoryImpl, playerState = playerState)
 
-        val track = Gson().fromJson(intent.getStringExtra("track"), Track::class.java)
+        trackRepositoryImpl //Костыль для lazy - первый вызов для инициализации. Нужен для инициализации trackInteractorImpl
+        val track = trackInteractorImlp.getTrack()
+        setViews()
 
         Glide.with(imageCover)
             .load(track.getCoverArtwork())
@@ -72,13 +76,34 @@ class PlayerActivity : AppCompatActivity() {
             this.finish()
         }
 
-        url = track.previewUrl
+        trackRepositoryImpl.preparePlayer(this)
 
-        preparePlayer()
         buttonPlay.setOnClickListener {
-            playbackControl()
+            playerState = trackRepositoryImpl.playerState
+            trackInteractorImlp = TrackInteractorImlp(
+                trackRepository = trackRepositoryImpl,
+                playerState = playerState
+            )
+            playerState = trackInteractorImlp.playbackControl()
+
+            when (playerState) {
+                MediaPlayerState.STATE_PLAYING -> {
+                    playbackTime.visibility = View.VISIBLE
+                    buttonPlay.setImageResource(R.drawable.image_pause_button)
+                    mainThreadHandler.post(runPlaybackTime)
+                }
+
+                MediaPlayerState.STATE_PAUSED, MediaPlayerState.STATE_PREPARED -> {
+                    playbackTime.visibility = View.VISIBLE
+                    mainThreadHandler.removeCallbacks(runPlaybackTime)
+                    buttonPlay.setImageResource(R.drawable.play_button)
+                }
+
+                else -> {}
+            }
         }
     }
+
 
     private fun setViews() {
         playerArrowBack = findViewById(R.id.player_activity_arrow_back)
@@ -95,62 +120,32 @@ class PlayerActivity : AppCompatActivity() {
         playbackTime = findViewById(R.id.playback_time)
     }
 
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-        private const val PLAYBACK_TIME_RENEW_DELAY_MS = 300L
-        private const val START_OF_DATA_EXPRESSION = 0
-        private const val FOUR_NUMBER_OF_YEAR = 4
-    }
-
-    private fun preparePlayer() {
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            buttonPlay.isEnabled = true
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            playerState = STATE_PREPARED
-            mainThreadHandler.removeCallbacks(runPlaybackTime)
-            playbackTime.text = getString(R.string._00_00)
-            buttonPlay.setImageResource(R.drawable.play_button)
-        }
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        buttonPlay.setImageResource(R.drawable.image_pause_button)
-        playerState = STATE_PLAYING
-        mainThreadHandler.post(runPlaybackTime)
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        buttonPlay.setImageResource(R.drawable.play_button)
-        playerState = STATE_PAUSED
-        mainThreadHandler.removeCallbacks(runPlaybackTime)
-    }
-
-    private fun playbackControl() {
-        when (playerState) {
-            STATE_PLAYING -> pausePlayer()
-            STATE_PAUSED, STATE_PREPARED -> startPlayer()
-        }
-    }
-
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        val trackInteractorImlp = TrackInteractorImlp(trackRepository = trackRepositoryImpl, playerState = playerState)
+        trackInteractorImlp.pausePlayer()
+        buttonPlay.setImageResource(R.drawable.play_button)
         mainThreadHandler.removeCallbacks(runPlaybackTime)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
         mainThreadHandler.removeCallbacks(runPlaybackTime)
+        trackRepositoryImpl.playerRelease()
+    }
+
+    override fun onPrepared() {
+        mainThreadHandler.removeCallbacks(runPlaybackTime)
+        buttonPlay.isEnabled = true
+        buttonPlay.visibility = View.VISIBLE
+        playbackTime.text = getString(R.string._00_00)
+        buttonPlay.setImageResource(R.drawable.play_button)
+    }
+
+    override fun onCompletion() {
+        mainThreadHandler.removeCallbacks(runPlaybackTime)
+        playbackTime.text = getString(R.string._00_00)
+        buttonPlay.setImageResource(R.drawable.play_button)
     }
 
     private val runPlaybackTime =
@@ -159,9 +154,14 @@ class PlayerActivity : AppCompatActivity() {
                 playbackTime.text = SimpleDateFormat(
                     "mm:ss",
                     Locale.getDefault()
-                ).format(mediaPlayer.currentPosition)
+                ).format(trackRepositoryImpl.playerGetCurrentPosition())
                 mainThreadHandler.postDelayed(this, PLAYBACK_TIME_RENEW_DELAY_MS)
             }
         }
 
+    companion object {
+        private const val PLAYBACK_TIME_RENEW_DELAY_MS = 300L
+        private const val START_OF_DATA_EXPRESSION = 0
+        private const val FOUR_NUMBER_OF_YEAR = 4
+    }
 }
