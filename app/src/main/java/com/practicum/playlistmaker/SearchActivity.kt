@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
+import com.practicum.playlistmaker.search.data.ItunesApi
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 

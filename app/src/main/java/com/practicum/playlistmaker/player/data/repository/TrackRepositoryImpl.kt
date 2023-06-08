@@ -10,6 +10,7 @@ import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
 
 class TrackRepositoryImpl(private val intent: Intent) :
     TrackRepository {
+
     var mediaPlayer = MediaPlayer()
     var playerState = MediaPlayerState.STATE_DEFAULT
     override fun getTrack(): Track {
