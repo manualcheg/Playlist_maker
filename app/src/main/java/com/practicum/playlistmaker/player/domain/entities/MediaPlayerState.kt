@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.playerActivity.domain.entities
+package com.practicum.playlistmaker.player.domain.entities
 
 enum class MediaPlayerState {
     STATE_DEFAULT,

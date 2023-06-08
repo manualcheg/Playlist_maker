@@ -1,12 +1,12 @@
-package com.practicum.playlistmaker.playerActivity.data.repository
+package com.practicum.playlistmaker.player.data.repository
 
 import android.content.Intent
 import android.media.MediaPlayer
-import com.practicum.playlistmaker.playerActivity.data.intent.TrackIntentDAOImpl
-import com.practicum.playlistmaker.playerActivity.domain.entities.MediaPlayerState
-import com.practicum.playlistmaker.playerActivity.domain.entities.Track
-import com.practicum.playlistmaker.playerActivity.domain.interfaces.MediaPlayerPrepare
-import com.practicum.playlistmaker.playerActivity.domain.interfaces.TrackRepository
+import com.practicum.playlistmaker.player.data.intent.TrackIntentDAOImpl
+import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
+import com.practicum.playlistmaker.player.domain.entities.Track
+import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
+import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
 
 class TrackRepositoryImpl(private val intent: Intent) :
     TrackRepository {

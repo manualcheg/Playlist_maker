@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.playerActivity.presentation
+package com.practicum.playlistmaker.player.presentation
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -13,10 +13,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.playerActivity.data.repository.TrackRepositoryImpl
-import com.practicum.playlistmaker.playerActivity.domain.entities.MediaPlayerState
-import com.practicum.playlistmaker.playerActivity.domain.interfaces.MediaPlayerPrepare
-import com.practicum.playlistmaker.playerActivity.domain.usecases.TrackInteractorImlp
+import com.practicum.playlistmaker.player.data.repository.TrackRepositoryImpl
+import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
+import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
+import com.practicum.playlistmaker.player.domain.usecases.TrackInteractorImlp
 import java.text.SimpleDateFormat
 import java.util.Locale
 

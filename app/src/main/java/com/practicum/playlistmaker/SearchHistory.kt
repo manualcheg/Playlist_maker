@@ -3,6 +3,7 @@ package com.practicum.playlistmaker
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.practicum.playlistmaker.player.domain.entities.Track
 
 const val SHARED_PREFS_SELECTED_TRACKS = "Shared prefs selected tracks"
 

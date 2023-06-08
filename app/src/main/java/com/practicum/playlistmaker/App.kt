@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.practicum.playlistmaker.SettingsActivity.Companion.darkThemeCheck
 
-
 const val DARK_THEME = "Theme_is_dark"
 var darkTheme: Boolean = false
 

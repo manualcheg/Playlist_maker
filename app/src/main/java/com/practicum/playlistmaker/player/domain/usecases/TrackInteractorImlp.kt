@@ -1,9 +1,9 @@
-package com.practicum.playlistmaker.playerActivity.domain.usecases
+package com.practicum.playlistmaker.player.domain.usecases
 
-import com.practicum.playlistmaker.playerActivity.domain.entities.MediaPlayerState
-import com.practicum.playlistmaker.playerActivity.domain.entities.Track
-import com.practicum.playlistmaker.playerActivity.domain.interfaces.TrackInteractor
-import com.practicum.playlistmaker.playerActivity.domain.interfaces.TrackRepository
+import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
+import com.practicum.playlistmaker.player.domain.entities.Track
+import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
+import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
 
 class TrackInteractorImlp(
     private val trackRepository: TrackRepository,
