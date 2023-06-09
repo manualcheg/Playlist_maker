@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.search.ui
 
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
@@ -8,24 +8,27 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
-import com.practicum.playlistmaker.player.domain.entities.Track
-import com.practicum.playlistmaker.player.presentation.PlayerActivity
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.search.data.SHARED_PREFS_SELECTED_TRACKS
+import com.practicum.playlistmaker.search.data.SearchHistory
+import com.practicum.playlistmaker.search.domain.entities.Track
+import com.practicum.playlistmaker.player.ui.PlayerActivity
 
 var isClickAllowed = true
 
-class TrackItemAdapter(
+class SearchAdapter(
     private val trackList: MutableList<Track>
-) : RecyclerView.Adapter<ViewHolderSearch>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderSearch {
+) : RecyclerView.Adapter<SearchViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)
-        return ViewHolderSearch(view)
+        return SearchViewHolder(view)
     }
 
     override fun getItemCount(): Int {
         return trackList.size
     }
 
-    override fun onBindViewHolder(holder: ViewHolderSearch, position: Int) {
+    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         val track = trackList[position]
         holder.bind(track)
         val sharedPrefs: SharedPreferences =

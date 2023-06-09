@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.search.ui
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -16,16 +16,25 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.appcompat.widget.AppCompatButton
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.playlistmaker.search.data.ItunesApi
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.search.data.SHARED_PREFS_SELECTED_TRACKS
+import com.practicum.playlistmaker.search.data.SearchHistory
+import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
+import com.practicum.playlistmaker.search.domain.entities.Track
+import com.practicum.playlistmaker.search.data.network.ItunesApi
+import com.practicum.playlistmaker.search.presentation.SearchViewModel
+import com.practicum.playlistmaker.search.presentation.SearchViewModel.Companion.getViewModelFactory
+import com.practicum.playlistmaker.utils.Creator
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 
 const val SELECTED_TRACKS = "Selected_tracks"
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : ComponentActivity() {
     companion object {
         const val USERTEXT =
             "USER_INPUT"   //константа-ключ для поиска в Bundle сохраненного состояния
@@ -33,6 +42,8 @@ class SearchActivity : AppCompatActivity() {
         const val SOMETHING_WENT_WRONG = "2"
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
+    private lateinit var searchViewModel: SearchViewModel
+    private val searchInteractor = Creator.provideSearchInteractor()
 
     private lateinit var editTextSearchActivity: EditText
     private lateinit var searchClearEdittextImageview: ImageView
@@ -48,20 +59,22 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var listener: SharedPreferences.OnSharedPreferenceChangeListener
     private lateinit var progressBar: ProgressBar
 
-
+    /*RetrofitNetworkClient*/
     private val baseUrl = "http://itunes.apple.com/"
-    private var userInputText: String = ""
     private var retrofit =
         Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     private val itunesService = retrofit.create(ItunesApi::class.java)
+    /*RetrofitNetworkClient*/
+
+    private var userInputText: String = ""
     private var trackList = ArrayList<Track>()
-    private var trackListAdapter = TrackItemAdapter(trackList)
+    private var trackListAdapter = SearchAdapter(trackList)
     private var selectedTracks = ArrayList<Track>()
     private var selectedTracksAdapter =
-        TrackItemAdapter(selectedTracks)      //адаптер для прослушанных треков
+        SearchAdapter(selectedTracks)      //адаптер для прослушанных треков
 
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { search() }
@@ -71,6 +84,8 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
         finderViewById()
 
+        /*создаем viewModel*/
+        searchViewModel = ViewModelProvider(this,getViewModelFactory(userInputText))[SearchViewModel::class.java]
 
         recyclerViewSearch.adapter = trackListAdapter
         sharedPrefs = getSharedPreferences(SHARED_PREFS_SELECTED_TRACKS, MODE_PRIVATE)
@@ -85,7 +100,7 @@ class SearchActivity : AppCompatActivity() {
         /* Подписка на изменение SharedPreferences */
         listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPrefs, key ->
             selectedTracks = SearchHistory(sharedPrefs).read()
-            selectedTracksAdapter = TrackItemAdapter(selectedTracks)
+            selectedTracksAdapter = SearchAdapter(selectedTracks)
             recyclerViewListenedTracks.adapter = selectedTracksAdapter
             selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
         }
@@ -160,7 +175,7 @@ class SearchActivity : AppCompatActivity() {
         searchHistoryClearButton.setOnClickListener {
             SearchHistory(sharedPrefs).clear()
             selectedTracks = SearchHistory(sharedPrefs).read()
-            selectedTracksAdapter = TrackItemAdapter(selectedTracks)
+            selectedTracksAdapter = SearchAdapter(selectedTracks)
             recyclerViewListenedTracks.adapter = selectedTracksAdapter
             selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
             hideUnnecessary()
@@ -171,7 +186,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun buildRecycleViewListenedTracks() {
         selectedTracks = SearchHistory(sharedPrefs).read()
-        selectedTracksAdapter = TrackItemAdapter(selectedTracks)
+        selectedTracksAdapter = SearchAdapter(selectedTracks)
         recyclerViewListenedTracks.adapter = selectedTracksAdapter
         selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
     }
@@ -210,9 +225,9 @@ class SearchActivity : AppCompatActivity() {
             progressBar.visibility = View.VISIBLE
 
             itunesService.search(userInputText)
-                .enqueue(object : Callback<TrackResponse> {
+                .enqueue(object : Callback<TrackSearchResponse> {
                     override fun onResponse(
-                        call: Call<TrackResponse>, response: Response<TrackResponse>
+                        call: Call<TrackSearchResponse>, response: Response<TrackSearchResponse>
                     ) {
                         progressBar.visibility = View.GONE
                         when (response.code()) {
@@ -242,7 +257,7 @@ class SearchActivity : AppCompatActivity() {
                     }
 
                     override fun onFailure( //error without server answer
-                        call: Call<TrackResponse>, t: Throwable
+                        call: Call<TrackSearchResponse>, t: Throwable
                     ) {
                         progressBar.visibility = View.GONE
                         showMessage(getString(R.string.something_went_wrong), SOMETHING_WENT_WRONG)

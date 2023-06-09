@@ -4,7 +4,7 @@ import android.content.Intent
 import android.media.MediaPlayer
 import com.practicum.playlistmaker.player.data.intent.TrackIntentDAOImpl
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
-import com.practicum.playlistmaker.player.domain.entities.Track
+import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
 

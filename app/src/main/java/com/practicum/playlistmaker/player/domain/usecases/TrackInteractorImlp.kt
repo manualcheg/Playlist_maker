@@ -1,7 +1,7 @@
 package com.practicum.playlistmaker.player.domain.usecases
 
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
-import com.practicum.playlistmaker.player.domain.entities.Track
+import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
 import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
 

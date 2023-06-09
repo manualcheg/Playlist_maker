@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.settings
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import com.practicum.playlistmaker.R
 
 const val THEME_PREFS = "Theme prefs"
 

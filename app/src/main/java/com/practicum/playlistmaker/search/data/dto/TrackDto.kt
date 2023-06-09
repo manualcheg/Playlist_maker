@@ -1,8 +1,8 @@
-package com.practicum.playlistmaker.player.domain.entities
+package com.practicum.playlistmaker.search.data.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class Track(
+data class TrackDto(
     var trackName: String,
     var artistName: String,
     @SerializedName("trackTimeMillis") var trackTime: String,
@@ -15,5 +15,5 @@ data class Track(
     var previewUrl: String,
 ) {
     fun getCoverArtwork() = artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
-
+//    val coverArtwork = artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
 }
