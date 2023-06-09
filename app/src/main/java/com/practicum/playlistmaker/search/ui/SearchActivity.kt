@@ -26,6 +26,7 @@ import com.practicum.playlistmaker.search.data.SearchHistory
 import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.data.network.ItunesApi
+import com.practicum.playlistmaker.search.domain.api.SearchInteractor
 import com.practicum.playlistmaker.search.presentation.SearchViewModel
 import com.practicum.playlistmaker.search.presentation.SearchViewModel.Companion.getViewModelFactory
 import com.practicum.playlistmaker.utils.Creator
@@ -59,16 +60,6 @@ class SearchActivity : ComponentActivity() {
     private lateinit var listener: SharedPreferences.OnSharedPreferenceChangeListener
     private lateinit var progressBar: ProgressBar
 
-    /*RetrofitNetworkClient*/
-    private val baseUrl = "http://itunes.apple.com/"
-    private var retrofit =
-        Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    private val itunesService = retrofit.create(ItunesApi::class.java)
-    /*RetrofitNetworkClient*/
-
     private var userInputText: String = ""
     private var trackList = ArrayList<Track>()
     private var trackListAdapter = SearchAdapter(trackList)
@@ -83,6 +74,7 @@ class SearchActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         finderViewById()
+
 
         /*создаем viewModel*/
         searchViewModel = ViewModelProvider(this,getViewModelFactory(userInputText))[SearchViewModel::class.java]
@@ -224,7 +216,28 @@ class SearchActivity : ComponentActivity() {
             layoutOfListenedTracks.visibility = View.GONE
             progressBar.visibility = View.VISIBLE
 
-            itunesService.search(userInputText)
+            searchInteractor.searchTracks(userInputText, object: SearchInteractor.SearchConsumer{
+                override fun consume(foundTracks: List<Track>){
+                    handler.post {
+                        progressBar.visibility = View.GONE
+                        trackList.clear()
+                        trackList.addAll(foundTracks)
+                        recyclerViewSearch.visibility = View.VISIBLE
+                        trackListAdapter.notifyDataSetChanged()
+
+                        if (trackList.isNotEmpty()) {
+                            showMessage("", "")
+                            placeholderMessage.visibility = View.GONE
+                            placeholderImage.visibility = View.GONE
+                            placeholderButtonReload.visibility = View.GONE
+                        } else {
+                            showMessage(getString(R.string.nothing_found), NOTHING_FOUND)
+                        }
+                    }
+                }
+            })
+
+/*            itunesService.search(userInputText)
                 .enqueue(object : Callback<TrackSearchResponse> {
                     override fun onResponse(
                         call: Call<TrackSearchResponse>, response: Response<TrackSearchResponse>
@@ -262,7 +275,7 @@ class SearchActivity : ComponentActivity() {
                         progressBar.visibility = View.GONE
                         showMessage(getString(R.string.something_went_wrong), SOMETHING_WENT_WRONG)
                     }
-                })
+                })*/
         }
     }
 

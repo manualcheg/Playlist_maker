@@ -46,7 +46,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayerPrepare {
 
         var trackInteractorImlp = TrackInteractorImlp(trackRepository = trackRepositoryImpl, playerState = playerState)
 
-        trackRepositoryImpl //Костыль для lazy - первый вызов для инициализации. Нужен для инициализации trackInteractorImpl
+        trackRepositoryImpl //Костыль для lazy - первый вызов для инициализации trackInteractorImpl
         val track = trackInteractorImlp.getTrack()
         setViews()
 
