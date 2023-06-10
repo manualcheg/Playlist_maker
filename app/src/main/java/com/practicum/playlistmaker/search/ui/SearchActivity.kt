@@ -54,18 +54,12 @@ class SearchActivity : ComponentActivity() {
     private lateinit var layoutOfListenedTracks: LinearLayout
     private lateinit var progressBar: ProgressBar
     private var userInputText: String = ""
-
     private var trackList = ArrayList<Track>()
-
 
     private var trackListAdapter = SearchAdapter(trackList)
     private var selectedTracks = ArrayList<Track>()
     private var selectedTracksAdapter =
         SearchAdapter(selectedTracks)      //адаптер для прослушанных треков
-
-    private val handler = Handler(Looper.getMainLooper())
-    private val searchRunnable = Runnable { searchViewModel.searchRequest(userInputText) }
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,10 +67,9 @@ class SearchActivity : ComponentActivity() {
         setContentView(R.layout.activity_search)
         finderViewById()
 
-
 //        создаем viewModel
         searchViewModel = ViewModelProvider(this, getViewModelFactory())[SearchViewModel::class.java]
-
+        // подписываемся на изменение LiveData типа SearchState
         searchViewModel.observeState().observe(this){
             render(it)
         }
@@ -141,7 +134,7 @@ class SearchActivity : ComponentActivity() {
                 userInputText = s.toString()
 
                 if (userInputText.isNotEmpty()) {
-                    searchDebounce()            //поиск с задержкой
+                    searchViewModel.searchDebounce(userInputText)            //поиск с задержкой
                 }
 
                 // Скрытие слоя с историей выбранных треков, если есть ввод
@@ -201,12 +194,16 @@ class SearchActivity : ComponentActivity() {
     fun showLoading() {
         recyclerViewSearch.visibility = View.GONE
         placeholderMessage.visibility = View.GONE
+        placeholderImage.visibility = View.GONE
+        placeholderButtonReload.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
     }
 
     fun showError(errorMessage:String) {
         recyclerViewSearch.visibility = View.GONE
         placeholderMessage.visibility = View.VISIBLE
+        placeholderImage.visibility = View.VISIBLE
+        placeholderButtonReload.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
         placeholderMessage.text = errorMessage
     }
@@ -217,9 +214,10 @@ class SearchActivity : ComponentActivity() {
 
     fun showContent(trackList: List<Track>) {
         recyclerViewSearch.visibility = View.VISIBLE
+        placeholderImage.visibility = View.GONE
         placeholderMessage.visibility = View.GONE
+        placeholderButtonReload.visibility = View.GONE
         progressBar.visibility = View.GONE
-
         trackListAdapter.setTracks(trackList)
     }
 
@@ -227,10 +225,7 @@ class SearchActivity : ComponentActivity() {
         Toast.makeText(this, additionalMessage, Toast.LENGTH_LONG)
             .show()
     }
-    private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-    }
+
 
     private fun finderViewById() {
         recyclerViewSearch = findViewById(R.id.recyclerViewSearch)
@@ -266,7 +261,7 @@ class SearchActivity : ComponentActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         userInputText = savedInstanceState.getString(USERTEXT, "")
         editTextSearchActivity.setText(userInputText)
-        searchViewModel.searchRequest(userInputText)
+//        searchViewModel.searchRequest(userInputText)
     }
 }
 

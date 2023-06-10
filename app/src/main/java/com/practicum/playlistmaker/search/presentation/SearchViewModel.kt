@@ -1,6 +1,8 @@
 package com.practicum.playlistmaker.search.presentation
 
 import android.app.Application
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,23 +12,22 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.api.SearchInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
+import com.practicum.playlistmaker.search.ui.SearchActivity
 import com.practicum.playlistmaker.search.ui.models.SearchState
 import com.practicum.playlistmaker.utils.Creator
 
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
     private val tracks = ArrayList<Track>()
-
     private val searchInteractor = Creator.provideSearchInteractor(application)
-
-    private var latestSearchText: String? = null
+    private var latestSearchText: String? = ""
 
     private val stateLiveData = MutableLiveData<SearchState>()
     fun observeState(): LiveData<SearchState> = stateLiveData
-    /*    private val toastState = MutableLiveData<String>()
-        fun observeToastState(): LiveData<String> = toastState*/
     private val showToast = SingleLiveEvent<String>()
     fun observeShowToast(): LiveData<String> = showToast
 
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable { searchRequest(latestSearchText?:"") }
 
     fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
@@ -70,6 +71,13 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    fun searchDebounce(newSearchText: String) {
+        handler.removeCallbacks(searchRunnable)
+        latestSearchText = newSearchText
+//    fun searchDebounce() {
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
     private fun renderState(state: SearchState) {
         //кладём значение в LiveData состояний экрана поиска
         stateLiveData.postValue(state)
@@ -79,20 +87,6 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     fun showToast(message:String){
         showToast.postValue(message)
     }
-
-
-
-/*    companion object {
-        fun getViewModelFactory(searchExpression: String): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return SearchViewModel(
-                        searchExpression
-                    ) as T
-                }
-            }
-    }*/
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
