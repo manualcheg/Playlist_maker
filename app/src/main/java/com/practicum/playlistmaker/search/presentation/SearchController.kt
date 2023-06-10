@@ -1,3 +1,4 @@
+/*
 package com.practicum.playlistmaker.search.presentation
 
 import android.os.Handler
@@ -17,7 +18,7 @@ class SearchController {
     companion object {
         const val NOTHING_FOUND = "1"
         const val SOMETHING_WENT_WRONG = "2"
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        internal const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 
     private val searchInteractor = Creator.provideSearchInteractor()
@@ -33,7 +34,10 @@ class SearchController {
 
     private var userInputText: String = ""
 
-    private fun search() {
+
+
+   */
+/* private fun search() {
         if (userInputText.isNotEmpty()) {
 
             placeholderMessage.visibility = View.GONE
@@ -63,7 +67,9 @@ class SearchController {
                 }
             })
 
-            /*            itunesService.search(userInputText)
+            *//*
+*/
+/*            itunesService.search(userInputText)
                             .enqueue(object : Callback<TrackSearchResponse> {
                                 override fun onResponse(
                                     call: Call<TrackSearchResponse>, response: Response<TrackSearchResponse>
@@ -101,9 +107,12 @@ class SearchController {
                                     progressBar.visibility = View.GONE
                                     showMessage(getString(R.string.something_went_wrong), SOMETHING_WENT_WRONG)
                                 }
-                            })*/
+                            })*//*
+*/
+/*
         }
-    }
+    }*//*
+
 
     private fun searchDebounce() {
         handler.removeCallbacks(searchRunnable)
@@ -127,4 +136,4 @@ class SearchController {
     }
 
 
-}
+}*/

@@ -8,6 +8,6 @@ interface SearchInteractor {
     //Для передачи результатов поискового запроса, который будет выполняться в отдельном потоке, нужен Callback.
     // Его роль здесь выполняет интерфейс SearchConsumer
     interface SearchConsumer {
-        fun consume(foundTracks: List<Track>)
+        fun consume(foundTracks: List<Track>?, errorMessage: String?)
     }
 }

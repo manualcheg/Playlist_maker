@@ -23,24 +23,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.data.SHARED_PREFS_SELECTED_TRACKS
 import com.practicum.playlistmaker.search.data.SearchHistory
-import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
 import com.practicum.playlistmaker.search.domain.entities.Track
-import com.practicum.playlistmaker.search.data.network.ItunesApi
-import com.practicum.playlistmaker.search.domain.api.SearchInteractor
 import com.practicum.playlistmaker.search.presentation.SearchViewModel
 import com.practicum.playlistmaker.search.presentation.SearchViewModel.Companion.getViewModelFactory
-import com.practicum.playlistmaker.utils.Creator
-import retrofit2.*
-import retrofit2.converter.gson.GsonConverterFactory
-
+import com.practicum.playlistmaker.search.ui.models.SearchState
 const val SELECTED_TRACKS = "Selected_tracks"
 
 class SearchActivity : ComponentActivity() {
     companion object {
         const val USERTEXT =
             "USER_INPUT"   //константа-ключ для поиска в Bundle сохраненного состояния
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
-//    private lateinit var searchViewModel: SearchViewModel
+
+    private lateinit var searchViewModel: SearchViewModel
 
     private lateinit var editTextSearchActivity: EditText
     private lateinit var searchClearEdittextImageview: ImageView
@@ -51,14 +47,24 @@ class SearchActivity : ComponentActivity() {
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var searchHistoryClearButton: AppCompatButton
     private lateinit var listener: SharedPreferences.OnSharedPreferenceChangeListener
+    private lateinit var placeholderMessage: TextView
 
-
+    private lateinit var placeholderImage: ImageView
+    private lateinit var placeholderButtonReload: AppCompatButton
+    private lateinit var layoutOfListenedTracks: LinearLayout
+    private lateinit var progressBar: ProgressBar
+    private var userInputText: String = ""
 
     private var trackList = ArrayList<Track>()
+
+
     private var trackListAdapter = SearchAdapter(trackList)
     private var selectedTracks = ArrayList<Track>()
     private var selectedTracksAdapter =
         SearchAdapter(selectedTracks)      //адаптер для прослушанных треков
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable { searchViewModel.searchRequest(userInputText) }
 
 
 
@@ -68,8 +74,16 @@ class SearchActivity : ComponentActivity() {
         finderViewById()
 
 
-        /*создаем viewModel*//*
-        searchViewModel = ViewModelProvider(this,getViewModelFactory(userInputText))[SearchViewModel::class.java]*/
+//        создаем viewModel
+        searchViewModel = ViewModelProvider(this, getViewModelFactory())[SearchViewModel::class.java]
+
+        searchViewModel.observeState().observe(this){
+            render(it)
+        }
+
+        searchViewModel.observeShowToast().observe(this) { toast ->
+            showToast(toast)
+        }
 
         recyclerViewSearch.adapter = trackListAdapter
         sharedPrefs = getSharedPreferences(SHARED_PREFS_SELECTED_TRACKS, MODE_PRIVATE)
@@ -96,7 +110,7 @@ class SearchActivity : ComponentActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 // ВЫПОЛНЯЙТЕ ПОИСКОВЫЙ ЗАПРОС ЗДЕСЬ
                 if (userInputText.isNotEmpty()) {
-                    search()
+                    searchViewModel.searchRequest(userInputText)
                 }
                 true
             }
@@ -152,7 +166,7 @@ class SearchActivity : ComponentActivity() {
         }
 
         placeholderButtonReload.setOnClickListener {
-            search()
+            searchViewModel.searchRequest(userInputText)
         }
 
         /* Кнопка очистки прослушанных треков */
@@ -173,6 +187,49 @@ class SearchActivity : ComponentActivity() {
         selectedTracksAdapter = SearchAdapter(selectedTracks)
         recyclerViewListenedTracks.adapter = selectedTracksAdapter
         selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+    }
+
+    fun render(state: SearchState) {
+        when (state){
+            is SearchState.Loading -> showLoading()
+            is SearchState.Error -> showError(state.errorMessage)
+            is SearchState.Empty -> showEmpty(state.message)
+            is SearchState.Content -> showContent(state.movies)
+        }
+    }
+
+    fun showLoading() {
+        recyclerViewSearch.visibility = View.GONE
+        placeholderMessage.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+    }
+
+    fun showError(errorMessage:String) {
+        recyclerViewSearch.visibility = View.GONE
+        placeholderMessage.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
+        placeholderMessage.text = errorMessage
+    }
+
+    fun showEmpty(emptyMessage:String) {
+        showError(emptyMessage)
+    }
+
+    fun showContent(trackList: List<Track>) {
+        recyclerViewSearch.visibility = View.VISIBLE
+        placeholderMessage.visibility = View.GONE
+        progressBar.visibility = View.GONE
+
+        trackListAdapter.setTracks(trackList)
+    }
+
+    fun showToast(additionalMessage: String) {
+        Toast.makeText(this, additionalMessage, Toast.LENGTH_LONG)
+            .show()
+    }
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     private fun finderViewById() {
@@ -209,7 +266,7 @@ class SearchActivity : ComponentActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         userInputText = savedInstanceState.getString(USERTEXT, "")
         editTextSearchActivity.setText(userInputText)
-        search()
+        searchViewModel.searchRequest(userInputText)
     }
 }
 
