@@ -5,6 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 
 class SearchViewModel(private val searchExpression: String) : ViewModel() {
 
+
+
+
+
+
     companion object {
         fun getViewModelFactory(searchExpression: String): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
