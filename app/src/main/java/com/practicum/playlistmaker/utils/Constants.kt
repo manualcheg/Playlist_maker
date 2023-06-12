@@ -7,6 +7,8 @@ class Constants {
         const val SEARCH_DEBOUNCE_DELAY = 2000L
         const val SELECTED_TRACKS = "Selected_tracks"
         const val SHARED_PREFS_SELECTED_TRACKS = "Shared prefs selected tracks"
-        private val SEARCH_REQUEST_TOKEN = Any()
+        val PLAYER_TIMER_TOKEN = Any()
+        const val PLAYBACK_TIME_RENEW_DELAY_MS = 300L
+        const val _00_00 = "00:00"
     }
 }

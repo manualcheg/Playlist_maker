@@ -30,6 +30,8 @@ object Creator {
         return SearchInteractorImpl(getSearchRepository(context))
     }
 
+
+
 /*    private fun getMainRepository(context: Context): MainRepository {
         return MainRepositoryImpl(context)
     }
