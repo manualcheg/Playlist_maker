@@ -1,15 +1,8 @@
 package com.practicum.playlistmaker.utils
 
-import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.activity.ComponentActivity
-import com.practicum.playlistmaker.main.data.MainRepositoryImpl
-import com.practicum.playlistmaker.main.domain.MainInteractor
-import com.practicum.playlistmaker.main.domain.MainInteractorImpl
-import com.practicum.playlistmaker.main.domain.MainRepository
 import com.practicum.playlistmaker.search.data.SearchRepositoryImpl
-import com.practicum.playlistmaker.search.data.SearchStorage
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
 import com.practicum.playlistmaker.search.domain.api.SearchInteractor

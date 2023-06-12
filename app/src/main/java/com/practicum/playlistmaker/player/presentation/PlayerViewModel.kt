@@ -1,23 +1,16 @@
 package com.practicum.playlistmaker.player.presentation
 
-import android.app.Application
-import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.player.data.repository.TrackRepositoryImpl
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.usecases.TrackInteractorImlp
-import com.practicum.playlistmaker.search.presentation.SearchViewModel
 import com.practicum.playlistmaker.utils.Constants
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -25,7 +18,7 @@ import java.util.Locale
 
 class PlayerViewModel(val trackRepositoryImpl: TrackRepositoryImpl) : ViewModel(),
     MediaPlayerPrepare {
-    //    private val trackRepositoryImpl by lazy { TrackRepositoryImpl(intent) }
+
     private var playerState = MediaPlayerState.STATE_DEFAULT
     var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
 
@@ -34,6 +27,8 @@ class PlayerViewModel(val trackRepositoryImpl: TrackRepositoryImpl) : ViewModel(
 
     private val playbackTimeLiveData = MutableLiveData<String?>()
     val playbackTimeLive: LiveData<String?> = playbackTimeLiveData
+
+//    private val currentPositionInMsec = trackRepositoryImpl.playerGetCurrentPosition()
 
     fun onCreate() {
 //        сообщение начального состояния
@@ -71,7 +66,7 @@ class PlayerViewModel(val trackRepositoryImpl: TrackRepositoryImpl) : ViewModel(
 
     fun onPlayButtonClick(){
         playerState = trackRepositoryImpl.playerState
-        var trackInteractorImlp = TrackInteractorImlp(
+        val trackInteractorImlp = TrackInteractorImlp(
             trackRepository = trackRepositoryImpl,
             playerState = playerState
         )
@@ -99,6 +94,7 @@ class PlayerViewModel(val trackRepositoryImpl: TrackRepositoryImpl) : ViewModel(
                         Locale.getDefault()
                     ).format(trackRepositoryImpl.playerGetCurrentPosition())
                 )
+
                 val postTime = SystemClock.uptimeMillis() + Constants.PLAYBACK_TIME_RENEW_DELAY_MS
                 mainThreadHandler.postAtTime(this, Constants.PLAYER_TIMER_TOKEN, postTime)
             }
