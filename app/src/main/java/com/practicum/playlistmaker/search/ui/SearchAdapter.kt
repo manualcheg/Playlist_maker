@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.search.data.SHARED_PREFS_SELECTED_TRACKS
-import com.practicum.playlistmaker.search.data.SearchHistory
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.player.ui.PlayerActivity
+import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
+import com.practicum.playlistmaker.utils.Constants.Companion.SHARED_PREFS_SELECTED_TRACKS
 
 var isClickAllowed = true
 
@@ -36,7 +36,8 @@ class SearchAdapter(
 
         holder.itemView.setOnClickListener {
             if (isMakedClickable()) {
-                SearchHistory(sharedPrefs).save(track)
+//                SearchHistory(sharedPrefs).save(track) заменил на:
+                SearchStorageImpl(sharedPrefs).saveData(track)
                 val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
                 intent.putExtra("track", Gson().toJson(track))
                 holder.itemView.context.startActivity(intent)

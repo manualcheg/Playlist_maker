@@ -4,12 +4,17 @@ import android.content.Context
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.data.dto.TrackSearchRequest
 import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
+import com.practicum.playlistmaker.search.data.storage.LocalStorage
 import com.practicum.playlistmaker.search.domain.api.SearchRepository
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.utils.Resource
 
 
-class SearchRepositoryImpl(private val networkClient: NetworkClient, private val context: Context) : SearchRepository {
+class SearchRepositoryImpl(
+    private val networkClient: NetworkClient,
+    private val searchStorage: SearchStorage,
+    private val context: Context
+) : SearchRepository {
     override fun searchTracks(expression: String): Resource<List<Track>> {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
 
@@ -19,11 +24,12 @@ class SearchRepositoryImpl(private val networkClient: NetworkClient, private val
             }
 
             200 -> {
-                if ((response as TrackSearchResponse).results.isEmpty()){
+                if ((response as TrackSearchResponse).results.isEmpty()) {
                     Resource.Error(message = context.getString(R.string.nothing_found), data = null)
                 } else {
                     Resource.Success(response.results.map {
-                        Track(trackName = it.trackName,
+                        Track(
+                            trackName = it.trackName,
                             artistName = it.artistName,
                             trackTime = it.trackTime,
                             artworkUrl100 = it.artworkUrl100,
@@ -32,13 +38,32 @@ class SearchRepositoryImpl(private val networkClient: NetworkClient, private val
                             releaseDate = it.releaseDate,
                             primaryGenreName = it.primaryGenreName,
                             country = it.country,
-                            previewUrl = it.previewUrl)
+                            previewUrl = it.previewUrl
+                        )
                     })
                 }
             }
+
             else -> {
                 return Resource.Error("Ошибка сервера")
             }
         }
+    }
+
+
+    override fun getDataFromLocalStorage(): ArrayList<Track> {
+        return searchStorage.getData()
+    }
+
+    override fun saveDataToStorage(track: Track) {
+        searchStorage.saveData(track)
+    }
+
+    override fun clearHistoryInStorage() {
+        searchStorage.clearHistory()
+    }
+
+    override fun saveSearchHistoryList(historyList: ArrayList<Track>) {
+        searchStorage.saveSearchHistoryList(historyList)
     }
 }

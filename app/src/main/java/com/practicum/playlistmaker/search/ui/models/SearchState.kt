@@ -6,7 +6,7 @@ interface SearchState {
 
     object Loading: SearchState
 
-    data class Content(val movies:List<Track>): SearchState
+    data class Content(val tracks:List<Track>): SearchState
 
     data class Error(val errorMessage:String): SearchState
 

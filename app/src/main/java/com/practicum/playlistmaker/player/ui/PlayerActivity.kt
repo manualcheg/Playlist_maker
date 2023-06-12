@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -17,11 +18,12 @@ import com.practicum.playlistmaker.player.data.repository.TrackRepositoryImpl
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.usecases.TrackInteractorImlp
+import com.practicum.playlistmaker.player.presentation.PlayerViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity : AppCompatActivity(), MediaPlayerPrepare {
-    var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
+//    var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
     private lateinit var playerArrowBack: ImageView
     private lateinit var imageCover: ImageView
     private lateinit var trackNameView: TextView
@@ -38,6 +40,8 @@ class PlayerActivity : AppCompatActivity(), MediaPlayerPrepare {
     private var playerState = MediaPlayerState.STATE_DEFAULT
     private val trackRepositoryImpl by lazy { TrackRepositoryImpl(intent) }
 
+    private lateinit var playerViewModel: PlayerViewModel
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +53,8 @@ class PlayerActivity : AppCompatActivity(), MediaPlayerPrepare {
         trackRepositoryImpl //Костыль для lazy - первый вызов для инициализации trackInteractorImpl
         val track = trackInteractorImlp.getTrack()
         setViews()
+
+        playerViewModel = ViewModelProvider(this)[PlayerViewModel::class.java]
 
         Glide.with(imageCover)
             .load(track.getCoverArtwork())
@@ -122,8 +128,9 @@ class PlayerActivity : AppCompatActivity(), MediaPlayerPrepare {
 
     override fun onPause() {
         super.onPause()
-        val trackInteractorImlp = TrackInteractorImlp(trackRepository = trackRepositoryImpl, playerState = playerState)
-        trackInteractorImlp.pausePlayer()
+        /*val trackInteractorImlp = TrackInteractorImlp(trackRepository = trackRepositoryImpl, playerState = playerState)
+        trackInteractorImlp.pausePlayer()*/
+        playerViewModel.onPause()
         buttonPlay.setImageResource(R.drawable.play_button)
         mainThreadHandler.removeCallbacks(runPlaybackTime)
     }
@@ -135,7 +142,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayerPrepare {
     }
 
     override fun onPrepared() {
-        mainThreadHandler.removeCallbacks(runPlaybackTime)
+//        mainThreadHandler.removeCallbacks(runPlaybackTime)
         buttonPlay.isEnabled = true
         buttonPlay.visibility = View.VISIBLE
         playbackTime.text = getString(R.string._00_00)
@@ -148,7 +155,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayerPrepare {
         buttonPlay.setImageResource(R.drawable.play_button)
     }
 
-    private val runPlaybackTime =
+    /*private val runPlaybackTime =
         object : Runnable {
             override fun run() {
                 playbackTime.text = SimpleDateFormat(
@@ -157,7 +164,7 @@ class PlayerActivity : AppCompatActivity(), MediaPlayerPrepare {
                 ).format(trackRepositoryImpl.playerGetCurrentPosition())
                 mainThreadHandler.postDelayed(this, PLAYBACK_TIME_RENEW_DELAY_MS)
             }
-        }
+        }*/
 
     companion object {
         private const val PLAYBACK_TIME_RENEW_DELAY_MS = 300L

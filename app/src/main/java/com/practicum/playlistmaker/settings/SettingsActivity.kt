@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat

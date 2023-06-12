@@ -3,8 +3,6 @@ package com.practicum.playlistmaker.search.ui
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -21,20 +19,15 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.search.data.SHARED_PREFS_SELECTED_TRACKS
-import com.practicum.playlistmaker.search.data.SearchHistory
+import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.presentation.SearchViewModel
 import com.practicum.playlistmaker.search.presentation.SearchViewModel.Companion.getViewModelFactory
 import com.practicum.playlistmaker.search.ui.models.SearchState
-const val SELECTED_TRACKS = "Selected_tracks"
+import com.practicum.playlistmaker.utils.Constants.Companion.SHARED_PREFS_SELECTED_TRACKS
+import com.practicum.playlistmaker.utils.Constants.Companion.USERTEXT
 
 class SearchActivity : ComponentActivity() {
-    companion object {
-        const val USERTEXT =
-            "USER_INPUT"   //константа-ключ для поиска в Bundle сохраненного состояния
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-    }
 
     private lateinit var searchViewModel: SearchViewModel
 
@@ -67,15 +60,12 @@ class SearchActivity : ComponentActivity() {
         setContentView(R.layout.activity_search)
         finderViewById()
 
-//        создаем viewModel
-        searchViewModel = ViewModelProvider(this, getViewModelFactory())[SearchViewModel::class.java]
-        // подписываемся на изменение LiveData типа SearchState
-        searchViewModel.observeState().observe(this){
+//          создаем viewModel
+        searchViewModel =
+            ViewModelProvider(this, getViewModelFactory())[SearchViewModel::class.java]
+//          подписываемся на изменение LiveData типа SearchState
+        searchViewModel.observeState().observe(this) {
             render(it)
-        }
-
-        searchViewModel.observeShowToast().observe(this) { toast ->
-            showToast(toast)
         }
 
         recyclerViewSearch.adapter = trackListAdapter
@@ -85,12 +75,17 @@ class SearchActivity : ComponentActivity() {
         /* Вывод слоя с историей выбранных треков */
         editTextSearchActivity.setOnFocusChangeListener { view, hasFocus ->
             layoutOfListenedTracks.visibility =
-                if (hasFocus && userInputText.isEmpty() && selectedTracks.isNotEmpty()) View.VISIBLE else View.GONE
+                if (hasFocus && userInputText.isEmpty() && selectedTracks.isNotEmpty()) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
         }
 
         /* Подписка на изменение SharedPreferences */
         listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPrefs, key ->
-            selectedTracks = SearchHistory(sharedPrefs).read()
+//            selectedTracks = SearchHistory(sharedPrefs).read()
+            selectedTracks = SearchStorageImpl(sharedPrefs).getData()
             selectedTracksAdapter = SearchAdapter(selectedTracks)
             recyclerViewListenedTracks.adapter = selectedTracksAdapter
             selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
@@ -138,9 +133,14 @@ class SearchActivity : ComponentActivity() {
                 }
 
                 // Скрытие слоя с историей выбранных треков, если есть ввод
-                layoutOfListenedTracks.visibility = if (editTextSearchActivity.hasFocus() && userInputText.isNotEmpty() && selectedTracks.isNotEmpty()) View.GONE else View.VISIBLE
+                if (editTextSearchActivity.hasFocus() && userInputText.isNotEmpty()) {
+                    layoutOfListenedTracks.visibility = View.GONE
+                }
+                if (editTextSearchActivity.hasFocus() && userInputText.isEmpty() && selectedTracks.isNotEmpty()) {
+                    layoutOfListenedTracks.visibility = View.VISIBLE
+                }
 
-                if (userInputText.isEmpty() && selectedTracks.isNotEmpty()){
+                if (userInputText.isEmpty() && selectedTracks.isNotEmpty()) {
                     trackList.clear()
                     trackListAdapter.setTracks(trackList)
                     trackListAdapter.notifyItemRangeChanged(0, trackList.lastIndex)
@@ -164,8 +164,10 @@ class SearchActivity : ComponentActivity() {
 
         /* Кнопка очистки прослушанных треков */
         searchHistoryClearButton.setOnClickListener {
-            SearchHistory(sharedPrefs).clear()
-            selectedTracks = SearchHistory(sharedPrefs).read()
+//            SearchHistory(sharedPrefs).clear()
+            SearchStorageImpl(sharedPrefs).clearHistory()
+//            selectedTracks = SearchHistory(sharedPrefs).read()
+            selectedTracks = SearchStorageImpl(sharedPrefs).getData()
             selectedTracksAdapter = SearchAdapter(selectedTracks)
             recyclerViewListenedTracks.adapter = selectedTracksAdapter
             selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
@@ -173,57 +175,67 @@ class SearchActivity : ComponentActivity() {
 
             Toast.makeText(this, "История очищена", Toast.LENGTH_SHORT).show()
         }
+        //Конец OnCreate()
     }
 
+
     private fun buildRecycleViewListenedTracks() {
-        selectedTracks = SearchHistory(sharedPrefs).read()
+        // тут нужна подписка на LiveData
+        // точнее метод должен уехать в ViewModel и что-то возвращать сюда
+//        selectedTracks = SearchHistory(sharedPrefs).read()
+        selectedTracks = SearchStorageImpl(sharedPrefs).getData()
         selectedTracksAdapter = SearchAdapter(selectedTracks)
         recyclerViewListenedTracks.adapter = selectedTracksAdapter
         selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
     }
 
+
+    // Смена состояний экрана в ответ на изменение LiveData
     fun render(state: SearchState) {
-        when (state){
+        when (state) {
             is SearchState.Loading -> showLoading()
             is SearchState.Error -> showError(state.errorMessage)
             is SearchState.Empty -> showEmpty(state.message)
-            is SearchState.Content -> showContent(state.movies)
+            is SearchState.Content -> showContent(state.tracks)
         }
     }
 
     fun showLoading() {
         recyclerViewSearch.visibility = View.GONE
+        layoutOfListenedTracks.visibility = View.GONE
         placeholderMessage.visibility = View.GONE
         placeholderImage.visibility = View.GONE
         placeholderButtonReload.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
     }
 
-    fun showError(errorMessage:String) {
+    fun showError(errorMessage: String) {
         recyclerViewSearch.visibility = View.GONE
+        layoutOfListenedTracks.visibility = View.GONE
         placeholderMessage.visibility = View.VISIBLE
         placeholderImage.visibility = View.VISIBLE
         placeholderButtonReload.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
         placeholderMessage.text = errorMessage
+        placeholderImage.setImageResource(R.drawable.placeholder_no_network)
     }
 
-    fun showEmpty(emptyMessage:String) {
+    fun showEmpty(emptyMessage: String) {
         showError(emptyMessage)
+        placeholderImage.setImageResource(R.drawable.placeholder_nothing_found)
+        placeholderButtonReload.visibility = View.GONE
+        placeholderMessage.visibility = View.VISIBLE
+        placeholderImage.visibility = View.VISIBLE
     }
 
     fun showContent(trackList: List<Track>) {
         recyclerViewSearch.visibility = View.VISIBLE
+        layoutOfListenedTracks.visibility = View.GONE
         placeholderImage.visibility = View.GONE
         placeholderMessage.visibility = View.GONE
         placeholderButtonReload.visibility = View.GONE
         progressBar.visibility = View.GONE
         trackListAdapter.setTracks(trackList)
-    }
-
-    fun showToast(additionalMessage: String) {
-        Toast.makeText(this, additionalMessage, Toast.LENGTH_LONG)
-            .show()
     }
 
 
@@ -261,8 +273,9 @@ class SearchActivity : ComponentActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         userInputText = savedInstanceState.getString(USERTEXT, "")
         editTextSearchActivity.setText(userInputText)
-//        searchViewModel.searchRequest(userInputText)
+        searchViewModel.searchRequest(userInputText)
     }
+
 }
 
 private fun clearButtonVisibility(s: CharSequence?): Int {
