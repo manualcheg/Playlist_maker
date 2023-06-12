@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.search.data.storage
 
 import android.content.SharedPreferences
-import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.search.data.SearchStorage
@@ -15,7 +14,7 @@ class SearchStorageImpl(private val sharedPrefs: SharedPreferences) : SearchStor
         // костыль "[]" - null по умолчанию быть не должно
         val json = sharedPrefs.getString(SELECTED_TRACKS, "[]")
         val typeToken = object : TypeToken<ArrayList<Track>>() {}.type
-        var selectedTracks: ArrayList<Track> = Gson().fromJson(json, typeToken)
+        val selectedTracks: ArrayList<Track> = Gson().fromJson(json, typeToken)
         return selectedTracks
     }
 
@@ -32,7 +31,7 @@ class SearchStorageImpl(private val sharedPrefs: SharedPreferences) : SearchStor
     }
 
     override fun clearHistory() {
-//        sharedPrefs.edit() { clear() }
+//        sharedPrefs.edit() { clear() } - можно и так
         sharedPrefs.edit().clear().apply()
     }
 

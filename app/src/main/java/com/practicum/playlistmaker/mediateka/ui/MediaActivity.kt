@@ -1,8 +1,7 @@
-package com.practicum.playlistmaker.mediateka
+package com.practicum.playlistmaker.mediateka.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.appcompat.app.AppCompatActivity
 import com.practicum.playlistmaker.R
 
 class MediaActivity : ComponentActivity() {

@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.search.domain.usecases
 
-import com.practicum.playlistmaker.search.data.SearchStorage
 import com.practicum.playlistmaker.search.domain.api.SearchInteractor
 import com.practicum.playlistmaker.search.domain.api.SearchRepository
 import com.practicum.playlistmaker.search.domain.entities.Track
@@ -25,21 +24,19 @@ class SearchInteractorImpl(private val repository: SearchRepository) : SearchInt
         }
     }
 
-    override fun addTrackToHistoryList(searchStorage: SearchStorage, track: Track) {
+    override fun addTrackToHistoryList(track: Track) {
 
-        val selectedTracks = searchStorage.getData()
+        val selectedTracks = repository.getDataFromLocalStorage()
         selectedTracks.remove(selectedTracks.find { it.trackId == track.trackId })
 
         if (selectedTracks.size >= 10) {
             selectedTracks.removeLast()
         }
         selectedTracks.add(0, track)
-        searchStorage.saveSearchHistoryList(selectedTracks)
+        repository.saveSearchHistoryList(selectedTracks)
     }
 
-    override fun getHistoryList(searchStorage: SearchStorage): ArrayList<Track> {
-        return searchStorage.getData()
+    override fun getHistoryList(): ArrayList<Track> {
+        return repository.getDataFromLocalStorage()
     }
-
-
 }
