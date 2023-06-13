@@ -8,7 +8,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityMainBinding
 import com.practicum.playlistmaker.mediateka.ui.MediaActivity
 import com.practicum.playlistmaker.search.ui.SearchActivity
-import com.practicum.playlistmaker.settings.SettingsActivity
+import com.practicum.playlistmaker.settings.ui.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
 
