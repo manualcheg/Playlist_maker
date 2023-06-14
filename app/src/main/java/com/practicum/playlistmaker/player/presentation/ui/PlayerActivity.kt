@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
-import com.practicum.playlistmaker.player.data.repository.TrackRepositoryImpl
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.presentation.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
@@ -21,7 +20,6 @@ class PlayerActivity : AppCompatActivity() {
         ActivityPlayerBinding.inflate(layoutInflater)
     }
 
-//    private val trackRepositoryImpl by lazy { TrackRepositoryImpl(intent) }
     private lateinit var playbackCurrentTime: String
     private lateinit var playerViewModel: PlayerViewModel
 
@@ -31,8 +29,6 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         playbackCurrentTime = getString(R.string._00_00)
-
-//        trackRepositoryImpl  //  Костыль для lazy - первый вызов для инициализации trackInteractorImpl
 
         createPlayerViewModel()
 

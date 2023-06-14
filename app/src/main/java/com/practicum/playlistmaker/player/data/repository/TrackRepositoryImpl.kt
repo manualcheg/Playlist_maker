@@ -28,7 +28,7 @@ class TrackRepositoryImpl(private val intent: Intent) :
             mediaPlayerPreparator.onPrepared()
         }
         mediaPlayer.setOnCompletionListener {
-            currentPositionInMsec = playerGetCurrentPosition()
+            currentPositionInMsec = 0
             playerState = MediaPlayerState.STATE_PREPARED
             mediaPlayerPreparator.onCompletion()
         }
@@ -36,7 +36,9 @@ class TrackRepositoryImpl(private val intent: Intent) :
 
     override fun startPlayer(): MediaPlayerState {
         mediaPlayer.start()
-        mediaPlayer.seekTo(currentPositionInMsec)
+        if (currentPositionInMsec!=0){
+            mediaPlayer.seekTo(currentPositionInMsec)
+        }
         playerState = MediaPlayerState.STATE_PLAYING
         return playerState
     }

@@ -17,9 +17,7 @@ import com.practicum.playlistmaker.utils.Constants
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-
-//class PlayerViewModel(val trackRepositoryImpl: TrackRepositoryImpl) : ViewModel(),
-class PlayerViewModel(val intent: Intent) : ViewModel(),
+class PlayerViewModel(private val intent: Intent) : ViewModel(),
     MediaPlayerPrepare {
 
     private val trackRepositoryImpl by lazy { TrackRepositoryImpl(intent) }
@@ -108,7 +106,6 @@ class PlayerViewModel(val intent: Intent) : ViewModel(),
         }
 
     companion object {
-//        fun getViewModelFactory(trackRepositoryImpl: TrackRepositoryImpl): ViewModelProvider.Factory =
         fun getViewModelFactory(intent:Intent): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
