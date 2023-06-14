@@ -1,6 +1,5 @@
-package com.practicum.playlistmaker.settings.ui
+package com.practicum.playlistmaker.settings.presentation.ui
 
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.widget.ImageView
@@ -12,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.utils.App
 import com.practicum.playlistmaker.settings.presentation.SettingsViewModel
-import com.practicum.playlistmaker.utils.App.Companion.darkThemeCheck
 import com.practicum.playlistmaker.utils.Creator
 
 const val THEME_PREFS = "Theme prefs"
@@ -20,7 +18,6 @@ const val THEME_PREFS = "Theme prefs"
 class SettingsActivity : AppCompatActivity() {
     private lateinit var settingsViewModel: SettingsViewModel
 
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,14 +36,11 @@ class SettingsActivity : AppCompatActivity() {
 
         settingsViewModel.isNightLiveData.observe(this){
 //        Проверка на включенность темной темы и переключение switch
-//        darkThemeCheck(switchDarkTheme)
-//        switchDarkTheme.isChecked = darkThemeCheck(this)
             switchDarkTheme.isChecked = it
             (applicationContext as App).switchTheme(it)
         }
 
-//        switchDarkTheme.isChecked = darkThemeCheck(this)
-
+//        стрелка выхода из экрана. На ней висит слушатель нажатия
         val arrowSettingsBack =
             findViewById<ImageView>(R.id.settings_screen_arrow_back_like_button).apply {
                 setOnClickListener {this@SettingsActivity.finish()}

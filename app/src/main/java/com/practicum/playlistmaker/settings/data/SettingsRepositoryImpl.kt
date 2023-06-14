@@ -3,9 +3,8 @@ package com.practicum.playlistmaker.settings.data
 import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
-import androidx.core.content.edit
 import com.practicum.playlistmaker.settings.domain.interfaces.SettingsRepository
-import com.practicum.playlistmaker.settings.ui.THEME_PREFS
+import com.practicum.playlistmaker.settings.presentation.ui.THEME_PREFS
 import com.practicum.playlistmaker.utils.DARK_THEME
 
 class SettingsRepositoryImpl(private val context: Context):SettingsRepository {
@@ -16,12 +15,6 @@ class SettingsRepositoryImpl(private val context: Context):SettingsRepository {
 
     override fun saveTheme(isNightOutside: Boolean) {
         sharedPrefs.edit().putBoolean(DARK_THEME, isNightOutside).apply()
-
-        /*            (applicationContext as App).switchTheme(checked)
-    val sharedPrefs = getSharedPreferences(THEME_PREFS, MODE_PRIVATE)
-    sharedPrefs.edit()
-        .putBoolean(DARK_THEME, darkTheme)
-        .apply()*/
     }
 
     override fun isNight():Boolean {

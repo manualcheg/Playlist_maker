@@ -11,6 +11,7 @@ import com.practicum.playlistmaker.player.data.repository.TrackRepositoryImpl
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.usecases.TrackInteractorImlp
+import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.utils.Constants
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -30,7 +31,7 @@ class PlayerViewModel(val trackRepositoryImpl: TrackRepositoryImpl) : ViewModel(
 
 //    private val currentPositionInMsec = trackRepositoryImpl.playerGetCurrentPosition()
 
-    fun onCreate() {
+    fun onActivityCreate() {
 //        сообщение начального состояния
         playerStateLiveData.postValue(trackRepositoryImpl.playerState)
     }
@@ -39,7 +40,7 @@ class PlayerViewModel(val trackRepositoryImpl: TrackRepositoryImpl) : ViewModel(
         trackRepositoryImpl.preparePlayer(this)
     }
 
-    fun onPause() {
+    fun onActivityPause() {
         val trackInteractorImlp =
             TrackInteractorImlp(trackRepository = trackRepositoryImpl, playerState = playerState)
         trackInteractorImlp.pausePlayer()
@@ -59,7 +60,7 @@ class PlayerViewModel(val trackRepositoryImpl: TrackRepositoryImpl) : ViewModel(
         playbackTimeLiveData.postValue(Constants._00_00)
     }
 
-    fun onDestroy(){
+    fun onActivityDestroy(){
         mainThreadHandler.removeCallbacks(runPlaybackTime)
         trackRepositoryImpl.playerRelease()
     }
@@ -83,6 +84,10 @@ class PlayerViewModel(val trackRepositoryImpl: TrackRepositoryImpl) : ViewModel(
             }
             else -> {}
         }
+    }
+
+    fun getTrack(): Track {
+        return trackRepositoryImpl.getTrack()
     }
 
     private val runPlaybackTime =

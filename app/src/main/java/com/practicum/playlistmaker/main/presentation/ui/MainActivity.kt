@@ -1,14 +1,12 @@
-package com.practicum.playlistmaker.main.ui
+package com.practicum.playlistmaker.main.presentation.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityMainBinding
-import com.practicum.playlistmaker.mediateka.ui.MediaActivity
-import com.practicum.playlistmaker.search.ui.SearchActivity
-import com.practicum.playlistmaker.settings.ui.SettingsActivity
+import com.practicum.playlistmaker.mediateka.presentation.ui.MediaActivity
+import com.practicum.playlistmaker.search.presentation.ui.SearchActivity
+import com.practicum.playlistmaker.settings.presentation.ui.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,12 +20,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.buttonSearch.setOnClickListener{
             startActivity(Intent(this@MainActivity, SearchActivity::class.java))
-        }
-
-        val buttonSearch = findViewById<Button>(R.id.button_search).apply {
-            setOnClickListener {
-                startActivity(Intent(this@MainActivity, SearchActivity::class.java))
-            }
         }
 
         binding.buttonLibrary.setOnClickListener{

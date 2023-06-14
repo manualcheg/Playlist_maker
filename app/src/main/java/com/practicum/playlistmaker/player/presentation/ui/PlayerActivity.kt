@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.player.ui
+package com.practicum.playlistmaker.player.presentation.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -25,7 +25,6 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var playbackCurrentTime: String
     private lateinit var playerViewModel: PlayerViewModel
 
-
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +33,6 @@ class PlayerActivity : AppCompatActivity() {
         playbackCurrentTime = getString(R.string._00_00)
 //  Костыль для lazy - первый вызов для инициализации trackInteractorImpl:
         trackRepositoryImpl
-        val track = trackRepositoryImpl.getTrack()
 
 //  Создание ViewModel для PlayerActivity
         playerViewModel = ViewModelProvider(
@@ -42,8 +40,10 @@ class PlayerActivity : AppCompatActivity() {
             PlayerViewModel.getViewModelFactory(trackRepositoryImpl)
         )[PlayerViewModel::class.java]
 
+        val track = playerViewModel.getTrack()
+
 //  Сообщение начального состояния:
-        playerViewModel.onCreate()
+        playerViewModel.onActivityCreate()
 
 //  Подписка на изменение LiveData состояния плеера из ViewModel в ответ на действия пользователя
         playerViewModel.getPlayerStateLiveData().observe(this) { playerState ->
@@ -69,27 +69,20 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        playerViewModel.onPause()
+        playerViewModel.onActivityPause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        playerViewModel.onDestroy()
+        playerViewModel.onActivityDestroy()
     }
 
-    fun onPrepared() {
+    private fun onPrepared() {
         binding.playPauseButton.isEnabled = true
         binding.playPauseButton.visibility = View.VISIBLE
         binding.playbackTime.text = playbackCurrentTime
         binding.playPauseButton.setImageResource(R.drawable.play_button)
     }
-    /*
-        fun onCompletion() {
-    //        mainThreadHandler.removeCallbacks(Constants.PLAYER_TIMER_TOKEN)
-            playbackTime.text = getString(R.string._00_00)
-            buttonPlay.setImageResource(R.drawable.play_button)
-        }*/
-
 
     private fun render(playerState: MediaPlayerState, track: Track) {
         when (playerState) {

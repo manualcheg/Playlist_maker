@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.search.ui
+package com.practicum.playlistmaker.search.presentation.ui
 
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.entities.Track
-import com.practicum.playlistmaker.player.ui.PlayerActivity
+import com.practicum.playlistmaker.player.presentation.ui.PlayerActivity
 import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
 import com.practicum.playlistmaker.utils.Constants.Companion.SHARED_PREFS_SELECTED_TRACKS
 

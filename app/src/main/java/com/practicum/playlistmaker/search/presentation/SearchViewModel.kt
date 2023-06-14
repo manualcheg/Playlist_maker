@@ -1,10 +1,8 @@
 package com.practicum.playlistmaker.search.presentation
 
 import android.app.Application
-import android.content.res.Resources
 import android.os.Handler
 import android.os.Looper
-import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,8 +12,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.api.SearchInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
-import com.practicum.playlistmaker.search.ui.SearchActivity
-import com.practicum.playlistmaker.search.ui.models.SearchState
+import com.practicum.playlistmaker.search.presentation.ui.models.SearchState
 import com.practicum.playlistmaker.utils.Constants.Companion.SEARCH_DEBOUNCE_DELAY
 import com.practicum.playlistmaker.utils.Creator
 

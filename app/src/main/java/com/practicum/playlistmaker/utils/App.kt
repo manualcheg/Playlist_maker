@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import com.practicum.playlistmaker.settings.ui.THEME_PREFS
+import com.practicum.playlistmaker.settings.presentation.ui.THEME_PREFS
 
 const val DARK_THEME = "Theme_is_dark"
 var darkTheme: Boolean = false

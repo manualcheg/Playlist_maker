@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-    <!--    android:forceDarkAllowed="false"
-        tools:targetApi="q"-->
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/search_activity_toolbar"

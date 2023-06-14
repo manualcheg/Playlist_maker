@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.search.ui
+package com.practicum.playlistmaker.search.presentation.ui
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -23,7 +23,7 @@ import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.presentation.SearchViewModel
 import com.practicum.playlistmaker.search.presentation.SearchViewModel.Companion.getViewModelFactory
-import com.practicum.playlistmaker.search.ui.models.SearchState
+import com.practicum.playlistmaker.search.presentation.ui.models.SearchState
 import com.practicum.playlistmaker.utils.Constants.Companion.SHARED_PREFS_SELECTED_TRACKS
 import com.practicum.playlistmaker.utils.Constants.Companion.USERTEXT
 
@@ -84,7 +84,6 @@ class SearchActivity : AppCompatActivity() {
 
         /* Подписка на изменение SharedPreferences */
         listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPrefs, key ->
-//            selectedTracks = SearchHistory(sharedPrefs).read()
             selectedTracks = SearchStorageImpl(sharedPrefs).getData()
             selectedTracksAdapter = SearchAdapter(selectedTracks)
             recyclerViewListenedTracks.adapter = selectedTracksAdapter
@@ -182,7 +181,6 @@ class SearchActivity : AppCompatActivity() {
     private fun buildRecycleViewListenedTracks() {
         // тут нужна подписка на LiveData
         // точнее метод должен уехать в ViewModel и что-то возвращать сюда
-//        selectedTracks = SearchHistory(sharedPrefs).read()
         selectedTracks = SearchStorageImpl(sharedPrefs).getData()
         selectedTracksAdapter = SearchAdapter(selectedTracks)
         recyclerViewListenedTracks.adapter = selectedTracksAdapter
