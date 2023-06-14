@@ -7,7 +7,6 @@ import com.practicum.playlistmaker.search.data.SearchStorage
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.utils.Constants.Companion.SELECTED_TRACKS
 
-
 class SearchStorageImpl(private val sharedPrefs: SharedPreferences) : SearchStorage {
 
     override fun getData(): ArrayList<Track> {

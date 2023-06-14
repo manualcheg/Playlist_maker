@@ -1,7 +1,5 @@
 package com.practicum.playlistmaker.settings.presentation
 
-import android.content.Context
-import android.content.res.Configuration
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,17 +33,11 @@ class SettingsViewModel(
         sharingInteractor.openLink()
     }
 
-//    fun getTheme() {
-//        isNightMutableLiveData.value = settingsInteractor.getTheme()
-//    }
-
     fun setTheme(switchState: Boolean) {
         settingsInteractor.setTheme(switchState)
         isNightMutableLiveData.value = switchState
     }
 
-
-    //     Метод, который проверяет включенность тёмной темы
     companion object {
         fun getViewModelFactory(
             sharingInteractor: SharingInteractor,

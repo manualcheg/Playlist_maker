@@ -36,7 +36,6 @@ class SearchAdapter(
 
         holder.itemView.setOnClickListener {
             if (isMakedClickable()) {
-//                SearchHistory(sharedPrefs).save(track) заменил на:
                 SearchStorageImpl(sharedPrefs).saveData(track)
                 val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
                 intent.putExtra("track", Gson().toJson(track))

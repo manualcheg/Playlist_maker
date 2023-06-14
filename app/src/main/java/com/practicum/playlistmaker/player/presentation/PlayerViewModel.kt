@@ -29,10 +29,8 @@ class PlayerViewModel(val trackRepositoryImpl: TrackRepositoryImpl) : ViewModel(
     private val playbackTimeLiveData = MutableLiveData<String?>()
     val playbackTimeLive: LiveData<String?> = playbackTimeLiveData
 
-//    private val currentPositionInMsec = trackRepositoryImpl.playerGetCurrentPosition()
-
     fun onActivityCreate() {
-//        сообщение начального состояния
+        // сообщение начального состояния
         playerStateLiveData.postValue(trackRepositoryImpl.playerState)
     }
 

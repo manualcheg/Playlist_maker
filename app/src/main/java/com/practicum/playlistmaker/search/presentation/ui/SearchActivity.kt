@@ -54,44 +54,41 @@ class SearchActivity : AppCompatActivity() {
     private var selectedTracksAdapter =
         SearchAdapter(selectedTracks)      //адаптер для прослушанных треков
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         finderViewById()
 
-//          создаем viewModel
-        searchViewModel =
-            ViewModelProvider(this, getViewModelFactory())[SearchViewModel::class.java]
-//          подписываемся на изменение LiveData типа SearchState
-        searchViewModel.observeState().observe(this) {
-            render(it)
-        }
+        createViewModelAndObserveToLiveData()
 
         recyclerViewSearch.adapter = trackListAdapter
         sharedPrefs = getSharedPreferences(SHARED_PREFS_SELECTED_TRACKS, MODE_PRIVATE)
+
         buildRecycleViewListenedTracks()
 
-        /* Вывод слоя с историей выбранных треков */
-        editTextSearchActivity.setOnFocusChangeListener { view, hasFocus ->
-            layoutOfListenedTracks.visibility =
-                if (hasFocus && userInputText.isEmpty() && selectedTracks.isNotEmpty()) {
-                    View.VISIBLE
-                } else {
-                    View.GONE
-                }
+        workWithVisibilityOfListenedTracks()
+
+        subscribeToChangingSharedPrefs()
+
+        emulationSearchButtonInKeyboard()
+
+        workWithInput()
+
+        settingListenersOnButtons()
+
+        workWithButtonClearHystory()
+    }
+
+    private fun settingListenersOnButtons() {
+        searchArrowBack.setNavigationOnClickListener {
+            this.finish()
         }
-
-        /* Подписка на изменение SharedPreferences */
-        listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPrefs, key ->
-            selectedTracks = SearchStorageImpl(sharedPrefs).getData()
-            selectedTracksAdapter = SearchAdapter(selectedTracks)
-            recyclerViewListenedTracks.adapter = selectedTracksAdapter
-            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+        placeholderButtonReload.setOnClickListener {
+            searchViewModel.searchRequest(userInputText)
         }
-        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
+    }
 
-
+    private fun emulationSearchButtonInKeyboard() {
         /* эмуляция кнопки для поиска. Изменяет тип кнопки ввода на клавиатуре: */
         editTextSearchActivity.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -103,7 +100,55 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
+    }
 
+    private fun subscribeToChangingSharedPrefs() {
+        /* Подписка на изменение SharedPreferences */
+        listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPrefs, key ->
+            selectedTracks = SearchStorageImpl(sharedPrefs).getData()
+            selectedTracksAdapter = SearchAdapter(selectedTracks)
+            recyclerViewListenedTracks.adapter = selectedTracksAdapter
+            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+        }
+        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    private fun workWithVisibilityOfListenedTracks() {
+        /* Вывод слоя с историей выбранных треков */
+        editTextSearchActivity.setOnFocusChangeListener { view, hasFocus ->
+            layoutOfListenedTracks.visibility =
+                if (hasFocus && userInputText.isEmpty() && selectedTracks.isNotEmpty()) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+        }
+    }
+
+    private fun createViewModelAndObserveToLiveData() {
+        //          создаем viewModel
+        searchViewModel =
+            ViewModelProvider(this, getViewModelFactory())[SearchViewModel::class.java]
+//          подписываемся на изменение LiveData типа SearchState
+        searchViewModel.observeState().observe(this) {
+            render(it)
+        }
+    }
+
+    private fun workWithButtonClearHystory() {
+        /* Кнопка очистки прослушанных треков */
+        searchHistoryClearButton.setOnClickListener {
+            SearchStorageImpl(sharedPrefs).clearHistory()
+            selectedTracks = SearchStorageImpl(sharedPrefs).getData()
+            selectedTracksAdapter = SearchAdapter(selectedTracks)
+            recyclerViewListenedTracks.adapter = selectedTracksAdapter
+            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+            hideUnnecessary()
+            Toast.makeText(this, "История очищена", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun workWithInput() {
         /* Крестик очистки поля ввода */
         searchClearEdittextImageview.setOnClickListener {
             editTextSearchActivity.setText("")
@@ -138,7 +183,6 @@ class SearchActivity : AppCompatActivity() {
                 if (editTextSearchActivity.hasFocus() && userInputText.isEmpty() && selectedTracks.isNotEmpty()) {
                     layoutOfListenedTracks.visibility = View.VISIBLE
                 }
-
                 if (userInputText.isEmpty() && selectedTracks.isNotEmpty()) {
                     trackList.clear()
                     trackListAdapter.setTracks(trackList)
@@ -152,44 +196,17 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         editTextSearchActivity.addTextChangedListener(simpleTextWatcher)
-
-        searchArrowBack.setNavigationOnClickListener {
-            this.finish()
-        }
-
-        placeholderButtonReload.setOnClickListener {
-            searchViewModel.searchRequest(userInputText)
-        }
-
-        /* Кнопка очистки прослушанных треков */
-        searchHistoryClearButton.setOnClickListener {
-//            SearchHistory(sharedPrefs).clear()
-            SearchStorageImpl(sharedPrefs).clearHistory()
-//            selectedTracks = SearchHistory(sharedPrefs).read()
-            selectedTracks = SearchStorageImpl(sharedPrefs).getData()
-            selectedTracksAdapter = SearchAdapter(selectedTracks)
-            recyclerViewListenedTracks.adapter = selectedTracksAdapter
-            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
-            hideUnnecessary()
-
-            Toast.makeText(this, "История очищена", Toast.LENGTH_SHORT).show()
-        }
-        //Конец OnCreate()
     }
 
-
     private fun buildRecycleViewListenedTracks() {
-        // тут нужна подписка на LiveData
-        // точнее метод должен уехать в ViewModel и что-то возвращать сюда
         selectedTracks = SearchStorageImpl(sharedPrefs).getData()
         selectedTracksAdapter = SearchAdapter(selectedTracks)
         recyclerViewListenedTracks.adapter = selectedTracksAdapter
         selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
     }
 
-
     // Смена состояний экрана в ответ на изменение LiveData
-    fun render(state: SearchState) {
+    private fun render(state: SearchState) {
         when (state) {
             is SearchState.Loading -> showLoading()
             is SearchState.Error -> showError(state.errorMessage)
@@ -198,7 +215,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    fun showLoading() {
+    private fun showLoading() {
         recyclerViewSearch.visibility = View.GONE
         layoutOfListenedTracks.visibility = View.GONE
         placeholderMessage.visibility = View.GONE
@@ -207,7 +224,7 @@ class SearchActivity : AppCompatActivity() {
         progressBar.visibility = View.VISIBLE
     }
 
-    fun showError(errorMessage: String) {
+    private fun showError(errorMessage: String) {
         recyclerViewSearch.visibility = View.GONE
         layoutOfListenedTracks.visibility = View.GONE
         placeholderMessage.visibility = View.VISIBLE
@@ -218,7 +235,7 @@ class SearchActivity : AppCompatActivity() {
         placeholderImage.setImageResource(R.drawable.placeholder_no_network)
     }
 
-    fun showEmpty(emptyMessage: String) {
+    private fun showEmpty(emptyMessage: String) {
         showError(emptyMessage)
         placeholderImage.setImageResource(R.drawable.placeholder_nothing_found)
         placeholderButtonReload.visibility = View.GONE
@@ -226,7 +243,7 @@ class SearchActivity : AppCompatActivity() {
         placeholderImage.visibility = View.VISIBLE
     }
 
-    fun showContent(trackList: List<Track>) {
+    private fun showContent(trackList: List<Track>) {
         recyclerViewSearch.visibility = View.VISIBLE
         layoutOfListenedTracks.visibility = View.GONE
         placeholderImage.visibility = View.GONE
@@ -235,7 +252,6 @@ class SearchActivity : AppCompatActivity() {
         progressBar.visibility = View.GONE
         trackListAdapter.setTracks(trackList)
     }
-
 
     private fun finderViewById() {
         recyclerViewSearch = findViewById(R.id.recyclerViewSearch)
@@ -261,7 +277,6 @@ class SearchActivity : AppCompatActivity() {
         layoutOfListenedTracks.visibility = View.GONE
     }
 
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(USERTEXT, userInputText)
@@ -273,7 +288,6 @@ class SearchActivity : AppCompatActivity() {
         editTextSearchActivity.setText(userInputText)
         searchViewModel.searchRequest(userInputText)
     }
-
 }
 
 private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -283,9 +297,3 @@ private fun clearButtonVisibility(s: CharSequence?): Int {
         View.VISIBLE
     }
 }
-
-
-
-
-
-

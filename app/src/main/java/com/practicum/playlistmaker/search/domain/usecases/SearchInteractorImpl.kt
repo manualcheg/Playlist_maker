@@ -20,7 +20,6 @@ class SearchInteractorImpl(private val repository: SearchRepository) : SearchInt
                     consumer.consume(null, resource.message)
                 }
             }
-
         }
     }
 

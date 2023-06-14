@@ -24,7 +24,6 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     private val stateLiveData = MutableLiveData<SearchState>()
     fun observeState(): LiveData<SearchState> = stateLiveData
 
-
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { searchRequest(latestSearchText ?: "") }
 
@@ -62,7 +61,6 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
                                     )
                                 }
                             }
-
                             else -> {
                                 renderState(SearchState.Content(tracks = tracks))
                             }

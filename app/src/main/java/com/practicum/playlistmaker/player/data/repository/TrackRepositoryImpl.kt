@@ -49,7 +49,6 @@ class TrackRepositoryImpl(private val intent: Intent) :
     }
 
     fun playerRelease(){
-//        mediaPlayer.release()
 //        внедрил костыль mediaPlayer = MediaPlayer() из-за ошибки настройки
 //        плеера при setDataSource при повороте и последующей фатальной ошибки экрана
 //        плюс сохраняю текущий прогресс проигрывания для перестроения экрана при повороте

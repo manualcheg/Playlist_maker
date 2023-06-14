@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.utils
 
-import android.app.Application
 import android.content.Context
 import androidx.activity.ComponentActivity
 import com.practicum.playlistmaker.search.data.SearchRepositoryImpl
@@ -19,7 +18,6 @@ import com.practicum.playlistmaker.sharing.domain.interfaces.SharingRepository
 import com.practicum.playlistmaker.sharing.domain.usecases.SharingInteractorImpl
 
 object Creator {
-
     private fun getSearchRepository(context: Context): SearchRepository {
         val sharedPrefs = context.getSharedPreferences(
             Constants.SHARED_PREFS_SELECTED_TRACKS,
@@ -31,7 +29,6 @@ object Creator {
     fun provideSearchInteractor(context: Context): SearchInteractor {
         return SearchInteractorImpl(getSearchRepository(context))
     }
-
 
     private fun getSettingsRepository(context: Context): SettingsRepository {
         return SettingsRepositoryImpl(context)
@@ -48,12 +45,4 @@ object Creator {
     fun provideSharingInteractor(context: Context): SharingInteractor {
         return SharingInteractorImpl(getSharingRepository(context))
     }
-
-/*    private fun getMainRepository(context: Context): MainRepository {
-        return MainRepositoryImpl(context)
-    }
-
-    fun provideMainInteractor(context: Context): MainInteractor {
-        return MainInteractorImpl(getMainRepository(context))
-    }*/
 }

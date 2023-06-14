@@ -13,7 +13,4 @@ data class TrackDto(
     var primaryGenreName: String,
     var country: String,
     var previewUrl: String,
-) {
-    fun getCoverArtwork() = artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
-//    val coverArtwork = artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
-}
+)

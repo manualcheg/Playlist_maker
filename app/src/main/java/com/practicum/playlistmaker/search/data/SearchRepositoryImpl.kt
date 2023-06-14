@@ -4,11 +4,9 @@ import android.content.Context
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.data.dto.TrackSearchRequest
 import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
-import com.practicum.playlistmaker.search.data.storage.LocalStorage
 import com.practicum.playlistmaker.search.domain.api.SearchRepository
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.utils.Resource
-
 
 class SearchRepositoryImpl(
     private val networkClient: NetworkClient,
@@ -49,7 +47,6 @@ class SearchRepositoryImpl(
             }
         }
     }
-
 
     override fun getDataFromLocalStorage(): ArrayList<Track> {
         return searchStorage.getData()

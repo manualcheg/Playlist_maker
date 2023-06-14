@@ -18,7 +18,7 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
     val itunesService = retrofit.create(ItunesApi::class.java)
 
     override fun doRequest(dto: Any): Response {
-        if (isConnected() == false) {
+        if (!isConnected()) {
             return Response().apply { resultCode = -1 }
         }
 
@@ -50,5 +50,4 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
         }
         return false
     }
-
 }

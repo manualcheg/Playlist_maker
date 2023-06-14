@@ -31,30 +31,18 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         playbackCurrentTime = getString(R.string._00_00)
-//  Костыль для lazy - первый вызов для инициализации trackInteractorImpl:
-        trackRepositoryImpl
 
-//  Создание ViewModel для PlayerActivity
-        playerViewModel = ViewModelProvider(
-            this,
-            PlayerViewModel.getViewModelFactory(trackRepositoryImpl)
-        )[PlayerViewModel::class.java]
+        trackRepositoryImpl  //  Костыль для lazy - первый вызов для инициализации trackInteractorImpl
+
+        createPlayerViewModel()
 
         val track = playerViewModel.getTrack()
 
-//  Сообщение начального состояния:
-        playerViewModel.onActivityCreate()
+        playerViewModel.onActivityCreate() //  Сообщение начального состояния
 
-//  Подписка на изменение LiveData состояния плеера из ViewModel в ответ на действия пользователя
-        playerViewModel.getPlayerStateLiveData().observe(this) { playerState ->
-            render(playerState, track)
-        }
+        observeToStateLiveData(track)
 
-//    Подписка на изменение текущей позиции проигрывания трека
-        playerViewModel.playbackTimeLive.observe(this) {
-            binding.playbackTime.text = it
-            playbackCurrentTime = it ?: getString(R.string._00_00)
-        }
+        observeToCurrentPositionLiveData()
 
         binding.playerActivityArrowBack.setOnClickListener {
             this.finish()
@@ -65,6 +53,29 @@ class PlayerActivity : AppCompatActivity() {
         binding.playPauseButton.setOnClickListener {
             playerViewModel.onPlayButtonClick()
         }
+    }
+
+    private fun observeToCurrentPositionLiveData() {
+        //    Подписка на изменение текущей позиции проигрывания трека
+        playerViewModel.playbackTimeLive.observe(this) {
+            binding.playbackTime.text = it
+            playbackCurrentTime = it ?: getString(R.string._00_00)
+        }
+    }
+
+    private fun observeToStateLiveData(track: Track) {
+        //  Подписка на изменение LiveData состояния плеера из ViewModel в ответ на действия пользователя
+        playerViewModel.getPlayerStateLiveData().observe(this) { playerState ->
+            render(playerState, track)
+        }
+    }
+
+    private fun createPlayerViewModel() {
+        //  Создание ViewModel для PlayerActivity
+        playerViewModel = ViewModelProvider(
+            this,
+            PlayerViewModel.getViewModelFactory(trackRepositoryImpl)
+        )[PlayerViewModel::class.java]
     }
 
     override fun onPause() {
@@ -127,7 +138,6 @@ class PlayerActivity : AppCompatActivity() {
             track.releaseDate?.substring(START_OF_DATA_EXPRESSION, FOUR_NUMBER_OF_YEAR) ?: "-"
         binding.playerTextValueGenre.text = track.primaryGenreName ?: "-"
         binding.playerTextValueCountry.text = track.country ?: "-"
-
     }
 
     private fun showPrepared() {
