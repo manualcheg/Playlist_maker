@@ -103,7 +103,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun subscribeToChangingSharedPrefs() {
-        /* Подписка на изменение SharedPreferences */
+        /* Подписка на изменение SharedPreferences  */
         listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPrefs, key ->
             selectedTracks = SearchStorageImpl(sharedPrefs).getData()
             selectedTracksAdapter = SearchAdapter(selectedTracks)
