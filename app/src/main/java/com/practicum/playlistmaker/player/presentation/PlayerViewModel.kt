@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.player.presentation
 
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
@@ -17,8 +18,11 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 
-class PlayerViewModel(val trackRepositoryImpl: TrackRepositoryImpl) : ViewModel(),
+//class PlayerViewModel(val trackRepositoryImpl: TrackRepositoryImpl) : ViewModel(),
+class PlayerViewModel(val intent: Intent) : ViewModel(),
     MediaPlayerPrepare {
+
+    private val trackRepositoryImpl by lazy { TrackRepositoryImpl(intent) }
 
     private var playerState = MediaPlayerState.STATE_DEFAULT
     var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
@@ -104,13 +108,12 @@ class PlayerViewModel(val trackRepositoryImpl: TrackRepositoryImpl) : ViewModel(
         }
 
     companion object {
-        fun getViewModelFactory(trackRepositoryImpl: TrackRepositoryImpl): ViewModelProvider.Factory =
+//        fun getViewModelFactory(trackRepositoryImpl: TrackRepositoryImpl): ViewModelProvider.Factory =
+        fun getViewModelFactory(intent:Intent): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return PlayerViewModel(
-                        trackRepositoryImpl
-                    ) as T
+                    return PlayerViewModel(intent) as T
                 }
             }
     }

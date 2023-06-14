@@ -104,7 +104,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun subscribeToChangingSharedPrefs() {
         /* Подписка на изменение SharedPreferences  */
-        listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPrefs, key ->
+        listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPrefs, _ ->
             selectedTracks = SearchStorageImpl(sharedPrefs).getData()
             selectedTracksAdapter = SearchAdapter(selectedTracks)
             recyclerViewListenedTracks.adapter = selectedTracksAdapter
@@ -115,7 +115,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun workWithVisibilityOfListenedTracks() {
         /* Вывод слоя с историей выбранных треков */
-        editTextSearchActivity.setOnFocusChangeListener { view, hasFocus ->
+        editTextSearchActivity.setOnFocusChangeListener { _, hasFocus ->
             layoutOfListenedTracks.visibility =
                 if (hasFocus && userInputText.isEmpty() && selectedTracks.isNotEmpty()) {
                     View.VISIBLE

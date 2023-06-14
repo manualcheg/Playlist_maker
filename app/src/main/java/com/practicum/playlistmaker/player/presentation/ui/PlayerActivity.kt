@@ -21,7 +21,7 @@ class PlayerActivity : AppCompatActivity() {
         ActivityPlayerBinding.inflate(layoutInflater)
     }
 
-    private val trackRepositoryImpl by lazy { TrackRepositoryImpl(intent) }
+//    private val trackRepositoryImpl by lazy { TrackRepositoryImpl(intent) }
     private lateinit var playbackCurrentTime: String
     private lateinit var playerViewModel: PlayerViewModel
 
@@ -32,13 +32,13 @@ class PlayerActivity : AppCompatActivity() {
 
         playbackCurrentTime = getString(R.string._00_00)
 
-        trackRepositoryImpl  //  Костыль для lazy - первый вызов для инициализации trackInteractorImpl
+//        trackRepositoryImpl  //  Костыль для lazy - первый вызов для инициализации trackInteractorImpl
 
         createPlayerViewModel()
 
         val track = playerViewModel.getTrack()
 
-        playerViewModel.onActivityCreate() //  Сообщение начального состояния
+        playerViewModel.onActivityCreate() //  Запрос начального состояния
 
         observeToStateLiveData(track)
 
@@ -74,7 +74,7 @@ class PlayerActivity : AppCompatActivity() {
         //  Создание ViewModel для PlayerActivity
         playerViewModel = ViewModelProvider(
             this,
-            PlayerViewModel.getViewModelFactory(trackRepositoryImpl)
+            PlayerViewModel.getViewModelFactory(intent)
         )[PlayerViewModel::class.java]
     }
 
