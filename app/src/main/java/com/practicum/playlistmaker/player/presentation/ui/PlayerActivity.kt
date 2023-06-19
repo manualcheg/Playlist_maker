@@ -70,7 +70,9 @@ class PlayerActivity : AppCompatActivity() {
         //  Создание ViewModel для PlayerActivity
         playerViewModel = ViewModelProvider(
             this,
-            PlayerViewModel.getViewModelFactory(intent)
+//            PlayerViewModel.getViewModelFactory(intent)
+//            PlayerViewModel.getViewModelFactory(applicationContext)
+            PlayerViewModel.getViewModelFactory()
         )[PlayerViewModel::class.java]
     }
 

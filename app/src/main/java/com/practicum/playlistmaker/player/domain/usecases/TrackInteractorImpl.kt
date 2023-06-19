@@ -1,14 +1,20 @@
 package com.practicum.playlistmaker.player.domain.usecases
 
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
+import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
 import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
 
-class TrackInteractorImlp(
+class TrackInteractorImpl(
     private val trackRepository: TrackRepository,
-    var playerState: MediaPlayerState
+//    override var playerState: MediaPlayerState
 ) : TrackInteractor {
+    override lateinit var playerState: MediaPlayerState
+
+    init {
+        playerState = trackRepository.playerState
+    }
     override fun playbackControl(): MediaPlayerState {
         when (playerState) {
             MediaPlayerState.STATE_PLAYING -> playerState = pausePlayer()
@@ -30,6 +36,26 @@ class TrackInteractorImlp(
 
     override fun pausePlayer(): MediaPlayerState {
         playerState = trackRepository.pausePlayer()
+        return playerState
+    }
+
+    override fun preparePlayer(mediaPlayerPreparator: MediaPlayerPrepare){
+        trackRepository.preparePlayer(mediaPlayerPreparator)
+    }
+
+    override fun playerRelease(){
+        trackRepository.playerRelease()
+    }
+
+    override fun playerGetCurrentPosition():Int{
+        return trackRepository.playerGetCurrentPosition()
+    }
+
+    override fun putPlayerState(inputPlayerState: MediaPlayerState){
+        playerState = inputPlayerState
+    }
+    override fun returnPlayerState():MediaPlayerState{
+        playerState = trackRepository.playerState
         return playerState
     }
 }

@@ -76,7 +76,7 @@ class SearchActivity : AppCompatActivity() {
 
         settingListenersOnButtons()
 
-        workWithButtonClearHystory()
+        workWithButtonClearHistory()
     }
 
     private fun settingListenersOnButtons() {
@@ -135,7 +135,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun workWithButtonClearHystory() {
+    private fun workWithButtonClearHistory() {
         /* Кнопка очистки прослушанных треков */
         searchHistoryClearButton.setOnClickListener {
             SearchStorageImpl(sharedPrefs).clearHistory()
