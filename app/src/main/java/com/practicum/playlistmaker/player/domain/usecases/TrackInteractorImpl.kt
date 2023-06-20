@@ -51,9 +51,9 @@ class TrackInteractorImpl(
         return trackRepository.playerGetCurrentPosition()
     }
 
-    override fun putPlayerState(inputPlayerState: MediaPlayerState){
+/*    override fun putPlayerState(inputPlayerState: MediaPlayerState){
         playerState = inputPlayerState
-    }
+    }*/
     override fun returnPlayerState():MediaPlayerState{
         playerState = trackRepository.playerState
         return playerState

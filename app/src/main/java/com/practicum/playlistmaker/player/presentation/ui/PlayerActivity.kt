@@ -4,18 +4,14 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
-import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
 import com.practicum.playlistmaker.player.presentation.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.java.KoinJavaComponent.inject
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -27,7 +23,6 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var playbackCurrentTime: String
 
     //    private lateinit var playerViewModel: PlayerViewModel
-
     private val playerViewModel:PlayerViewModel by viewModel()
 
     @SuppressLint("MissingInflatedId")
@@ -128,6 +123,7 @@ class PlayerActivity : AppCompatActivity() {
             .centerCrop()
             .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.dp4)))
             .into(binding.playerImageCover)
+//        binding.playbackTime.visibility = View.INVISIBLE //попытка фиксить косяки отображения при пересоздании активити
         binding.playerTrackName.text = track.trackName
         binding.playerTrackName.isSelected = true
         binding.playerArtist.text = track.artistName

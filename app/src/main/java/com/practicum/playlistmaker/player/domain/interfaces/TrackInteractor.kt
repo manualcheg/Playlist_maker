@@ -13,6 +13,6 @@ interface TrackInteractor {
     fun preparePlayer(mediaPlayerPreparator: MediaPlayerPrepare)
     fun playerRelease()
     fun playerGetCurrentPosition():Int
-    fun putPlayerState(playerState: MediaPlayerState)
+//    fun putPlayerState(playerState: MediaPlayerState)
     fun returnPlayerState():MediaPlayerState
 }

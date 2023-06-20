@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.di
 
 import com.practicum.playlistmaker.player.data.repository.TrackRepositoryImpl
-import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
 import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
 import com.practicum.playlistmaker.player.domain.usecases.TrackInteractorImpl
@@ -14,16 +13,11 @@ val playerModule = module {
     single<TrackRepository> {
         TrackRepositoryImpl(androidContext())
     }
-    factory<TrackInteractor> {
+
+    factory <TrackInteractor> {
         TrackInteractorImpl(get())
     }
 
-    viewModel{
-        PlayerViewModel(get())
-    }
-}
-
-val playerViewModelModule = module {
     viewModel{
         PlayerViewModel(get())
     }
