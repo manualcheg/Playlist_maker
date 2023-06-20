@@ -40,13 +40,13 @@ class TrackRepositoryImpl(private val context: Context) :
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             playerState = MediaPlayerState.STATE_PREPARED
-            Log.d("MyLog", "STATE_PREPARED")
+//            Log.d("MyLog", "STATE_PREPARED")
             mediaPlayerPreparator.onPrepared()
         }
         mediaPlayer.setOnCompletionListener {
             currentPositionInMsec = 0
             playerState = MediaPlayerState.STATE_PREPARED
-            Log.d("MyLog", "STATE_PREPARED")
+//            Log.d("MyLog", "STATE_PREPARED")
             mediaPlayerPreparator.onCompletion()
         }
     }

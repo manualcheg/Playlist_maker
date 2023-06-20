@@ -22,7 +22,8 @@ import com.practicum.playlistmaker.utils.Constants
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerViewModel(private val trackRepositoryImpl: TrackRepository) : ViewModel(),
+//class PlayerViewModel(private val trackRepositoryImpl: TrackRepository) : ViewModel(),
+class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewModel(),
     MediaPlayerPrepare {
 
     private var playerState = MediaPlayerState.STATE_DEFAULT
@@ -34,32 +35,23 @@ class PlayerViewModel(private val trackRepositoryImpl: TrackRepository) : ViewMo
     private val playbackTimeLiveData = MutableLiveData<String?>()
     val playbackTimeLive: LiveData<String?> = playbackTimeLiveData
 
-    val trackInteractorImpl: TrackInteractor by lazy{
-        TrackInteractorImpl(trackRepositoryImpl, playerState)
-    }
+//    val trackInteractorImpl: TrackInteractor by lazy{
+//        TrackInteractorImpl(trackRepositoryImpl, playerState)
+//    }
 
     fun onActivityCreate() {
         // сообщение начального состояния
 //        playerStateLiveData.postValue((trackRepositoryImpl as TrackRepositoryImpl).playerState)
-        /*val trackInteractorImpl =
-            TrackInteractorImpl(trackRepository = trackRepositoryImpl, playerState = playerState)*/
         playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
-//        playerStateLiveData.postValue(playerState)
     }
 
     fun preparePlayer() {
 //        trackRepositoryImpl.preparePlayer(this)
-/*
-        val trackInteractorImpl =
-            TrackInteractorImpl(trackRepository = trackRepositoryImpl, playerState = playerState)
-*/
         trackInteractorImpl.preparePlayer(this)
         playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
 
     fun onActivityPause() {
-       /* val trackInteractorImpl =
-            TrackInteractorImpl(trackRepository = trackRepositoryImpl, playerState = playerState)*/
         trackInteractorImpl.pausePlayer()
         playerState = MediaPlayerState.STATE_PAUSED
         playerStateLiveData.postValue(playerState)
@@ -80,17 +72,11 @@ class PlayerViewModel(private val trackRepositoryImpl: TrackRepository) : ViewMo
     fun onActivityDestroy() {
         mainThreadHandler.removeCallbacks(runPlaybackTime)
 //        (trackRepositoryImpl as TrackRepositoryImpl).playerRelease()
-       /* val trackInteractorImpl =
-            TrackInteractorImpl(trackRepository = trackRepositoryImpl, playerState = playerState)*/
         trackInteractorImpl.playerRelease()
     }
 
     fun onPlayButtonClick() {
 //        playerState = (trackRepositoryImpl as TrackRepositoryImpl).playerState
-        /*val trackInteractorImpl = TrackInteractorImpl(
-            trackRepository = trackRepositoryImpl,
-            playerState = playerState
-        )*/
         trackInteractorImpl.returnPlayerState()
         playerState = trackInteractorImpl.playbackControl()
         playerStateLiveData.postValue(playerState)
@@ -109,10 +95,6 @@ class PlayerViewModel(private val trackRepositoryImpl: TrackRepository) : ViewMo
     }
 
     fun getTrack(): Track {
-/*        val trackInteractorImpl = TrackInteractorImpl(
-            trackRepository = trackRepositoryImpl,
-            playerState = playerState
-        )*/
         return trackInteractorImpl.getTrack()
 //        return trackRepositoryImpl.getTrack()
     }
@@ -120,10 +102,6 @@ class PlayerViewModel(private val trackRepositoryImpl: TrackRepository) : ViewMo
     private val runPlaybackTime =
         object : Runnable {
             override fun run() {
-                val trackInteractorImpl = TrackInteractorImpl(
-                    trackRepository = trackRepositoryImpl,
-                    playerState = playerState
-                )
                 playbackTimeLiveData.postValue(
                     SimpleDateFormat(
                         "mm:ss",
@@ -138,12 +116,14 @@ class PlayerViewModel(private val trackRepositoryImpl: TrackRepository) : ViewMo
         }
 
     companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
+/*        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val context = (this[APPLICATION_KEY] as App)
                 val trackRepositoryImpl = TrackRepositoryImpl(context)
-                PlayerViewModel(trackRepositoryImpl)
+                val trackInteractorImpl = TrackInteractorImpl(trackRepositoryImpl, playerState = MediaPlayerState.STATE_DEFAULT)
+//                PlayerViewModel(trackRepositoryImpl)
+                PlayerViewModel(trackInteractorImpl)
             }
-        }
+        }*/
     }
 }

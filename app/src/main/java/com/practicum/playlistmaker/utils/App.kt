@@ -4,7 +4,10 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
+import com.practicum.playlistmaker.di.playerModule
 import com.practicum.playlistmaker.settings.presentation.ui.THEME_PREFS
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 const val DARK_THEME = "Theme_is_dark"
 var darkTheme: Boolean = false
@@ -12,6 +15,11 @@ var darkTheme: Boolean = false
 class App: Application() {
     override fun onCreate() {
         super.onCreate()
+        startKoin{
+            androidContext(this@App)
+            modules(playerModule)
+        }
+
         val sharedPrefs = getSharedPreferences(THEME_PREFS, MODE_PRIVATE)
         /* Восстанавливаем сохраненную тему */
         darkTheme = sharedPrefs.getBoolean(DARK_THEME,darkThemeCheck(this))

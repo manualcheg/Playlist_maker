@@ -10,8 +10,12 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
+import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
 import com.practicum.playlistmaker.player.presentation.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent.inject
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -21,7 +25,10 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private lateinit var playbackCurrentTime: String
-    private lateinit var playerViewModel: PlayerViewModel
+
+    //    private lateinit var playerViewModel: PlayerViewModel
+
+    private val playerViewModel:PlayerViewModel by viewModel()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +37,7 @@ class PlayerActivity : AppCompatActivity() {
 
         playbackCurrentTime = getString(R.string._00_00)
 
-        createPlayerViewModel()
+//        createPlayerViewModel()
 
         val track = playerViewModel.getTrack()
 
@@ -66,7 +73,7 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun createPlayerViewModel() {
+    /*private fun createPlayerViewModel() {
         //  Создание ViewModel для PlayerActivity
         playerViewModel = ViewModelProvider(
             this,
@@ -74,7 +81,7 @@ class PlayerActivity : AppCompatActivity() {
 //            PlayerViewModel.getViewModelFactory(applicationContext)
             PlayerViewModel.getViewModelFactory()
         )[PlayerViewModel::class.java]
-    }
+    }*/
 
     override fun onPause() {
         super.onPause()
