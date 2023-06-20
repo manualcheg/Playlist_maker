@@ -2,7 +2,6 @@ package com.practicum.playlistmaker.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.activity.ComponentActivity
 import com.practicum.playlistmaker.search.data.NetworkClient
 import com.practicum.playlistmaker.search.data.SearchRepositoryImpl
 import com.practicum.playlistmaker.search.data.SearchStorage

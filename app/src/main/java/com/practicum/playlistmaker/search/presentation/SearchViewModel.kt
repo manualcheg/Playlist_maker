@@ -1,25 +1,17 @@
 package com.practicum.playlistmaker.search.presentation
 
 import android.app.Application
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.api.SearchInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.presentation.ui.models.SearchState
 import com.practicum.playlistmaker.utils.Constants.Companion.SEARCH_DEBOUNCE_DELAY
-import com.practicum.playlistmaker.utils.Creator
 import org.koin.java.KoinJavaComponent.getKoin
-import org.koin.java.KoinJavaComponent.inject
-
 
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
     //class SearchViewModel(context: Context) : ViewModel() {
