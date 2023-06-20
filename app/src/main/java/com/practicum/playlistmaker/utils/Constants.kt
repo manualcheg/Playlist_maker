@@ -10,5 +10,6 @@ class Constants {
         val PLAYER_TIMER_TOKEN = Any()
         const val PLAYBACK_TIME_RENEW_DELAY_MS = 300L
         const val _00_00 = "00:00"
+        const val THEME_PREFS = "Theme prefs"
     }
 }

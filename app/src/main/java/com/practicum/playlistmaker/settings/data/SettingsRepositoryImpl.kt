@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import com.practicum.playlistmaker.settings.domain.interfaces.SettingsRepository
-import com.practicum.playlistmaker.settings.presentation.ui.THEME_PREFS
+import com.practicum.playlistmaker.utils.Constants.Companion.THEME_PREFS
 import com.practicum.playlistmaker.utils.DARK_THEME
 
 class SettingsRepositoryImpl(private val context: Context):SettingsRepository {

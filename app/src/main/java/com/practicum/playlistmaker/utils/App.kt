@@ -4,8 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
+import com.practicum.playlistmaker.di.mainModule
 import com.practicum.playlistmaker.di.playerModule
-import com.practicum.playlistmaker.settings.presentation.ui.THEME_PREFS
+import com.practicum.playlistmaker.di.searchModule
+import com.practicum.playlistmaker.di.settingsModule
+import com.practicum.playlistmaker.utils.Constants.Companion.THEME_PREFS
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -17,7 +20,7 @@ class App: Application() {
         super.onCreate()
         startKoin{
             androidContext(this@App)
-            modules(playerModule)
+            modules(playerModule,searchModule,settingsModule,mainModule)
         }
 
         val sharedPrefs = getSharedPreferences(THEME_PREFS, MODE_PRIVATE)

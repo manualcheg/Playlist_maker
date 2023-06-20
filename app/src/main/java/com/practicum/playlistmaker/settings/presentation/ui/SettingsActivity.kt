@@ -4,31 +4,21 @@ import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
-import com.practicum.playlistmaker.settings.domain.interfaces.SettingsInteractor
 import com.practicum.playlistmaker.utils.App
 import com.practicum.playlistmaker.settings.presentation.SettingsViewModel
-import com.practicum.playlistmaker.sharing.domain.interfaces.SharingInteractor
-import com.practicum.playlistmaker.utils.Creator
-
-const val THEME_PREFS = "Theme prefs"
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
     private val binding: ActivitySettingsBinding by lazy {
         ActivitySettingsBinding.inflate(layoutInflater)
     }
-    private lateinit var settingsViewModel: SettingsViewModel
+    private val settingsViewModel:SettingsViewModel by viewModel()
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        val settingsInteractorImpl = Creator.provideSettingsInteractor(this)
-        val sharingInteractorImpl = Creator.provideSharingInteractor(this)
-
-        createSettingsViewModel(sharingInteractorImpl, settingsInteractorImpl)
 
         observeToIsNightThemeLiveData()
 
@@ -82,15 +72,5 @@ class SettingsActivity : AppCompatActivity() {
             binding.switchDarkTheme.isChecked = it
             (applicationContext as App).switchTheme(it)
         }
-    }
-
-    private fun createSettingsViewModel(
-        sharingInteractorImpl: SharingInteractor,
-        settingsInteractorImpl: SettingsInteractor
-    ) {
-        settingsViewModel = ViewModelProvider(
-            this,
-            SettingsViewModel.getViewModelFactory(sharingInteractorImpl, settingsInteractorImpl)
-        )[SettingsViewModel::class.java]
     }
 }
