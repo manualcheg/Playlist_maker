@@ -22,14 +22,15 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.presentation.SearchViewModel
-import com.practicum.playlistmaker.search.presentation.SearchViewModel.Companion.getViewModelFactory
 import com.practicum.playlistmaker.search.presentation.ui.models.SearchState
 import com.practicum.playlistmaker.utils.Constants.Companion.SHARED_PREFS_SELECTED_TRACKS
 import com.practicum.playlistmaker.utils.Constants.Companion.USERTEXT
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var searchViewModel: SearchViewModel
+//    private lateinit var searchViewModel: SearchViewModel
+    private val searchViewModel:SearchViewModel by viewModel()
 
     private lateinit var editTextSearchActivity: EditText
     private lateinit var searchClearEdittextImageview: ImageView
@@ -127,8 +128,8 @@ class SearchActivity : AppCompatActivity() {
 
     private fun createViewModelAndObserveToLiveData() {
         //          создаем viewModel
-        searchViewModel =
-            ViewModelProvider(this, getViewModelFactory())[SearchViewModel::class.java]
+        /*searchViewModel =
+            ViewModelProvider(this, getViewModelFactory())[SearchViewModel::class.java]*/
 //          подписываемся на изменение LiveData типа SearchState
         searchViewModel.observeState().observe(this) {
             render(it)

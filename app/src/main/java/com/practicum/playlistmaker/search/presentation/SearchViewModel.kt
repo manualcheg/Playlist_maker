@@ -1,11 +1,13 @@
 package com.practicum.playlistmaker.search.presentation
 
 import android.app.Application
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -15,10 +17,17 @@ import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.presentation.ui.models.SearchState
 import com.practicum.playlistmaker.utils.Constants.Companion.SEARCH_DEBOUNCE_DELAY
 import com.practicum.playlistmaker.utils.Creator
+import org.koin.java.KoinJavaComponent.getKoin
+import org.koin.java.KoinJavaComponent.inject
+
 
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
+    //class SearchViewModel(context: Context) : ViewModel() {
     private val tracks = ArrayList<Track>()
-    private val searchInteractor = Creator.provideSearchInteractor(application)
+
+    //    private val searchInteractor = Creator.provideSearchInteractor(application)
+    private val searchInteractor: SearchInteractor = getKoin().get()
+
     private var latestSearchText: String? = ""
 
     private val stateLiveData = MutableLiveData<SearchState>()
@@ -61,6 +70,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
                                     )
                                 }
                             }
+
                             else -> {
                                 renderState(SearchState.Content(tracks = tracks))
                             }
@@ -82,11 +92,11 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         //метод postValue можно выполнять не только в главном потоке
     }
 
-    companion object {
+/*    companion object {
         fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 SearchViewModel(this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
             }
         }
-    }
+    }*/
 }

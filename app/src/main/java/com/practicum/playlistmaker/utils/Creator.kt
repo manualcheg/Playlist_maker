@@ -10,7 +10,7 @@ import com.practicum.playlistmaker.search.domain.api.SearchRepository
 import com.practicum.playlistmaker.search.domain.usecases.SearchInteractorImpl
 
 object Creator {
-    private fun getSearchRepository(context: Context): SearchRepository {
+    /*private fun getSearchRepository(context: Context): SearchRepository {
         val sharedPrefs = context.getSharedPreferences(
             Constants.SHARED_PREFS_SELECTED_TRACKS,
             ComponentActivity.MODE_PRIVATE
@@ -20,5 +20,5 @@ object Creator {
 
     fun provideSearchInteractor(context: Context): SearchInteractor {
         return SearchInteractorImpl(getSearchRepository(context))
-    }
+    }*/
 }
