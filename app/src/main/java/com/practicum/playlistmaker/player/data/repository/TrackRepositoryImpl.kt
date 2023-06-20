@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.player.data.repository
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -39,11 +40,13 @@ class TrackRepositoryImpl(private val context: Context) :
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             playerState = MediaPlayerState.STATE_PREPARED
+            Log.d("MyLog", "STATE_PREPARED")
             mediaPlayerPreparator.onPrepared()
         }
         mediaPlayer.setOnCompletionListener {
             currentPositionInMsec = 0
             playerState = MediaPlayerState.STATE_PREPARED
+            Log.d("MyLog", "STATE_PREPARED")
             mediaPlayerPreparator.onCompletion()
         }
     }
@@ -76,5 +79,4 @@ class TrackRepositoryImpl(private val context: Context) :
     override fun playerGetCurrentPosition():Int {
         return mediaPlayer.currentPosition
     }
-
 }

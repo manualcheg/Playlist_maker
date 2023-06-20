@@ -13,6 +13,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.playlistmaker.player.data.repository.TrackRepositoryImpl
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
+import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
 import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
 import com.practicum.playlistmaker.player.domain.usecases.TrackInteractorImpl
 import com.practicum.playlistmaker.search.domain.entities.Track
@@ -33,24 +34,32 @@ class PlayerViewModel(private val trackRepositoryImpl: TrackRepository) : ViewMo
     private val playbackTimeLiveData = MutableLiveData<String?>()
     val playbackTimeLive: LiveData<String?> = playbackTimeLiveData
 
+    val trackInteractorImpl: TrackInteractor by lazy{
+        TrackInteractorImpl(trackRepositoryImpl, playerState)
+    }
+
     fun onActivityCreate() {
         // сообщение начального состояния
 //        playerStateLiveData.postValue((trackRepositoryImpl as TrackRepositoryImpl).playerState)
-        val trackInteractorImpl =
-            TrackInteractorImpl(trackRepository = trackRepositoryImpl, playerState = playerState)
-        playerStateLiveData.postValue(trackInteractorImpl.playerState)
+        /*val trackInteractorImpl =
+            TrackInteractorImpl(trackRepository = trackRepositoryImpl, playerState = playerState)*/
+        playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
+//        playerStateLiveData.postValue(playerState)
     }
 
     fun preparePlayer() {
 //        trackRepositoryImpl.preparePlayer(this)
+/*
         val trackInteractorImpl =
             TrackInteractorImpl(trackRepository = trackRepositoryImpl, playerState = playerState)
+*/
         trackInteractorImpl.preparePlayer(this)
+        playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
 
     fun onActivityPause() {
-        val trackInteractorImpl =
-            TrackInteractorImpl(trackRepository = trackRepositoryImpl, playerState = playerState)
+       /* val trackInteractorImpl =
+            TrackInteractorImpl(trackRepository = trackRepositoryImpl, playerState = playerState)*/
         trackInteractorImpl.pausePlayer()
         playerState = MediaPlayerState.STATE_PAUSED
         playerStateLiveData.postValue(playerState)
@@ -71,17 +80,18 @@ class PlayerViewModel(private val trackRepositoryImpl: TrackRepository) : ViewMo
     fun onActivityDestroy() {
         mainThreadHandler.removeCallbacks(runPlaybackTime)
 //        (trackRepositoryImpl as TrackRepositoryImpl).playerRelease()
-        val trackInteractorImpl =
-            TrackInteractorImpl(trackRepository = trackRepositoryImpl, playerState = playerState)
+       /* val trackInteractorImpl =
+            TrackInteractorImpl(trackRepository = trackRepositoryImpl, playerState = playerState)*/
         trackInteractorImpl.playerRelease()
     }
 
     fun onPlayButtonClick() {
 //        playerState = (trackRepositoryImpl as TrackRepositoryImpl).playerState
-        val trackInteractorImpl = TrackInteractorImpl(
+        /*val trackInteractorImpl = TrackInteractorImpl(
             trackRepository = trackRepositoryImpl,
             playerState = playerState
-        )
+        )*/
+        trackInteractorImpl.returnPlayerState()
         playerState = trackInteractorImpl.playbackControl()
         playerStateLiveData.postValue(playerState)
 
@@ -99,10 +109,10 @@ class PlayerViewModel(private val trackRepositoryImpl: TrackRepository) : ViewMo
     }
 
     fun getTrack(): Track {
-        val trackInteractorImpl = TrackInteractorImpl(
+/*        val trackInteractorImpl = TrackInteractorImpl(
             trackRepository = trackRepositoryImpl,
             playerState = playerState
-        )
+        )*/
         return trackInteractorImpl.getTrack()
 //        return trackRepositoryImpl.getTrack()
     }
