@@ -10,15 +10,15 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val playerModule = module {
-    single<TrackRepository> {
+    factory<TrackRepository> {
         TrackRepositoryImpl(androidContext())
     }
 
-    factory <TrackInteractor> {
+    factory<TrackInteractor> {
         TrackInteractorImpl(get())
     }
 
-    viewModel{
+    viewModel {
         PlayerViewModel(get())
     }
 }

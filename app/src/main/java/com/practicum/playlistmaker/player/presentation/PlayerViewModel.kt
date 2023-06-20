@@ -6,18 +6,10 @@ import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.player.data.repository.TrackRepositoryImpl
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
-import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
-import com.practicum.playlistmaker.player.domain.usecases.TrackInteractorImpl
 import com.practicum.playlistmaker.search.domain.entities.Track
-import com.practicum.playlistmaker.utils.App
 import com.practicum.playlistmaker.utils.Constants
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -114,16 +106,4 @@ class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewMo
                 mainThreadHandler.postAtTime(this, Constants.PLAYER_TIMER_TOKEN, postTime)
             }
         }
-
-    companion object {
-/*        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val context = (this[APPLICATION_KEY] as App)
-                val trackRepositoryImpl = TrackRepositoryImpl(context)
-                val trackInteractorImpl = TrackInteractorImpl(trackRepositoryImpl, playerState = MediaPlayerState.STATE_DEFAULT)
-//                PlayerViewModel(trackRepositoryImpl)
-                PlayerViewModel(trackInteractorImpl)
-            }
-        }*/
-    }
 }

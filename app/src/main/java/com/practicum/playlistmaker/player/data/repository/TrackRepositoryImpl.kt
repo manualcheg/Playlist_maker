@@ -18,8 +18,6 @@ class TrackRepositoryImpl(private val context: Context) :
     override var playerState = MediaPlayerState.STATE_DEFAULT
     private var currentPositionInMsec: Int = 0
     override fun getTrack(): Track {
-        /*val trackIntentDAOImpl = TrackIntentDAOImpl(intent)
-        return trackIntentDAOImpl.getTrack()*/
 
         val sharedPrefs = context.getSharedPreferences(
             Constants.SHARED_PREFS_SELECTED_TRACKS,
@@ -39,13 +37,11 @@ class TrackRepositoryImpl(private val context: Context) :
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             playerState = MediaPlayerState.STATE_PREPARED
-//            Log.d("MyLog", "STATE_PREPARED")
             mediaPlayerPreparator.onPrepared()
         }
         mediaPlayer.setOnCompletionListener {
             currentPositionInMsec = 0
             playerState = MediaPlayerState.STATE_PREPARED
-//            Log.d("MyLog", "STATE_PREPARED")
             mediaPlayerPreparator.onCompletion()
         }
     }
@@ -70,8 +66,7 @@ class TrackRepositoryImpl(private val context: Context) :
 //        внедрил костыль mediaPlayer = MediaPlayer() из-за ошибки настройки
 //        плеера при setDataSource при повороте и последующей фатальной ошибки экрана
 //        плюс сохраняю текущий прогресс проигрывания для перестроения экрана при повороте
-                currentPositionInMsec = mediaPlayer.currentPosition
-//        currentPositionInMsec = 0
+        currentPositionInMsec = mediaPlayer.currentPosition
         mediaPlayer.release()
         mediaPlayer = MediaPlayer()
     }
