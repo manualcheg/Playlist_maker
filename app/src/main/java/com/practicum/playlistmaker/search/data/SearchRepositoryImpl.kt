@@ -33,11 +33,12 @@ class SearchRepositoryImpl(
                             artworkUrl100 = it.artworkUrl100 ?: "",
                             trackId = it.trackId ?: "0",
                             collectionName = it.collectionName ?: "",
-                            releaseDate = if (it.releaseDate.equals("")) {
-                                it.releaseDate
-                            } else {
-                                "00000"
-                            },
+                            releaseDate = it.releaseDate,
+//                            releaseDate = if (it.releaseDate.equals("")) {
+//                                "00000"
+//                            } else {
+//                                it.releaseDate
+//                            },
                             primaryGenreName = it.primaryGenreName ?: "",
                             country = it.country ?: "",
                             previewUrl = it.previewUrl ?: ""

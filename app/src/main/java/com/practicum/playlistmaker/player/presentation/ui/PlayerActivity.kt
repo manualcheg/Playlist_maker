@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.player.presentation.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -46,7 +47,11 @@ class PlayerActivity : AppCompatActivity() {
         playerViewModel.preparePlayer()
 
         binding.playPauseButton.setOnClickListener {
-            playerViewModel.onPlayButtonClick()
+            if (track.previewUrl != "") {
+                playerViewModel.onPlayButtonClick()
+            } else {
+                Toast.makeText(this, getString(R.string.No_context_text), Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -126,6 +131,8 @@ class PlayerActivity : AppCompatActivity() {
         } else {
             binding.playerTextValueYear.text =
                 track.releaseDate?.substring(START_OF_DATA_EXPRESSION, FOUR_NUMBER_OF_YEAR) ?: "-"
+            /*        binding.playerTextValueYear.text =
+                        track.releaseDate?.substring(START_OF_DATA_EXPRESSION, FOUR_NUMBER_OF_YEAR)*/
         }
 
         binding.playerTextValueGenre.text = track.primaryGenreName ?: "-"
