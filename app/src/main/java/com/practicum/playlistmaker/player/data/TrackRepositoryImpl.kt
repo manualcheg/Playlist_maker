@@ -1,8 +1,7 @@
 package com.practicum.playlistmaker.player.data
 
-import android.content.Context
+import android.content.SharedPreferences
 import android.media.MediaPlayer
-import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
@@ -11,7 +10,7 @@ import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.utils.Constants
 
-class TrackRepositoryImpl(private val context: Context) :
+class TrackRepositoryImpl(private val sharedPrefs:SharedPreferences) :
     TrackRepository {
 
     private var mediaPlayer = MediaPlayer()
@@ -19,10 +18,6 @@ class TrackRepositoryImpl(private val context: Context) :
     private var currentPositionInMsec: Int = 0
     override fun getTrack(): Track {
 
-        val sharedPrefs = context.getSharedPreferences(
-            Constants.PLAYLISTMAKER_SHAREDPREFS,
-            AppCompatActivity.MODE_PRIVATE
-        )
         // костыль "[]" - null по умолчанию быть не должно
         val json = sharedPrefs.getString(Constants.SELECTED_TRACKS, "[]")
         val typeToken = object : TypeToken<ArrayList<Track>>() {}.type
