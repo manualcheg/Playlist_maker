@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.player.data.repository
+package com.practicum.playlistmaker.player.data
 
 import android.content.Context
 import android.media.MediaPlayer
@@ -20,7 +20,7 @@ class TrackRepositoryImpl(private val context: Context) :
     override fun getTrack(): Track {
 
         val sharedPrefs = context.getSharedPreferences(
-            Constants.SHARED_PREFS_SELECTED_TRACKS,
+            Constants.PLAYLISTMAKER_SHAREDPREFS,
             AppCompatActivity.MODE_PRIVATE
         )
         // костыль "[]" - null по умолчанию быть не должно
@@ -33,9 +33,7 @@ class TrackRepositoryImpl(private val context: Context) :
 
     override fun preparePlayer(mediaPlayerPreparator: MediaPlayerPrepare) {
         val url = getTrack().previewUrl
-        if (url == "" || url == null) {
-//            Toast.makeText(context, context.getString(R.string.No_context_text), Toast.LENGTH_LONG).show()
-        } else {
+        if (!(url == "" || url == null)) {
             mediaPlayer.setDataSource(url)
             mediaPlayer.prepareAsync()
         }

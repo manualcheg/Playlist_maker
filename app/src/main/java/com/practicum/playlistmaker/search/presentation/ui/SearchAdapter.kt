@@ -12,7 +12,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.player.presentation.ui.PlayerActivity
 import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
-import com.practicum.playlistmaker.utils.Constants.Companion.SHARED_PREFS_SELECTED_TRACKS
+import com.practicum.playlistmaker.utils.Constants.Companion.PLAYLISTMAKER_SHAREDPREFS
 
 var isClickAllowed = true
 
@@ -32,7 +32,7 @@ class SearchAdapter(
         val track = trackList[position]
         holder.bind(track)
         val sharedPrefs: SharedPreferences =
-            holder.itemView.context.getSharedPreferences(SHARED_PREFS_SELECTED_TRACKS, MODE_PRIVATE)
+            holder.itemView.context.getSharedPreferences(PLAYLISTMAKER_SHAREDPREFS, MODE_PRIVATE)
 
         holder.itemView.setOnClickListener {
             if (isMakedClickable()) {

@@ -1,7 +1,5 @@
 package com.practicum.playlistmaker.di
 
-import android.content.Context
-import android.content.SharedPreferences
 import com.practicum.playlistmaker.search.data.NetworkClient
 import com.practicum.playlistmaker.search.data.SearchRepositoryImpl
 import com.practicum.playlistmaker.search.data.SearchStorage
@@ -11,7 +9,6 @@ import com.practicum.playlistmaker.search.domain.api.SearchInteractor
 import com.practicum.playlistmaker.search.domain.api.SearchRepository
 import com.practicum.playlistmaker.search.domain.usecases.SearchInteractorImpl
 import com.practicum.playlistmaker.search.presentation.SearchViewModel
-import com.practicum.playlistmaker.utils.Constants
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -26,12 +23,12 @@ val searchModule = module {
         SearchStorageImpl(sharedPrefs = get())
     }
 
-    single<SharedPreferences> {
+   /* factory<SharedPreferences> {
         androidContext().getSharedPreferences(
-            Constants.SHARED_PREFS_SELECTED_TRACKS,
+            Constants.PLAYLISTMAKER_SHAREDPREFS,
             Context.MODE_PRIVATE
         )
-    }
+    }*/ //эта зависимость от класса уже описана в SettingsModule
 
     factory<SearchRepository> {
         SearchRepositoryImpl(
@@ -46,6 +43,6 @@ val searchModule = module {
     }
 
     viewModel {
-        SearchViewModel(application = androidApplication())
+        SearchViewModel(application = androidApplication(), searchInteractor = get())
     }
 }

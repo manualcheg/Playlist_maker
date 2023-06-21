@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.di
 
-import com.practicum.playlistmaker.player.data.repository.TrackRepositoryImpl
+import com.practicum.playlistmaker.player.data.TrackRepositoryImpl
 import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
 import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
 import com.practicum.playlistmaker.player.domain.usecases.TrackInteractorImpl

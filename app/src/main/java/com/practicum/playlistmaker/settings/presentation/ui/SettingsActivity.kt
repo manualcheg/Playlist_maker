@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
-import com.practicum.playlistmaker.utils.App
 import com.practicum.playlistmaker.settings.presentation.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -13,7 +12,7 @@ class SettingsActivity : AppCompatActivity() {
     private val binding: ActivitySettingsBinding by lazy {
         ActivitySettingsBinding.inflate(layoutInflater)
     }
-    private val settingsViewModel:SettingsViewModel by viewModel()
+    private val settingsViewModel: SettingsViewModel by viewModel()
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +48,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun setListenerToUserAgreementTextview() {
         //      Кнопка "Пользовательское соглашение" с переходом на страницу
-        binding.settingsScreenUserAgreementTextview.setOnClickListener{
+        binding.settingsScreenUserAgreementTextview.setOnClickListener {
             settingsViewModel.openLink()
         }
     }
@@ -68,9 +67,8 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun observeToIsNightThemeLiveData() {
         settingsViewModel.isNightLiveData.observe(this) {
-//        Проверка на включенность темной темы и переключение switch
+//        Проверка на включенность темной темы
             binding.switchDarkTheme.isChecked = it
-            (applicationContext as App).switchTheme(it)
         }
     }
 }

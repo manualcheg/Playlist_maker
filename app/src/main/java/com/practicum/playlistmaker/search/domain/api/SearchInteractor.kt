@@ -6,6 +6,7 @@ interface SearchInteractor {
     fun searchTracks(expression: String, consumer: SearchConsumer)
     fun addTrackToHistoryList(track: Track)
     fun getHistoryList(): ArrayList<Track>
+    fun clearHistory()
 
     //Для передачи результатов поискового запроса, который будет выполняться в отдельном потоке, нужен Callback.
     // Его роль здесь выполняет интерфейс SearchConsumer

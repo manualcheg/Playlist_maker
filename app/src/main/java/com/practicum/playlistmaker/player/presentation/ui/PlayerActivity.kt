@@ -131,8 +131,6 @@ class PlayerActivity : AppCompatActivity() {
         } else {
             binding.playerTextValueYear.text =
                 track.releaseDate?.substring(START_OF_DATA_EXPRESSION, FOUR_NUMBER_OF_YEAR) ?: "-"
-            /*        binding.playerTextValueYear.text =
-                        track.releaseDate?.substring(START_OF_DATA_EXPRESSION, FOUR_NUMBER_OF_YEAR)*/
         }
 
         binding.playerTextValueGenre.text = track.primaryGenreName ?: "-"

@@ -11,12 +11,9 @@ import com.practicum.playlistmaker.search.domain.api.SearchInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.presentation.ui.models.SearchState
 import com.practicum.playlistmaker.utils.Constants.Companion.SEARCH_DEBOUNCE_DELAY
-import org.koin.java.KoinJavaComponent.getKoin
 
-class SearchViewModel(application: Application) : AndroidViewModel(application) {
+class SearchViewModel(application: Application, private val searchInteractor: SearchInteractor) : AndroidViewModel(application) {
     private val tracks = ArrayList<Track>()
-
-    private val searchInteractor: SearchInteractor = getKoin().get()
 
     private var latestSearchText: String? = ""
 
@@ -80,5 +77,13 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         //кладём значение в LiveData состояний экрана поиска
         stateLiveData.postValue(state)
         //метод postValue можно выполнять не только в главном потоке
+    }
+
+    fun getData(): ArrayList<Track>{
+        return searchInteractor.getHistoryList()
+    }
+
+    fun clearHistory(){
+        searchInteractor.clearHistory()
     }
 }
