@@ -22,7 +22,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var playbackCurrentTime: String
 
-    private val playerViewModel:PlayerViewModel by viewModel()
+    private val playerViewModel: PlayerViewModel by viewModel()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,8 +121,13 @@ class PlayerActivity : AppCompatActivity() {
             binding.playerGroupAlbumVisibility.visibility = View.VISIBLE
             track.collectionName
         }
-        binding.playerTextValueYear.text =
-            track.releaseDate?.substring(START_OF_DATA_EXPRESSION, FOUR_NUMBER_OF_YEAR) ?: "-"
+        if (track.releaseDate.equals("")) {
+            binding.playerTextValueYear.text = "-"
+        } else {
+            binding.playerTextValueYear.text =
+                track.releaseDate?.substring(START_OF_DATA_EXPRESSION, FOUR_NUMBER_OF_YEAR) ?: "-"
+        }
+
         binding.playerTextValueGenre.text = track.primaryGenreName ?: "-"
         binding.playerTextValueCountry.text = track.country ?: "-"
     }
