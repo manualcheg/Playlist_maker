@@ -29,14 +29,18 @@ class SearchRepositoryImpl(
                         Track(
                             trackName = it.trackName,
                             artistName = it.artistName,
-                            trackTime = it.trackTime,
-                            artworkUrl100 = it.artworkUrl100,
-                            trackId = it.trackId,
-                            collectionName = it.collectionName,
-                            releaseDate = it.releaseDate,
-                            primaryGenreName = it.primaryGenreName,
-                            country = it.country,
-                            previewUrl = it.previewUrl
+                            trackTime = it.trackTime ?: "0",
+                            artworkUrl100 = it.artworkUrl100 ?: "",
+                            trackId = it.trackId ?: "0",
+                            collectionName = it.collectionName ?: "",
+                            releaseDate = if (it.releaseDate.equals("")) {
+                                it.releaseDate
+                            } else {
+                                "00000"
+                            },
+                            primaryGenreName = it.primaryGenreName ?: "",
+                            country = it.country ?: "",
+                            previewUrl = it.previewUrl ?: ""
                         )
                     })
                 }

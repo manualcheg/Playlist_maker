@@ -14,10 +14,8 @@ import com.practicum.playlistmaker.utils.Constants.Companion.SEARCH_DEBOUNCE_DEL
 import org.koin.java.KoinJavaComponent.getKoin
 
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
-    //class SearchViewModel(context: Context) : ViewModel() {
     private val tracks = ArrayList<Track>()
 
-    //    private val searchInteractor = Creator.provideSearchInteractor(application)
     private val searchInteractor: SearchInteractor = getKoin().get()
 
     private var latestSearchText: String? = ""
@@ -83,12 +81,4 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         stateLiveData.postValue(state)
         //метод postValue можно выполнять не только в главном потоке
     }
-
-/*    companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
-            }
-        }
-    }*/
 }

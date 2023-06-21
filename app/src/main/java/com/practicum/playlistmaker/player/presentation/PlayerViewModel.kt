@@ -14,7 +14,6 @@ import com.practicum.playlistmaker.utils.Constants
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-//class PlayerViewModel(private val trackRepositoryImpl: TrackRepository) : ViewModel(),
 class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewModel(),
     MediaPlayerPrepare {
 
@@ -27,18 +26,12 @@ class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewMo
     private val playbackTimeLiveData = MutableLiveData<String?>()
     val playbackTimeLive: LiveData<String?> = playbackTimeLiveData
 
-//    val trackInteractorImpl: TrackInteractor by lazy{
-//        TrackInteractorImpl(trackRepositoryImpl, playerState)
-//    }
-
     fun onActivityCreate() {
         // сообщение начального состояния
-//        playerStateLiveData.postValue((trackRepositoryImpl as TrackRepositoryImpl).playerState)
         playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
 
     fun preparePlayer() {
-//        trackRepositoryImpl.preparePlayer(this)
         trackInteractorImpl.preparePlayer(this)
         playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
@@ -63,12 +56,10 @@ class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewMo
 
     fun onActivityDestroy() {
         mainThreadHandler.removeCallbacks(runPlaybackTime)
-//        (trackRepositoryImpl as TrackRepositoryImpl).playerRelease()
         trackInteractorImpl.playerRelease()
     }
 
     fun onPlayButtonClick() {
-//        playerState = (trackRepositoryImpl as TrackRepositoryImpl).playerState
         trackInteractorImpl.returnPlayerState()
         playerState = trackInteractorImpl.playbackControl()
         playerStateLiveData.postValue(playerState)
@@ -88,7 +79,6 @@ class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewMo
 
     fun getTrack(): Track {
         return trackInteractorImpl.getTrack()
-//        return trackRepositoryImpl.getTrack()
     }
 
     private val runPlaybackTime =
@@ -98,7 +88,6 @@ class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewMo
                     SimpleDateFormat(
                         "mm:ss",
                         Locale.getDefault()
-//                    ).format((trackRepositoryImpl as TrackRepositoryImpl).playerGetCurrentPosition())
                     ).format(trackInteractorImpl.playerGetCurrentPosition())
                 )
 

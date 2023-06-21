@@ -28,7 +28,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
-//    private lateinit var searchViewModel: SearchViewModel
     private val searchViewModel:SearchViewModel by viewModel()
 
     private lateinit var editTextSearchActivity: EditText
@@ -126,9 +125,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun createViewModelAndObserveToLiveData() {
-        //          создаем viewModel
-        /*searchViewModel =
-            ViewModelProvider(this, getViewModelFactory())[SearchViewModel::class.java]*/
 //          подписываемся на изменение LiveData типа SearchState
         searchViewModel.observeState().observe(this) {
             render(it)

@@ -15,22 +15,22 @@ import org.koin.dsl.module
 
 val settingsModule = module{
     single<SharingRepository>{
-        SharingRepositoryImpl(androidContext())
+        SharingRepositoryImpl(context = androidContext())
     }
 
     single<SettingsRepository>{
-        SettingsRepositoryImpl(androidContext())
+        SettingsRepositoryImpl(context = androidContext())
     }
 
     single<SharingInteractor>{
-        SharingInteractorImpl(get())
+        SharingInteractorImpl(sharingRepository = get())
     }
 
     single<SettingsInteractor> {
-        SettingsInteractorImpl(get())
+        SettingsInteractorImpl(repository = get())
     }
 
     viewModel{
-        SettingsViewModel(get(),get())
+        SettingsViewModel(sharingInteractor = get(), settingsInteractor = get())
     }
 }

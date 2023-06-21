@@ -2,9 +2,11 @@ package com.practicum.playlistmaker.player.data.repository
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
@@ -33,8 +35,13 @@ class TrackRepositoryImpl(private val context: Context) :
 
     override fun preparePlayer(mediaPlayerPreparator: MediaPlayerPrepare) {
         val url = getTrack().previewUrl
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
+        if (url == "" || url == null) {
+            Toast.makeText(context, context.getString(R.string.No_context_text), Toast.LENGTH_LONG).show()
+        } else {
+            mediaPlayer.setDataSource(url)
+            mediaPlayer.prepareAsync()
+        }
+
         mediaPlayer.setOnPreparedListener {
             playerState = MediaPlayerState.STATE_PREPARED
             mediaPlayerPreparator.onPrepared()

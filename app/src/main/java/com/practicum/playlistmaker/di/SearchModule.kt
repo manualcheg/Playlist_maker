@@ -19,26 +19,33 @@ import org.koin.dsl.module
 
 val searchModule = module {
     factory<NetworkClient> {
-        RetrofitNetworkClient(androidContext())
+        RetrofitNetworkClient(context = androidContext())
     }
 
     factory<SearchStorage> {
-        SearchStorageImpl(get())
+        SearchStorageImpl(sharedPrefs = get())
     }
 
     single<SharedPreferences> {
-        androidContext().getSharedPreferences(Constants.SHARED_PREFS_SELECTED_TRACKS, Context.MODE_PRIVATE)
+        androidContext().getSharedPreferences(
+            Constants.SHARED_PREFS_SELECTED_TRACKS,
+            Context.MODE_PRIVATE
+        )
     }
 
-    factory<SearchRepository>{
-        SearchRepositoryImpl(get(),get(),androidContext())
+    factory<SearchRepository> {
+        SearchRepositoryImpl(
+            networkClient = get(),
+            searchStorage = get(),
+            context = androidContext()
+        )
     }
 
-    factory<SearchInteractor>{
-        SearchInteractorImpl(get())
+    factory<SearchInteractor> {
+        SearchInteractorImpl(repository = get())
     }
 
-    viewModel{
-        SearchViewModel(androidApplication())
+    viewModel {
+        SearchViewModel(application = androidApplication())
     }
 }

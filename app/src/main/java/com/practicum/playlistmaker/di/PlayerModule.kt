@@ -11,14 +11,14 @@ import org.koin.dsl.module
 
 val playerModule = module {
     factory<TrackRepository> {
-        TrackRepositoryImpl(androidContext())
+        TrackRepositoryImpl(context = androidContext())
     }
 
     factory<TrackInteractor> {
-        TrackInteractorImpl(get())
+        TrackInteractorImpl(trackRepository = get())
     }
 
     viewModel {
-        PlayerViewModel(get())
+        PlayerViewModel(trackInteractorImpl = get())
     }
 }

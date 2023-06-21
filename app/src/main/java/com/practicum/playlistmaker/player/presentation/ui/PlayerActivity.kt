@@ -22,7 +22,6 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var playbackCurrentTime: String
 
-    //    private lateinit var playerViewModel: PlayerViewModel
     private val playerViewModel:PlayerViewModel by viewModel()
 
     @SuppressLint("MissingInflatedId")
@@ -31,8 +30,6 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         playbackCurrentTime = getString(R.string._00_00)
-
-//        createPlayerViewModel()
 
         val track = playerViewModel.getTrack()
 
@@ -67,16 +64,6 @@ class PlayerActivity : AppCompatActivity() {
             render(playerState, track)
         }
     }
-
-    /*private fun createPlayerViewModel() {
-        //  Создание ViewModel для PlayerActivity
-        playerViewModel = ViewModelProvider(
-            this,
-//            PlayerViewModel.getViewModelFactory(intent)
-//            PlayerViewModel.getViewModelFactory(applicationContext)
-            PlayerViewModel.getViewModelFactory()
-        )[PlayerViewModel::class.java]
-    }*/
 
     override fun onPause() {
         super.onPause()
@@ -123,7 +110,6 @@ class PlayerActivity : AppCompatActivity() {
             .centerCrop()
             .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.dp4)))
             .into(binding.playerImageCover)
-//        binding.playbackTime.visibility = View.INVISIBLE //попытка фиксить косяки отображения при пересоздании активити
         binding.playerTrackName.text = track.trackName
         binding.playerTrackName.isSelected = true
         binding.playerArtist.text = track.artistName

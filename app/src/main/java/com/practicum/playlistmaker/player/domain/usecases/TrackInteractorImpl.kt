@@ -8,7 +8,6 @@ import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
 
 class TrackInteractorImpl(
     private val trackRepository: TrackRepository,
-//    override var playerState: MediaPlayerState
 ) : TrackInteractor {
     override lateinit var playerState: MediaPlayerState
 
