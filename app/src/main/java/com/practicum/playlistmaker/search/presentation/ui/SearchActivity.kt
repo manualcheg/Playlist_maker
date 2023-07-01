@@ -16,20 +16,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.presentation.SearchViewModel
-import com.practicum.playlistmaker.search.presentation.SearchViewModel.Companion.getViewModelFactory
 import com.practicum.playlistmaker.search.presentation.ui.models.SearchState
-import com.practicum.playlistmaker.utils.Constants.Companion.SHARED_PREFS_SELECTED_TRACKS
+import com.practicum.playlistmaker.utils.Constants.Companion.PLAYLISTMAKER_SHAREDPREFS
 import com.practicum.playlistmaker.utils.Constants.Companion.USERTEXT
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var searchViewModel: SearchViewModel
+    private val searchViewModel:SearchViewModel by viewModel()
 
     private lateinit var editTextSearchActivity: EditText
     private lateinit var searchClearEdittextImageview: ImageView
@@ -62,7 +60,7 @@ class SearchActivity : AppCompatActivity() {
         createViewModelAndObserveToLiveData()
 
         recyclerViewSearch.adapter = trackListAdapter
-        sharedPrefs = getSharedPreferences(SHARED_PREFS_SELECTED_TRACKS, MODE_PRIVATE)
+        sharedPrefs = getSharedPreferences(PLAYLISTMAKER_SHAREDPREFS, MODE_PRIVATE)
 
         buildRecycleViewListenedTracks()
 
@@ -76,7 +74,7 @@ class SearchActivity : AppCompatActivity() {
 
         settingListenersOnButtons()
 
-        workWithButtonClearHystory()
+        workWithButtonClearHistory()
     }
 
     private fun settingListenersOnButtons() {
@@ -104,8 +102,8 @@ class SearchActivity : AppCompatActivity() {
 
     private fun subscribeToChangingSharedPrefs() {
         /* Подписка на изменение SharedPreferences  */
-        listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPrefs, _ ->
-            selectedTracks = SearchStorageImpl(sharedPrefs).getData()
+        listener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
+            selectedTracks = searchViewModel.getData()
             selectedTracksAdapter = SearchAdapter(selectedTracks)
             recyclerViewListenedTracks.adapter = selectedTracksAdapter
             selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
@@ -126,20 +124,17 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun createViewModelAndObserveToLiveData() {
-        //          создаем viewModel
-        searchViewModel =
-            ViewModelProvider(this, getViewModelFactory())[SearchViewModel::class.java]
 //          подписываемся на изменение LiveData типа SearchState
         searchViewModel.observeState().observe(this) {
             render(it)
         }
     }
 
-    private fun workWithButtonClearHystory() {
+    private fun workWithButtonClearHistory() {
         /* Кнопка очистки прослушанных треков */
         searchHistoryClearButton.setOnClickListener {
-            SearchStorageImpl(sharedPrefs).clearHistory()
-            selectedTracks = SearchStorageImpl(sharedPrefs).getData()
+            searchViewModel.clearHistory()
+            selectedTracks = searchViewModel.getData()
             selectedTracksAdapter = SearchAdapter(selectedTracks)
             recyclerViewListenedTracks.adapter = selectedTracksAdapter
             selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
@@ -199,7 +194,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun buildRecycleViewListenedTracks() {
-        selectedTracks = SearchStorageImpl(sharedPrefs).getData()
+        selectedTracks = searchViewModel.getData()
         selectedTracksAdapter = SearchAdapter(selectedTracks)
         recyclerViewListenedTracks.adapter = selectedTracksAdapter
         selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)

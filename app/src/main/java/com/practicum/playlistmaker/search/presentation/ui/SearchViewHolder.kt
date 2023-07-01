@@ -18,11 +18,11 @@ class SearchViewHolder(private val track_item: View): RecyclerView.ViewHolder(tr
     private val imageCover = track_item.findViewById<ImageView>(R.id.image_cover)
 
     fun bind (model: Track){
-        trackName.text = model.trackName.trimEnd()
-        artistName.text = model.artistName.trimEnd()
+        trackName.text = model.trackName?.trimEnd()
+        artistName.text = model.artistName?.trimEnd()
 //        костыль из-за нулевого времени при поиске по букве g:
         trackTime.text = model.trackTime.let {
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.toInt()) }
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(it?.toInt()) }
 
         Glide.with(imageCover)
             .load(model.artworkUrl100)

@@ -6,19 +6,15 @@ import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.api.SearchInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.presentation.ui.models.SearchState
 import com.practicum.playlistmaker.utils.Constants.Companion.SEARCH_DEBOUNCE_DELAY
-import com.practicum.playlistmaker.utils.Creator
 
-class SearchViewModel(application: Application) : AndroidViewModel(application) {
+class SearchViewModel(application: Application, private val searchInteractor: SearchInteractor) : AndroidViewModel(application) {
     private val tracks = ArrayList<Track>()
-    private val searchInteractor = Creator.provideSearchInteractor(application)
+
     private var latestSearchText: String? = ""
 
     private val stateLiveData = MutableLiveData<SearchState>()
@@ -61,6 +57,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
                                     )
                                 }
                             }
+
                             else -> {
                                 renderState(SearchState.Content(tracks = tracks))
                             }
@@ -82,11 +79,11 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         //метод postValue можно выполнять не только в главном потоке
     }
 
-    companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
-            }
-        }
+    fun getData(): ArrayList<Track>{
+        return searchInteractor.getHistoryList()
+    }
+
+    fun clearHistory(){
+        searchInteractor.clearHistory()
     }
 }

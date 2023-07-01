@@ -1,26 +1,21 @@
 package com.practicum.playlistmaker.player.presentation
 
-import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.practicum.playlistmaker.player.data.repository.TrackRepositoryImpl
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
-import com.practicum.playlistmaker.player.domain.usecases.TrackInteractorImlp
+import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.utils.Constants
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerViewModel(private val intent: Intent) : ViewModel(),
+class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewModel(),
     MediaPlayerPrepare {
-
-    private val trackRepositoryImpl by lazy { TrackRepositoryImpl(intent) }
 
     private var playerState = MediaPlayerState.STATE_DEFAULT
     var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
@@ -33,17 +28,16 @@ class PlayerViewModel(private val intent: Intent) : ViewModel(),
 
     fun onActivityCreate() {
         // сообщение начального состояния
-        playerStateLiveData.postValue(trackRepositoryImpl.playerState)
+        playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
 
     fun preparePlayer() {
-        trackRepositoryImpl.preparePlayer(this)
+        trackInteractorImpl.preparePlayer(this)
+        playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
 
     fun onActivityPause() {
-        val trackInteractorImlp =
-            TrackInteractorImlp(trackRepository = trackRepositoryImpl, playerState = playerState)
-        trackInteractorImlp.pausePlayer()
+        trackInteractorImpl.pausePlayer()
         playerState = MediaPlayerState.STATE_PAUSED
         playerStateLiveData.postValue(playerState)
         mainThreadHandler.removeCallbacks(runPlaybackTime)
@@ -60,18 +54,14 @@ class PlayerViewModel(private val intent: Intent) : ViewModel(),
         playbackTimeLiveData.postValue(Constants._00_00)
     }
 
-    fun onActivityDestroy(){
+    fun onActivityDestroy() {
         mainThreadHandler.removeCallbacks(runPlaybackTime)
-        trackRepositoryImpl.playerRelease()
+        trackInteractorImpl.playerRelease()
     }
 
-    fun onPlayButtonClick(){
-        playerState = trackRepositoryImpl.playerState
-        val trackInteractorImlp = TrackInteractorImlp(
-            trackRepository = trackRepositoryImpl,
-            playerState = playerState
-        )
-        playerState = trackInteractorImlp.playbackControl()
+    fun onPlayButtonClick() {
+        trackInteractorImpl.returnPlayerState()
+        playerState = trackInteractorImpl.playbackControl()
         playerStateLiveData.postValue(playerState)
 
         when (playerState) {
@@ -82,12 +72,13 @@ class PlayerViewModel(private val intent: Intent) : ViewModel(),
             MediaPlayerState.STATE_PAUSED, MediaPlayerState.STATE_PREPARED -> {
                 mainThreadHandler.removeCallbacks(runPlaybackTime)
             }
+
             else -> {}
         }
     }
 
     fun getTrack(): Track {
-        return trackRepositoryImpl.getTrack()
+        return trackInteractorImpl.getTrack()
     }
 
     private val runPlaybackTime =
@@ -97,21 +88,11 @@ class PlayerViewModel(private val intent: Intent) : ViewModel(),
                     SimpleDateFormat(
                         "mm:ss",
                         Locale.getDefault()
-                    ).format(trackRepositoryImpl.playerGetCurrentPosition())
+                    ).format(trackInteractorImpl.playerGetCurrentPosition())
                 )
 
                 val postTime = SystemClock.uptimeMillis() + Constants.PLAYBACK_TIME_RENEW_DELAY_MS
                 mainThreadHandler.postAtTime(this, Constants.PLAYER_TIMER_TOKEN, postTime)
             }
         }
-
-    companion object {
-        fun getViewModelFactory(intent:Intent): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return PlayerViewModel(intent) as T
-                }
-            }
-    }
 }

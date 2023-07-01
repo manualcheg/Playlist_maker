@@ -3,8 +3,8 @@ package com.practicum.playlistmaker.player.presentation.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
@@ -12,6 +12,7 @@ import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.presentation.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -21,7 +22,8 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private lateinit var playbackCurrentTime: String
-    private lateinit var playerViewModel: PlayerViewModel
+
+    private val playerViewModel: PlayerViewModel by viewModel()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,8 +31,6 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         playbackCurrentTime = getString(R.string._00_00)
-
-        createPlayerViewModel()
 
         val track = playerViewModel.getTrack()
 
@@ -47,7 +47,11 @@ class PlayerActivity : AppCompatActivity() {
         playerViewModel.preparePlayer()
 
         binding.playPauseButton.setOnClickListener {
-            playerViewModel.onPlayButtonClick()
+            if (track.previewUrl != "") {
+                playerViewModel.onPlayButtonClick()
+            } else {
+                Toast.makeText(this, getString(R.string.No_context_text), Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -64,14 +68,6 @@ class PlayerActivity : AppCompatActivity() {
         playerViewModel.getPlayerStateLiveData().observe(this) { playerState ->
             render(playerState, track)
         }
-    }
-
-    private fun createPlayerViewModel() {
-        //  Создание ViewModel для PlayerActivity
-        playerViewModel = ViewModelProvider(
-            this,
-            PlayerViewModel.getViewModelFactory(intent)
-        )[PlayerViewModel::class.java]
     }
 
     override fun onPause() {
@@ -130,8 +126,13 @@ class PlayerActivity : AppCompatActivity() {
             binding.playerGroupAlbumVisibility.visibility = View.VISIBLE
             track.collectionName
         }
-        binding.playerTextValueYear.text =
-            track.releaseDate?.substring(START_OF_DATA_EXPRESSION, FOUR_NUMBER_OF_YEAR) ?: "-"
+        if (track.releaseDate.equals("")) {
+            binding.playerTextValueYear.text = "-"
+        } else {
+            binding.playerTextValueYear.text =
+                track.releaseDate?.substring(START_OF_DATA_EXPRESSION, FOUR_NUMBER_OF_YEAR) ?: "-"
+        }
+
         binding.playerTextValueGenre.text = track.primaryGenreName ?: "-"
         binding.playerTextValueCountry.text = track.country ?: "-"
     }

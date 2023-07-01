@@ -1,28 +1,38 @@
-package com.practicum.playlistmaker.player.data.repository
+package com.practicum.playlistmaker.player.data
 
-import android.content.Intent
+import android.content.SharedPreferences
 import android.media.MediaPlayer
-import com.practicum.playlistmaker.player.data.intent.TrackIntentDAOImpl
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
 import com.practicum.playlistmaker.search.domain.entities.Track
+import com.practicum.playlistmaker.utils.Constants
 
-class TrackRepositoryImpl(private val intent: Intent) :
+class TrackRepositoryImpl(private val sharedPrefs:SharedPreferences) :
     TrackRepository {
 
-    var mediaPlayer = MediaPlayer()
-    var playerState = MediaPlayerState.STATE_DEFAULT
-    var currentPositionInMsec:Int = 0
+    private var mediaPlayer = MediaPlayer()
+    override var playerState = MediaPlayerState.STATE_DEFAULT
+    private var currentPositionInMsec: Int = 0
     override fun getTrack(): Track {
-        val trackIntentDAOImpl = TrackIntentDAOImpl(intent)
-        return trackIntentDAOImpl.getTrack()
+
+        // костыль "[]" - null по умолчанию быть не должно
+        val json = sharedPrefs.getString(Constants.SELECTED_TRACKS, "[]")
+        val typeToken = object : TypeToken<ArrayList<Track>>() {}.type
+        val selectedTracks: ArrayList<Track> = Gson().fromJson(json, typeToken)
+        val track = selectedTracks[0]
+        return track
     }
 
-    override fun preparePlayer(mediaPlayerPreparator:MediaPlayerPrepare) {
+    override fun preparePlayer(mediaPlayerPreparator: MediaPlayerPrepare) {
         val url = getTrack().previewUrl
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
+        if (!(url == "" || url == null)) {
+            mediaPlayer.setDataSource(url)
+            mediaPlayer.prepareAsync()
+        }
+
         mediaPlayer.setOnPreparedListener {
             playerState = MediaPlayerState.STATE_PREPARED
             mediaPlayerPreparator.onPrepared()
@@ -36,7 +46,7 @@ class TrackRepositoryImpl(private val intent: Intent) :
 
     override fun startPlayer(): MediaPlayerState {
         mediaPlayer.start()
-        if (currentPositionInMsec!=0){
+        if (currentPositionInMsec != 0) {
             mediaPlayer.seekTo(currentPositionInMsec)
         }
         playerState = MediaPlayerState.STATE_PLAYING
@@ -50,16 +60,16 @@ class TrackRepositoryImpl(private val intent: Intent) :
         return playerState
     }
 
-    fun playerRelease(){
+    override fun playerRelease() {
 //        внедрил костыль mediaPlayer = MediaPlayer() из-за ошибки настройки
 //        плеера при setDataSource при повороте и последующей фатальной ошибки экрана
 //        плюс сохраняю текущий прогресс проигрывания для перестроения экрана при повороте
-                currentPositionInMsec = mediaPlayer.currentPosition
-                mediaPlayer.release()
-                mediaPlayer = MediaPlayer()
+        currentPositionInMsec = mediaPlayer.currentPosition
+        mediaPlayer.release()
+        mediaPlayer = MediaPlayer()
     }
 
-    fun playerGetCurrentPosition():Int {
+    override fun playerGetCurrentPosition(): Int {
         return mediaPlayer.currentPosition
     }
 }

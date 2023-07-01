@@ -38,4 +38,8 @@ class SearchInteractorImpl(private val repository: SearchRepository) : SearchInt
     override fun getHistoryList(): ArrayList<Track> {
         return repository.getDataFromLocalStorage()
     }
+
+    override fun clearHistory(){
+        repository.clearHistoryInStorage()
+    }
 }
