@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <LinearLayout
+        android:id="@+id/placeholder_fragment_favourites_there_is_nothing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/placeholder_fragment_favourites_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="106dp"
+            android:contentDescription="@string/image_placeholder_favourites_fragment"
+            android:src="@drawable/placeholder_nothing_found"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/placeholder_fragment_favourites_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp16"
+            android:fontFamily="@font/yandex_sans_text_medium"
+            android:gravity="center_horizontal"
+            android:text="@string/placeholder_text_favourites_is_empty"
+            android:textSize="19sp"
+            android:visibility="visible" />
+    </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewFavouritesTracks"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp0"
+            android:layout_weight="1"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+</LinearLayout>
+
+

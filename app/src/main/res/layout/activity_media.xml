@@ -1,8 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".mediateka.presentation.ui.MediaActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar_activity_mediateka"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp50"
+        android:layout_marginTop="@dimen/dp6"
+        android:layout_marginBottom="@dimen/dp14"
+        app:navigationIcon="@drawable/icon_arrow_back"
+        app:navigationIconTint="?android:attr/textColor">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/yandex_sans_text_medium"
+            android:gravity="center_vertical"
+            android:text="@string/text_toolbar_mediateka"
+            android:textColor="?android:attr/textColor"
+            android:textSize="@dimen/sp22" />
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/whiteBlack"
+        android:layout_marginHorizontal="@dimen/dp16"
+        android:textSize="14sp"
+        app:tabBackground="?attr/whiteBlack"
+        app:tabIndicatorColor="?android:attr/textColor"
+        app:tabIndicatorFullWidth="true"
+        app:tabIndicatorHeight="2dp"
+        app:tabPaddingEnd="@dimen/dp16"
+        app:tabPaddingStart="@dimen/dp16"
+        app:tabSelectedTextColor="?android:attr/textColor"
+        app:tabTextAppearance="@style/CustomTabTextStyle"
+         />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>
