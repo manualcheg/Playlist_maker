@@ -40,8 +40,7 @@
         app:tabPaddingEnd="@dimen/dp16"
         app:tabPaddingStart="@dimen/dp16"
         app:tabSelectedTextColor="?android:attr/textColor"
-        app:tabTextAppearance="@style/CustomTabTextStyle"
-         />
+        app:tabTextAppearance="@style/CustomTabTextStyle" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
