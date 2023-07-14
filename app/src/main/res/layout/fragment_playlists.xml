@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <LinearLayout
+        android:id="@+id/placeholder_fragment_playlist_there_is_nothing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp24"
+        android:gravity="top"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/placeholder_fragment_favourites_button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp36"
+            android:layout_gravity="center"
+            android:background="@drawable/placeholder_button_round_corners"
+            android:fontFamily="@font/yandex_sans_text_medium"
+            android:paddingHorizontal="@dimen/dp16"
+            android:text="@string/placeholder_fragment_playlists_text_button_new_playlist"
+            android:textAllCaps="false"
+            android:textColor="?attr/whiteBlack"
+            android:textSize="@dimen/sp14"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/placeholder_fragment_playlist_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="46dp"
+            android:contentDescription="@string/image_placeholder_playlists_fragment"
+            android:src="@drawable/placeholder_nothing_found"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/placeholder_fragment_playlist_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp16"
+            android:fontFamily="@font/yandex_sans_text_medium"
+            android:gravity="center_horizontal"
+            android:text="@string/text_there_is_no_any_playlists"
+            android:textSize="19sp"
+            android:visibility="visible" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewFavouritesTracks"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0"
+        android:layout_weight="1"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+</LinearLayout>
+
+
