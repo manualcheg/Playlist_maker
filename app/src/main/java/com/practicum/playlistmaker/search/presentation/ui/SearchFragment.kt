@@ -12,6 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
@@ -32,12 +33,10 @@ class SearchFragment:Fragment() {
 
     private var userInputText: String = ""
     private var trackList = ArrayList<Track>()
-
     private var trackListAdapter = SearchAdapter(trackList)
     private var selectedTracks = ArrayList<Track>()
     private var selectedTracksAdapter =
         SearchAdapter(selectedTracks)      //адаптер для прослушанных треков
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,8 +49,6 @@ class SearchFragment:Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        finderViewById()
 
         createViewModelAndObserveToLiveData()
 
@@ -77,22 +74,7 @@ class SearchFragment:Fragment() {
 
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(Constants.USERTEXT, userInputText)
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        userInputText = savedInstanceState?.getString(Constants.USERTEXT) ?: ""
-        binding.searchActivityEdittext.setText(userInputText)
-        searchViewModel.searchRequest(userInputText)
-    }
-
     private fun settingListenersOnButtons() {
-//        searchArrowBack.setNavigationOnClickListener {
-//            this.finish()
-//        }
         binding.placeholderSearchButton.setOnClickListener {
             searchViewModel.searchRequest(userInputText)
         }
@@ -132,6 +114,7 @@ class SearchFragment:Fragment() {
                 } else {
                     View.GONE
                 }
+            binding.recyclerViewSearch.isVisible = ! binding.layoutOfListenedTracks.isVisible
         }
     }
 
@@ -160,13 +143,7 @@ class SearchFragment:Fragment() {
         binding.searchClearEdittextImageview.setOnClickListener {
             binding.searchActivityEdittext.setText("")
             hideUnnecessary()
-
-            /* Скрытие клавиатуры после ввода */
-            val view: View? = requireActivity().currentFocus
-            if (view != null) {
-                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(view.windowToken, 0)
-            }
+            hideKeyboard()
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -181,6 +158,7 @@ class SearchFragment:Fragment() {
 
                 if (userInputText.isNotEmpty()) {
                     searchViewModel.searchDebounce(userInputText)            //поиск с задержкой
+                    hideKeyboard()
                 }
 
                 // Скрытие слоя с историей выбранных треков, если есть ввод
@@ -203,6 +181,15 @@ class SearchFragment:Fragment() {
             }
         }
         binding.searchActivityEdittext.addTextChangedListener(simpleTextWatcher)
+    }
+
+    private fun hideKeyboard() {
+        /* Скрытие клавиатуры после ввода */
+        val view: View? = requireActivity().currentFocus
+        if (view != null) {
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+        }
     }
 
     private fun buildRecycleViewListenedTracks() {
@@ -258,20 +245,6 @@ class SearchFragment:Fragment() {
         binding.placeholderSearchButton.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
         trackListAdapter.setTracks(trackList)
-    }
-
-    private fun finderViewById() {
-//        recyclerViewSearch = findViewById(R.id.recyclerViewSearch)
-//        recyclerViewListenedTracks = findViewById(R.id.recyclerViewListenedTracks)
-//        searchArrowBack = findViewById(R.id.search_activity_toolbar)
-//        searchClearEdittextImageview = findViewById(R.id.search_clear_edittext_imageview)
-//        editTextSearchActivity = findViewById(R.id.search_activity_edittext)
-//        placeholderMessage = findViewById(R.id.placeholder_search_screen_text)
-//        placeholderImage = findViewById(R.id.placeholder_search_screen_image)
-//        placeholderButtonReload = findViewById(R.id.placeholder_search_button)
-//        layoutOfListenedTracks = findViewById(R.id.layout_of_listened_tracks)
-//        searchHistoryClearButton = findViewById(R.id.search_history_clear_button)
-//        progressBar = findViewById(R.id.progressBar)
     }
 
     private fun hideUnnecessary() {
