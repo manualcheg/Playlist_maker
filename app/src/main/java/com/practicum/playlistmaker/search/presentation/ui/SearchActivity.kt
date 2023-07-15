@@ -1,3 +1,4 @@
+/*
 package com.practicum.playlistmaker.search.presentation.ui
 
 import android.content.Context
@@ -87,7 +88,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun emulationSearchButtonInKeyboard() {
-        /* эмуляция кнопки для поиска. Изменяет тип кнопки ввода на клавиатуре: */
+        */
+/* эмуляция кнопки для поиска. Изменяет тип кнопки ввода на клавиатуре: *//*
+
         editTextSearchActivity.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 // ВЫПОЛНЯЙТЕ ПОИСКОВЫЙ ЗАПРОС ЗДЕСЬ
@@ -101,7 +104,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun subscribeToChangingSharedPrefs() {
-        /* Подписка на изменение SharedPreferences  */
+        */
+/* Подписка на изменение SharedPreferences  *//*
+
         listener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
             selectedTracks = searchViewModel.getData()
             selectedTracksAdapter = SearchAdapter(selectedTracks)
@@ -112,7 +117,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun workWithVisibilityOfListenedTracks() {
-        /* Вывод слоя с историей выбранных треков */
+        */
+/* Вывод слоя с историей выбранных треков *//*
+
         editTextSearchActivity.setOnFocusChangeListener { _, hasFocus ->
             layoutOfListenedTracks.visibility =
                 if (hasFocus && userInputText.isEmpty() && selectedTracks.isNotEmpty()) {
@@ -131,7 +138,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun workWithButtonClearHistory() {
-        /* Кнопка очистки прослушанных треков */
+        */
+/* Кнопка очистки прослушанных треков *//*
+
         searchHistoryClearButton.setOnClickListener {
             searchViewModel.clearHistory()
             selectedTracks = searchViewModel.getData()
@@ -144,12 +153,16 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun workWithInput() {
-        /* Крестик очистки поля ввода */
+        */
+/* Крестик очистки поля ввода *//*
+
         searchClearEdittextImageview.setOnClickListener {
             editTextSearchActivity.setText("")
             hideUnnecessary()
 
-            /* Скрытие клавиатуры после ввода */
+            */
+/* Скрытие клавиатуры после ввода *//*
+
             val view: View? = this@SearchActivity.currentFocus
             if (view != null) {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -291,4 +304,4 @@ private fun clearButtonVisibility(s: CharSequence?): Int {
     } else {
         View.VISIBLE
     }
-}
+}*/

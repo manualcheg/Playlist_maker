@@ -1,3 +1,4 @@
+/*
 package com.practicum.playlistmaker.settings.presentation.ui
 
 import android.os.Build
@@ -71,4 +72,4 @@ class SettingsActivity : AppCompatActivity() {
             binding.switchDarkTheme.isChecked = it
         }
     }
-}
+}*/

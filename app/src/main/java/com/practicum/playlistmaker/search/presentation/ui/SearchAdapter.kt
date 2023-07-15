@@ -38,7 +38,7 @@ class SearchAdapter(
             if (isMakedClickable()) {
                 SearchStorageImpl(sharedPrefs).saveData(track)
                 val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-                intent.putExtra("track", Gson().toJson(track))
+//                intent.putExtra("track", Gson().toJson(track))
                 holder.itemView.context.startActivity(intent)
             }
         }
