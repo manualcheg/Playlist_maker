@@ -158,7 +158,6 @@ class SearchFragment:Fragment() {
 
                 if (userInputText.isNotEmpty()) {
                     searchViewModel.searchDebounce(userInputText)            //поиск с задержкой
-                    hideKeyboard()
                 }
 
                 // Скрытие слоя с историей выбранных треков, если есть ввод
@@ -178,6 +177,7 @@ class SearchFragment:Fragment() {
 
             override fun afterTextChanged(s: Editable?) {
                 // empty
+
             }
         }
         binding.searchActivityEdittext.addTextChangedListener(simpleTextWatcher)
@@ -216,6 +216,7 @@ class SearchFragment:Fragment() {
         binding.placeholderSearchScreenImage.visibility = View.GONE
         binding.placeholderSearchButton.visibility = View.GONE
         binding.progressBar.visibility = View.VISIBLE
+        hideKeyboard()
     }
 
     private fun showError(errorMessage: String) {
