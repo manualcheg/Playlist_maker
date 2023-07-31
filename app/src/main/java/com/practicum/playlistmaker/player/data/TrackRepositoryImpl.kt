@@ -5,16 +5,19 @@ import android.media.MediaPlayer
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
+import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState2
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.utils.Constants
 
-class TrackRepositoryImpl(private val sharedPrefs:SharedPreferences) :
+class TrackRepositoryImpl(private val sharedPrefs: SharedPreferences) :
     TrackRepository {
 
     private var mediaPlayer = MediaPlayer()
-    override var playerState = MediaPlayerState.STATE_DEFAULT
+
+        override var playerState = MediaPlayerState.STATE_DEFAULT
+//    override var playerState: MediaPlayerState2 = MediaPlayerState2.Default()
     private var currentPositionInMsec: Int = 0
     override fun getTrack(): Track {
 

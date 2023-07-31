@@ -154,9 +154,9 @@ class SearchFragment:Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.searchClearEdittextImageview.visibility =
                     clearButtonVisibility(s)    //если строка ввода пуста, то спрятать крестик очистки и наоборот
-                userInputText = s.toString()
+                userInputText = s.toString().trim()
 
-                if (userInputText.isNotEmpty()) {
+                if (userInputText != "") {
                     searchViewModel.searchDebounce(userInputText)            //поиск с задержкой
                 }
 

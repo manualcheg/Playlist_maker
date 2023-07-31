@@ -3,24 +3,29 @@ package com.practicum.playlistmaker.search.presentation.ui
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Looper
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.player.presentation.ui.PlayerActivity
 import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
+import com.practicum.playlistmaker.utils.Constants.Companion.CLICK_DEBOUNCE_DELAY
 import com.practicum.playlistmaker.utils.Constants.Companion.PLAYLISTMAKER_SHAREDPREFS
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 var isClickAllowed = true
 
 class SearchAdapter(
     private val trackList: MutableList<Track>
 ) : RecyclerView.Adapter<SearchViewHolder>() {
+    lateinit var view: View
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)
+        view = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)
         return SearchViewHolder(view)
     }
 
@@ -38,7 +43,6 @@ class SearchAdapter(
             if (isMakedClickable()) {
                 SearchStorageImpl(sharedPrefs).saveData(track)
                 val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-//                intent.putExtra("track", Gson().toJson(track))
                 holder.itemView.context.startActivity(intent)
             }
         }
@@ -52,10 +56,12 @@ class SearchAdapter(
 
     private fun isMakedClickable(): Boolean {
         val currentState = isClickAllowed
-        val handler = android.os.Handler(Looper.getMainLooper())
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, 1000L)
+            view.findViewTreeLifecycleOwner()?.lifecycleScope?.launch(){
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
         }
         return currentState
     }
