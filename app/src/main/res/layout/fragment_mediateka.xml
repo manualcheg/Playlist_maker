@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".mediateka.presentation.ui.MediaActivity">
+    tools:context=".mediateka.presentation.ui.MediatekaFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar_activity_mediateka"
@@ -13,7 +13,6 @@
         android:layout_height="@dimen/dp50"
         android:layout_marginTop="@dimen/dp6"
         android:layout_marginBottom="@dimen/dp14"
-        app:navigationIcon="@drawable/icon_arrow_back"
         app:navigationIconTint="?android:attr/textColor">
 
         <TextView
@@ -40,8 +39,7 @@
         app:tabPaddingEnd="@dimen/dp16"
         app:tabPaddingStart="@dimen/dp16"
         app:tabSelectedTextColor="?android:attr/textColor"
-        app:tabTextAppearance="@style/CustomTabTextStyle"
-         />
+        app:tabTextAppearance="@style/CustomTabTextStyle" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"

@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import com.practicum.playlistmaker.di.mainModule
 import com.practicum.playlistmaker.di.playerModule
 import com.practicum.playlistmaker.di.searchModule
 import com.practicum.playlistmaker.di.settingsModule
@@ -20,7 +19,7 @@ class App : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@App)
-            modules(playerModule, searchModule, settingsModule, mainModule)
+            modules(playerModule, searchModule, settingsModule)
         }
 
         val sharedPrefs = getSharedPreferences(PLAYLISTMAKER_SHAREDPREFS, MODE_PRIVATE)

@@ -9,6 +9,7 @@
     android:paddingTop="@dimen/dp10"
     android:paddingEnd="@dimen/dp14"
     tools:ignore="RtlSymmetry"
+    tools:context="com.practicum.playlistmaker.settings.presentation.ui.SettingsFragment"
     >
     <!--    android:forceDarkAllowed="false"
         tools:targetApi="q"-->
@@ -21,26 +22,14 @@
         android:orientation="horizontal"
         tools:ignore="UseCompoundDrawables">
 
-        <ImageView
-            android:id="@+id/settings_screen_arrow_back_like_button"
-            android:layout_width="@dimen/arrow_back_width"
-            android:layout_height="@dimen/arrow_back_height"
-            android:layout_marginStart="@dimen/dp4"
-            android:layout_marginTop="@dimen/dp10"
-            android:contentDescription="@string/description_image_arrow_back_settings_screen"
-            android:src="@drawable/icon_arrow_back"
-            app:tint="?attr/colorOnPrimary" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="@dimen/dp4"
-            android:fontFamily="@font/yandex_sans_display_regular"
+            android:layout_marginTop="@dimen/dp6"
+            android:fontFamily="@font/yandex_sans_text_medium"
             android:text="@string/text_settings_header"
             android:textColor="?attr/colorOnPrimary"
-            android:textSize="@dimen/textsize_title_settings_screen"
-            android:textStyle="bold" />
+            android:textSize="@dimen/textsize_title_settings_screen" />
     </LinearLayout>
 
     <LinearLayout

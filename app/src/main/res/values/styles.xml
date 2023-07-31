@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources >
+<resources>
+
     <style name="ButtonMainActivity" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:textSize">@dimen/size_text_button_main_screen</item>
-<!--        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>-->
+        <!--        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>-->
         <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/yandex_sans_display_regular</item>
@@ -19,7 +20,7 @@
         <item name="android:orientation">vertical</item>
         <item name="android:paddingStart">@dimen/dp16</item>
         <item name="android:paddingBottom">@dimen/padding_bottom_main_activity</item>
-<!--        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>-->
+        <!--        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>-->
     </style>
 
     <style name="TextViewSettingsScreen">
@@ -68,8 +69,11 @@
     <style name="CustomTabTextStyle">
         <item name="android:textSize">@dimen/sp14</item>
         <item name="android:fontFamily">@font/yandex_sans_display_regular</item>
-
         <item name="android:textAllCaps">false</item>
+    </style>
 
+    <style name="CustomBottomNavigationViewStyle">
+        <item name="android:fontFamily">@font/yandex_sans_display_regular</item>
+        <item name="android:textSize">@dimen/sp12</item>
     </style>
 </resources>

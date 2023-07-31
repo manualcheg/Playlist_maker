@@ -54,4 +54,7 @@
     <string name="favourites_tab_text">Избранные треки</string>
     <string name="playlists_tab_text">Плейлисты</string>
     <string name="text_there_is_no_any_playlists">Вы не создали\n ни одного плейлиста</string>
+    <string name="menu_text_search">Поиск</string>
+    <string name="menu_text_mediateka">Медиатека</string>
+    <string name="menu_text_settings">Настройки</string>
 </resources>

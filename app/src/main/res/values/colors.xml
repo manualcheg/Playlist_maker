@@ -21,6 +21,7 @@
     <color name="yp_text_gray">#AEAFB4</color>
     <color name="color_pause_button">#1A1B22</color>
     <color name="color_play_button">#1a1b22</color>
+    <color name="yp_lite_gray">#E6E8EB</color>
 
 
 </resources>

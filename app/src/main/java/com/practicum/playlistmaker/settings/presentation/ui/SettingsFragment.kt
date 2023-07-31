@@ -1,23 +1,31 @@
 package com.practicum.playlistmaker.settings.presentation.ui
 
-import android.os.Build
 import android.os.Bundle
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.practicum.playlistmaker.databinding.FragmentSettingsBinding
 import com.practicum.playlistmaker.settings.presentation.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
-    private val binding: ActivitySettingsBinding by lazy {
-        ActivitySettingsBinding.inflate(layoutInflater)
-    }
+class SettingsFragment: Fragment() {
+
+    lateinit var binding: FragmentSettingsBinding
+
     private val settingsViewModel: SettingsViewModel by viewModel()
 
-    @RequiresApi(Build.VERSION_CODES.R)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSettingsBinding.inflate(inflater, container,false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         observeToIsNightThemeLiveData()
 
@@ -62,11 +70,11 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun setListenerToArrowSettingsBack() {
         //        стрелка выхода из экрана. На ней висит слушатель нажатия
-        binding.settingsScreenArrowBackLikeButton.setOnClickListener { this@SettingsActivity.finish() }
+//        binding.settingsScreenArrowBackLikeButton.setOnClickListener { this@SettingsActivity.finish() }
     }
 
     private fun observeToIsNightThemeLiveData() {
-        settingsViewModel.isNightLiveData.observe(this) {
+        settingsViewModel.isNightLiveData.observe(viewLifecycleOwner) {
 //        Проверка на включенность темной темы
             binding.switchDarkTheme.isChecked = it
         }

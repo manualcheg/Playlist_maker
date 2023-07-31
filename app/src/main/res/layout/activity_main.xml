@@ -46,7 +46,7 @@
             android:layout_height="@dimen/dp0"
             android:layout_weight="1"
             android:text="@string/button_library"
-            app:icon="@drawable/icon_library"
+            app:icon="@drawable/icon_mediateka_fragment"
             app:iconSize="@dimen/dp20" />
 
         <Button
