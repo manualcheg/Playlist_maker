@@ -7,25 +7,32 @@ import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
 import com.practicum.playlistmaker.search.domain.api.SearchRepository
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.utils.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class SearchRepositoryImpl(
     private val networkClient: NetworkClient,
     private val searchStorage: SearchStorage,
     private val context: Context
 ) : SearchRepository {
-    override fun searchTracks(expression: String): Resource<List<Track>> {
+    override fun searchTracks(expression: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
 
-        return when (response.resultCode) {
+        when (response.resultCode) {
             -1 -> {
-                Resource.Error("Проверьте подключение к сети Интернет")
+                emit(Resource.Error("Проверьте подключение к сети Интернет"))
             }
 
             200 -> {
                 if ((response as TrackSearchResponse).results.isEmpty()) {
-                    Resource.Error(message = context.getString(R.string.nothing_found), data = null)
+                    emit(
+                        Resource.Error(
+                            message = context.getString(R.string.nothing_found),
+                            data = null
+                        )
+                    )
                 } else {
-                    Resource.Success(response.results.map {
+                    val track = response.results.map {
                         Track(
                             trackName = it.trackName,
                             artistName = it.artistName,
@@ -34,21 +41,17 @@ class SearchRepositoryImpl(
                             trackId = it.trackId ?: "0",
                             collectionName = it.collectionName ?: "",
                             releaseDate = it.releaseDate,
-//                            releaseDate = if (it.releaseDate.equals("")) {
-//                                "00000"
-//                            } else {
-//                                it.releaseDate
-//                            },
                             primaryGenreName = it.primaryGenreName ?: "",
                             country = it.country ?: "",
                             previewUrl = it.previewUrl ?: ""
                         )
-                    })
+                    }
+                    emit(Resource.Success(track))
                 }
             }
 
             else -> {
-                return Resource.Error("Ошибка сервера")
+                emit(Resource.Error("Ошибка сервера"))
             }
         }
     }

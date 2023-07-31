@@ -28,10 +28,14 @@ class SearchViewModel(application: Application, private val searchInteractor: Se
     fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
             renderState(SearchState.Loading)
-            searchInteractor.searchTracks(
-                newSearchText,
-                object : SearchInteractor.SearchConsumer {
-                    override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
+
+            viewModelScope.launch {
+                //метод searchTracks возвращает Flow:
+                searchInteractor.searchTracks(newSearchText)
+                    .collect { pair ->
+                        val foundTracks = pair.first
+                        val errorMessage = pair.second
+
                         if (foundTracks != null) {
                             tracks.clear()
                             tracks.addAll(foundTracks)
@@ -65,7 +69,7 @@ class SearchViewModel(application: Application, private val searchInteractor: Se
                             }
                         }
                     }
-                })
+            }
         }
     }
 
@@ -74,7 +78,7 @@ class SearchViewModel(application: Application, private val searchInteractor: Se
         searchDebounce = viewModelScope.launch {
             delay(SEARCH_DEBOUNCE_DELAY)
             latestSearchText = newSearchText
-            searchRequest(latestSearchText ?: "")
+            searchRequest(newSearchText ?: "")
         }
     }
 
