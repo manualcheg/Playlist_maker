@@ -13,7 +13,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.player.presentation.ui.PlayerActivity
 import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
-import com.practicum.playlistmaker.utils.Constants.Companion.CLICK_DEBOUNCE_DELAY
+import com.practicum.playlistmaker.utils.Constants.Companion.CLICK_DEBOUNCE_DELAY_MILLIS
 import com.practicum.playlistmaker.utils.Constants.Companion.PLAYLISTMAKER_SHAREDPREFS
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -59,7 +59,7 @@ class SearchAdapter(
         if (isClickAllowed) {
             isClickAllowed = false
             view.findViewTreeLifecycleOwner()?.lifecycleScope?.launch(){
-                delay(CLICK_DEBOUNCE_DELAY)
+                delay(CLICK_DEBOUNCE_DELAY_MILLIS)
                 isClickAllowed = true
             }
         }

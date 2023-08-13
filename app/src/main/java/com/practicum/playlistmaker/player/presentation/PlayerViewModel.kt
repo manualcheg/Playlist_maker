@@ -85,7 +85,7 @@ class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewMo
         timerJob = viewModelScope.launch {
             while (playerState == MediaPlayerState.STATE_PLAYING) {
 
-                delay(Constants.PLAYBACK_TIME_RENEW_DELAY_MS)
+                delay(Constants.PLAYBACK_TIME_RENEW_DELAY_MILLIS)
                 playbackTimeLiveData.postValue(
                     SimpleDateFormat(
                         "mm:ss",

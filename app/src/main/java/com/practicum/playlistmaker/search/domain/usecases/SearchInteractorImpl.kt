@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.map
 
 class SearchInteractorImpl(private val repository: SearchRepository) : SearchInteractor {
 
+    // вместо Pair сделать класс и использовать
     override fun searchTracks(expression: String): Flow<Pair<List<Track>?, String?>> {
         return repository.searchTracks(expression).map { result ->
             when (result) {
