@@ -10,10 +10,11 @@ import com.practicum.playlistmaker.player.domain.interfaces.TrackRepository
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.utils.Constants
 
-class TrackRepositoryImpl(private val sharedPrefs:SharedPreferences) :
+class TrackRepositoryImpl(private val sharedPrefs: SharedPreferences) :
     TrackRepository {
 
     private var mediaPlayer = MediaPlayer()
+
     override var playerState = MediaPlayerState.STATE_DEFAULT
     private var currentPositionInMsec: Int = 0
     override fun getTrack(): Track {
