@@ -142,7 +142,8 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toEndOf="@id/play_pause_button"
         app:layout_constraintTop_toTopOf="@id/play_pause_button"
-        app:tint="@color/white" />
+        app:tint="@null"
+         />
 
     <!-- Отсчёт времени вопроизведения -->
     <TextView

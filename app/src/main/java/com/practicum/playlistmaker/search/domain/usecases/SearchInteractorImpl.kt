@@ -23,7 +23,7 @@ class SearchInteractorImpl(private val repository: SearchRepository) : SearchInt
         }
     }
 
-    override fun addTrackToHistoryList(track: Track) {
+    override suspend fun addTrackToHistoryList(track: Track) {
 
         val selectedTracks = repository.getDataFromLocalStorage()
         selectedTracks.remove(selectedTracks.find { it.trackId == track.trackId })
@@ -35,7 +35,7 @@ class SearchInteractorImpl(private val repository: SearchRepository) : SearchInt
         repository.saveSearchHistoryList(selectedTracks)
     }
 
-    override fun getHistoryList(): ArrayList<Track> {
+    override suspend fun getHistoryList(): ArrayList<Track> {
         return repository.getDataFromLocalStorage()
     }
 

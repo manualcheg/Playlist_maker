@@ -13,7 +13,7 @@ class MediatekaViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lif
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> FavouritesFragment.newInstance("some")
+            0 -> FavouritesFragment()
             else -> PlaylistsFragment.newInstance("some")
         }
     }

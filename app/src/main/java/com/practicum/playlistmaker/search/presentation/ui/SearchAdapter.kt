@@ -10,20 +10,29 @@ import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.mediateka.data.db.TracksDBFavourites
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.player.presentation.ui.PlayerActivity
 import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
 import com.practicum.playlistmaker.utils.Constants.Companion.CLICK_DEBOUNCE_DELAY_MILLIS
 import com.practicum.playlistmaker.utils.Constants.Companion.PLAYLISTMAKER_SHAREDPREFS
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 var isClickAllowed = true
 
 class SearchAdapter(
-    private val trackList: MutableList<Track>
-) : RecyclerView.Adapter<SearchViewHolder>() {
+    private val trackList: MutableList<Track>,
+//    private val tracksDBFavourites: TracksDBFavourites
+) : RecyclerView.Adapter<SearchViewHolder>(), KoinComponent {
+
+//    var isClickAllowed = true
     lateinit var view: View
+    private val tracksDBFavourites: TracksDBFavourites by inject()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         view = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)
         return SearchViewHolder(view)
@@ -41,7 +50,9 @@ class SearchAdapter(
 
         holder.itemView.setOnClickListener {
             if (isMakedClickable()) {
-                SearchStorageImpl(sharedPrefs).saveData(track)
+                GlobalScope.launch{ //так вообще можно?
+                    SearchStorageImpl(sharedPrefs, tracksDBFavourites).saveData(track)
+                }
                 val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
                 holder.itemView.context.startActivity(intent)
             }
@@ -58,7 +69,7 @@ class SearchAdapter(
         val currentState = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            view.findViewTreeLifecycleOwner()?.lifecycleScope?.launch(){
+            view.findViewTreeLifecycleOwner()?.lifecycleScope?.launch() {
                 delay(CLICK_DEBOUNCE_DELAY_MILLIS)
                 isClickAllowed = true
             }

@@ -1,14 +1,19 @@
 package com.practicum.playlistmaker.player.presentation.ui
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
+import com.practicum.playlistmaker.mediateka.data.db.TracksDBFavourites
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.presentation.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
@@ -25,6 +30,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private val playerViewModel: PlayerViewModel by viewModel()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +41,8 @@ class PlayerActivity : AppCompatActivity() {
         val track = playerViewModel.getTrack()
 
         playerViewModel.onActivityCreate() //  Запрос начального состояния
+
+        observeToInFavouriteLiveData()
 
         observeToStateLiveData(track)
 
@@ -53,6 +61,12 @@ class PlayerActivity : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.No_context_text), Toast.LENGTH_LONG).show()
             }
         }
+
+        binding.playerButtonLike.setOnClickListener {
+            playerViewModel.onFavouriteClicked(track)
+
+
+        }
     }
 
     private fun observeToCurrentPositionLiveData() {
@@ -67,6 +81,17 @@ class PlayerActivity : AppCompatActivity() {
         //  Подписка на изменение LiveData состояния плеера из ViewModel в ответ на действия пользователя
         playerViewModel.getPlayerStateLiveData().observe(this) { playerState ->
             render(playerState, track)
+        }
+    }
+
+    private fun observeToInFavouriteLiveData() {
+        playerViewModel.inFavouriteLive.observe(this) {
+            val heart = if (it) {
+                R.drawable.player_button_heart_like_red
+            } else {
+                R.drawable.player_button_heart_like
+            }
+            binding.playerButtonLike.setImageResource(heart)
         }
     }
 

@@ -1,9 +1,15 @@
 package com.practicum.playlistmaker.player.presentation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.mediateka.data.db.TrackDBConvertor
+import com.practicum.playlistmaker.mediateka.data.db.TracksDBFavourites
+import com.practicum.playlistmaker.mediateka.domain.interfaces.TracksDBInteractor
+import com.practicum.playlistmaker.mediateka.domain.usecases.TracksDBInteractorImpl
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
@@ -15,7 +21,11 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewModel(),
+class PlayerViewModel(
+    private val trackInteractorImpl: TrackInteractor,
+    private val tracksDBInteractorImpl: TracksDBInteractor,
+    private val dbConvertor: TrackDBConvertor
+) : ViewModel(),
     MediaPlayerPrepare {
 
     private var playerState = MediaPlayerState.STATE_DEFAULT
@@ -25,6 +35,9 @@ class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewMo
 
     private val playbackTimeLiveData = MutableLiveData<String?>()
     val playbackTimeLive: LiveData<String?> = playbackTimeLiveData
+
+    private val inFavouriteLiveData = MutableLiveData<Boolean>()
+    val inFavouriteLive: LiveData<Boolean> = inFavouriteLiveData
 
     private var timerJob: Job? = null
 
@@ -95,4 +108,24 @@ class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewMo
             }
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun onFavouriteClicked(track: Track) {
+        if (track.inFavourite) {
+            viewModelScope.launch {
+                tracksDBInteractorImpl.delTrack(dbConvertor.map(track))
+            }
+        } else {
+            viewModelScope.launch {
+                tracksDBInteractorImpl.putTrack(dbConvertor.map(track))
+            }
+        }
+        track.inFavourite = !track.inFavourite
+        inFavouriteLiveData.postValue(track.inFavourite)
+    }
+
+/*    fun checkTrackInFavourites(){
+        tracksDBInteractorImpl.getFavourites()
+        val tracksInFavourites = tracksDBFavourites.favouritesDao().getTracksId()
+    }*/
 }

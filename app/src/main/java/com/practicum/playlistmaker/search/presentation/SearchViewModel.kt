@@ -23,6 +23,9 @@ class SearchViewModel(application: Application, private val searchInteractor: Se
     private val stateLiveData = MutableLiveData<SearchState>()
     fun observeState(): LiveData<SearchState> = stateLiveData
 
+    private val historyListLiveData = MutableLiveData<ArrayList<Track>>()
+    fun observeHistoryList(): LiveData<ArrayList<Track>> = historyListLiveData
+
     var searchDebounce: Job? = null
 
     fun searchRequest(newSearchText: String) {
@@ -88,8 +91,12 @@ class SearchViewModel(application: Application, private val searchInteractor: Se
         //метод postValue можно выполнять не только в главном потоке
     }
 
-    fun getData(): ArrayList<Track> {
-        return searchInteractor.getHistoryList()
+//    fun getData(): ArrayList<Track> {
+fun getData() {
+//        var historyList = arrayListOf<Track>()
+        viewModelScope.launch {
+            historyListLiveData.postValue(searchInteractor.getHistoryList())}
+//        return historyList
     }
 
     fun clearHistory() {
