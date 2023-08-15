@@ -7,9 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.mediateka.data.db.TrackDBConvertor
-import com.practicum.playlistmaker.mediateka.data.db.TracksDBFavourites
 import com.practicum.playlistmaker.mediateka.domain.interfaces.TracksDBInteractor
-import com.practicum.playlistmaker.mediateka.domain.usecases.TracksDBInteractorImpl
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
@@ -47,11 +45,7 @@ class PlayerViewModel(
     }
 
     fun preparePlayer(track:Track) {
-        viewModelScope.launch {
-            val favouritesTracksIds = tracksDBInteractorImpl.getFavouritesTracksIds()
-            track.inFavourite = favouritesTracksIds.contains(track.trackId)
-            inFavouriteLiveData.postValue(track.inFavourite)
-        }
+        checkTrackInFavourites(track)
         trackInteractorImpl.preparePlayer(this)
         playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
@@ -129,18 +123,11 @@ class PlayerViewModel(
         inFavouriteLiveData.postValue(track.inFavourite)
     }
 
-    /*    fun checkTrackInFavourites(track:Track){
-            viewModelScope.launch {
-                val tracksInFavouritesIds = TracksDBInteractorImpl .getFavoriteIds()
-                track.isFavorite = favoriteTrackIds.contains(track.trackId)
-                inFavouriteLiveData.postValue(track.isFavorite)
-            }
-
-            tracksDBInteractorImpl.getFavourites()
-            val tracksInFavourites = tracksDBFavourites.favouritesDao().getTracksId()
-        }*/
-
-    fun checkTrackInFavourites(track:Track){
-
+    private fun checkTrackInFavourites(track:Track){
+        viewModelScope.launch {
+            val favouritesTracksIds = tracksDBInteractorImpl.getFavouritesTracksIds()
+            track.inFavourite = favouritesTracksIds.contains(track.trackId)
+            inFavouriteLiveData.postValue(track.inFavourite)
+        }
     }
 }
