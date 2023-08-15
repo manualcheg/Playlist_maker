@@ -21,7 +21,6 @@ import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.presentation.SearchViewModel
 import com.practicum.playlistmaker.search.presentation.ui.models.SearchState
 import com.practicum.playlistmaker.utils.Constants
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -83,14 +82,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-//    override fun onResume() {
-//        super.onResume()
-////        trackList.clear()
-////        trackListAdapter = SearchAdapter(trackList)
-////        trackListAdapter.notifyItemRangeChanged(0, trackList.lastIndex)
-//        binding.recyclerViewSearch.visibility = View.GONE
-//    }
-
     private fun emulationSearchButtonInKeyboard() {
         /* эмуляция кнопки для поиска. Изменяет тип кнопки ввода на клавиатуре: */
         binding.searchActivityEdittext.setOnEditorActionListener { _, actionId, _ ->
@@ -137,11 +128,6 @@ class SearchFragment : Fragment() {
         searchViewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
-        /*        searchViewModel.observeHistoryList().observe(viewLifecycleOwner) { historyList ->
-                    selectedTracks = historyList
-                    selectedTracksAdapter = SearchAdapter(selectedTracks)
-        //            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex) //не помогло
-                }*/
     }
 
     private fun workWithButtonClearHistory() {
@@ -215,11 +201,6 @@ class SearchFragment : Fragment() {
     }
 
     private fun buildRecycleViewListenedTracks() {
-        /*
-                searchViewModel.getData()
-        //        selectedTracksAdapter = SearchAdapter(selectedTracks)
-                binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
-                selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)*/
         lifecycleScope.launch {
             selectedTracks = searchViewModel.getData()
             selectedTracksAdapter = SearchAdapter(selectedTracks)

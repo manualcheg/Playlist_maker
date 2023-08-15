@@ -27,8 +27,8 @@ class SearchAdapter(
     private val trackList: MutableList<Track>,
 ) : RecyclerView.Adapter<SearchViewHolder>(), KoinComponent {
 
-    var isClickAllowed = true
-    lateinit var view: View
+    private var isClickAllowed = true
+    private lateinit var view: View
     private val tracksDBFavourites: TracksDBFavourites by inject()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
@@ -67,7 +67,7 @@ class SearchAdapter(
         val currentState = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            view.findViewTreeLifecycleOwner()?.lifecycleScope?.launch() {
+            view.findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
                 delay(CLICK_DEBOUNCE_DELAY_MILLIS)
                 isClickAllowed = true
             }

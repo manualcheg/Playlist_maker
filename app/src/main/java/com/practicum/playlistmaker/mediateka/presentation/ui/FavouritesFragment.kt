@@ -16,7 +16,7 @@ class FavouritesFragment : Fragment() {
 
     private val favouritesFragmentViewModel: FavouritesFragmentViewModel by viewModel()
 
-    private var favouritesTracks: ArrayList<Track>? = ArrayList<Track>()
+    private var favouritesTracks: ArrayList<Track>? = ArrayList()
     private var favouritesTracksAdapter = favouritesTracks?.let { SearchAdapter(it) }
 
     private lateinit var binding: FragmentFavouritesBinding

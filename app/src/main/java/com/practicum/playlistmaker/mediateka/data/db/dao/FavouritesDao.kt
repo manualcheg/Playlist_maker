@@ -2,7 +2,6 @@ package com.practicum.playlistmaker.mediateka.data.db.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.FtsOptions
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -21,8 +20,8 @@ interface FavouritesDao {
 
     @Query("SELECT trackId FROM tracks_liked")
     suspend fun getTracksId(): List<String>
-
-    //Для проверки присустствия в избранном
-    @Query("SELECT trackId FROM tracks_liked WHERE trackId LIKE :searchedTrackId")
-    suspend fun searchTrack(searchedTrackId: String): TrackEntity
+//
+//    //Для проверки присустствия в избранном
+//    @Query("SELECT trackId FROM tracks_liked WHERE trackId LIKE :searchedTrackId")
+//    suspend fun searchTrack(searchedTrackId: String): TrackEntity
 }

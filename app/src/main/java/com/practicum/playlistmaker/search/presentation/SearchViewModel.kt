@@ -23,10 +23,7 @@ class SearchViewModel(application: Application, private val searchInteractor: Se
     private val stateLiveData = MutableLiveData<SearchState>()
     fun observeState(): LiveData<SearchState> = stateLiveData
 
-    private val historyListLiveData = MutableLiveData<ArrayList<Track>>()
-    fun observeHistoryList(): LiveData<ArrayList<Track>> = historyListLiveData
-
-    var searchDebounce: Job? = null
+    private var searchDebounce: Job? = null
 
     fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {

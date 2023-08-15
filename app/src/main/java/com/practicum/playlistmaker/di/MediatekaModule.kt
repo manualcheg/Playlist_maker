@@ -14,7 +14,7 @@ import org.koin.dsl.module
 
 val mediatekaModule = module {
     //создание экземпляра базы данных избранного
-    single<TracksDBFavourites> {
+    single {
         Room.databaseBuilder(
             context = androidContext(),
             klass = TracksDBFavourites::class.java,
@@ -22,7 +22,7 @@ val mediatekaModule = module {
         ).build()
     }
 
-    factory<TrackDBConvertor> { TrackDBConvertor() }
+    factory { TrackDBConvertor() }
 
     single<TracksDBRepository> { TracksDBRepositoryImpl(get(), get()) }
 

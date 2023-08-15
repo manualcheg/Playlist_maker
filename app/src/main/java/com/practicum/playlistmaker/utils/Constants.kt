@@ -6,7 +6,7 @@ class Constants {
         const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
         const val SELECTED_TRACKS = "Selected_tracks"
         const val PLAYBACK_TIME_RENEW_DELAY_MILLIS = 300L
-        const val _00_00 = "00:00"
+        const val time_00_00 = "00:00"
         const val PLAYLISTMAKER_SHAREDPREFS = "Playlistmaker shared prefs"
     }
 }

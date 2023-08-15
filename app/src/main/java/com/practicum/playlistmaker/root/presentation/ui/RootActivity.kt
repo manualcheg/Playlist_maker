@@ -9,7 +9,7 @@ import com.practicum.playlistmaker.databinding.ActivityRootBinding
 
 class RootActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityRootBinding
+    private lateinit var binding: ActivityRootBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -3,7 +3,6 @@ package com.practicum.playlistmaker.mediateka.data.db
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.practicum.playlistmaker.mediateka.data.db.entity.TrackEntity
-import com.practicum.playlistmaker.search.data.dto.TrackDto
 import com.practicum.playlistmaker.search.domain.entities.Track
 
 class TrackDBConvertor {

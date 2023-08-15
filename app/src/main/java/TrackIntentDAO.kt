@@ -1,3 +1,4 @@
+/*
 package com.practicum.playlistmaker.player.domain.dao
 
 import com.practicum.playlistmaker.search.domain.entities.Track
@@ -6,4 +7,4 @@ import com.practicum.playlistmaker.search.domain.entities.Track
 //the main classes where you define your database interactions
 interface TrackIntentDAO {
     fun getTrack(): Track
-}
+}*/

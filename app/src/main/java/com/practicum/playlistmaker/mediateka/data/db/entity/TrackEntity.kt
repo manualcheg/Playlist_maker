@@ -1,10 +1,8 @@
 package com.practicum.playlistmaker.mediateka.data.db.entity
 
-import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalTime
 
 @Entity(tableName = "tracks_liked")
 data class TrackEntity(

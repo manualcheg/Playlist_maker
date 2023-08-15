@@ -46,6 +46,7 @@ class PlayerViewModel(
 
     fun preparePlayer(track:Track) {
         checkTrackInFavourites(track)
+
         trackInteractorImpl.preparePlayer(this)
         playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
@@ -64,7 +65,7 @@ class PlayerViewModel(
     override fun onCompletion() {
         timerJob?.cancel()
         playerStateLiveData.postValue(MediaPlayerState.STATE_PREPARED)
-        playbackTimeLiveData.postValue(Constants._00_00)
+        playbackTimeLiveData.postValue(Constants.time_00_00)
     }
 
     fun onActivityDestroy() {
