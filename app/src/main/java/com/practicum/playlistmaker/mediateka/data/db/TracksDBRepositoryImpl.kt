@@ -24,6 +24,10 @@ class TracksDBRepositoryImpl(
         emit(mapList(favourites))
     }
 
+    override suspend fun getIds(): List<String> {
+        return tracksDB.favouritesDao().getTracksId()
+    }
+
     private fun mapList(favouritesList: List<TrackEntity>): List<Track> {
         return favouritesList.map { track -> trackDbConvertor.map(track)}
     }

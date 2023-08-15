@@ -46,7 +46,12 @@ class PlayerViewModel(
         playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
 
-    fun preparePlayer() {
+    fun preparePlayer(track:Track) {
+        viewModelScope.launch {
+            val favouritesTracksIds = tracksDBInteractorImpl.getFavouritesTracksIds()
+            track.inFavourite = favouritesTracksIds.contains(track.trackId)
+            inFavouriteLiveData.postValue(track.inFavourite)
+        }
         trackInteractorImpl.preparePlayer(this)
         playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
@@ -124,8 +129,18 @@ class PlayerViewModel(
         inFavouriteLiveData.postValue(track.inFavourite)
     }
 
-/*    fun checkTrackInFavourites(){
-        tracksDBInteractorImpl.getFavourites()
-        val tracksInFavourites = tracksDBFavourites.favouritesDao().getTracksId()
-    }*/
+    /*    fun checkTrackInFavourites(track:Track){
+            viewModelScope.launch {
+                val tracksInFavouritesIds = TracksDBInteractorImpl .getFavoriteIds()
+                track.isFavorite = favoriteTrackIds.contains(track.trackId)
+                inFavouriteLiveData.postValue(track.isFavorite)
+            }
+
+            tracksDBInteractorImpl.getFavourites()
+            val tracksInFavourites = tracksDBFavourites.favouritesDao().getTracksId()
+        }*/
+
+    fun checkTrackInFavourites(track:Track){
+
+    }
 }

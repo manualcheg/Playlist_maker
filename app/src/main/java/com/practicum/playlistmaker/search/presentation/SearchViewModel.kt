@@ -91,12 +91,8 @@ class SearchViewModel(application: Application, private val searchInteractor: Se
         //метод postValue можно выполнять не только в главном потоке
     }
 
-//    fun getData(): ArrayList<Track> {
-fun getData() {
-//        var historyList = arrayListOf<Track>()
-        viewModelScope.launch {
-            historyListLiveData.postValue(searchInteractor.getHistoryList())}
-//        return historyList
+    suspend fun getData(): ArrayList<Track> {
+        return searchInteractor.getHistoryList()
     }
 
     fun clearHistory() {

@@ -10,4 +10,5 @@ interface TracksDBInteractor {
     suspend fun delTrack(track: TrackEntity)
 
     suspend fun getFavourites(): Flow<List<Track>>
+    suspend fun getFavouritesTracksIds(): List<String>
 }

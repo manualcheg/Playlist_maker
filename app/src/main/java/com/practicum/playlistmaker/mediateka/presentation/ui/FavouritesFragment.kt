@@ -65,4 +65,9 @@ class FavouritesFragment : Fragment() {
         binding.recyclerViewFavouritesTracks.visibility = View.GONE
         binding.placeholderFragmentFavouritesThereIsNothing.visibility = View.VISIBLE
     }
+
+    override fun onResume() {
+        super.onResume()
+        getFavouritesAndObserveToLiveData()
+    }
 }

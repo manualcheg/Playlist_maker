@@ -52,7 +52,7 @@ class PlayerActivity : AppCompatActivity() {
             this.finish()
         }
 
-        playerViewModel.preparePlayer()
+        playerViewModel.preparePlayer(track)
 
         binding.playPauseButton.setOnClickListener {
             if (track.previewUrl != "") {
@@ -105,11 +105,18 @@ class PlayerActivity : AppCompatActivity() {
         playerViewModel.onActivityDestroy()
     }
 
-    private fun onPrepared() {
+    private fun onPrepared(track: Track) {
         binding.playPauseButton.isEnabled = true
         binding.playPauseButton.visibility = View.VISIBLE
         binding.playbackTime.text = playbackCurrentTime
+        //покраска кнопки "избранное" по данным из трека
         binding.playPauseButton.setImageResource(R.drawable.play_button)
+        val heart = if (track.inFavourite) {
+            R.drawable.player_button_heart_like_red
+        } else {
+            R.drawable.player_button_heart_like
+        }
+        binding.playerButtonLike.setImageResource(heart)
     }
 
     private fun render(playerState: MediaPlayerState, track: Track) {
@@ -120,7 +127,7 @@ class PlayerActivity : AppCompatActivity() {
 
             MediaPlayerState.STATE_PREPARED -> {
                 showActivity(track)
-                showPrepared()
+                showPrepared(track)
             }
 
             MediaPlayerState.STATE_PLAYING -> {
@@ -162,8 +169,8 @@ class PlayerActivity : AppCompatActivity() {
         binding.playerTextValueCountry.text = track.country ?: "-"
     }
 
-    private fun showPrepared() {
-        onPrepared()
+    private fun showPrepared(track: Track) {
+        onPrepared(track)
     }
 
     private fun showPlaying() {

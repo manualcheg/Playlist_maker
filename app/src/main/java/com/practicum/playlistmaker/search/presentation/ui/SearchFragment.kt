@@ -14,12 +14,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.presentation.SearchViewModel
 import com.practicum.playlistmaker.search.presentation.ui.models.SearchState
 import com.practicum.playlistmaker.utils.Constants
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -80,6 +83,14 @@ class SearchFragment : Fragment() {
         }
     }
 
+//    override fun onResume() {
+//        super.onResume()
+////        trackList.clear()
+////        trackListAdapter = SearchAdapter(trackList)
+////        trackListAdapter.notifyItemRangeChanged(0, trackList.lastIndex)
+//        binding.recyclerViewSearch.visibility = View.GONE
+//    }
+
     private fun emulationSearchButtonInKeyboard() {
         /* эмуляция кнопки для поиска. Изменяет тип кнопки ввода на клавиатуре: */
         binding.searchActivityEdittext.setOnEditorActionListener { _, actionId, _ ->
@@ -97,10 +108,13 @@ class SearchFragment : Fragment() {
     private fun subscribeToChangingSharedPrefs() {
         /* Подписка на изменение SharedPreferences  */
         listener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
-            searchViewModel.getData()
-            selectedTracksAdapter = SearchAdapter(selectedTracks)
-            binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
-            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+            lifecycleScope.launch {
+                selectedTracks = searchViewModel.getData()
+                selectedTracksAdapter = SearchAdapter(selectedTracks)
+                binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
+                selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+            }
+
         }
         sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
     }
@@ -123,22 +137,25 @@ class SearchFragment : Fragment() {
         searchViewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
-        searchViewModel.observeHistoryList().observe(viewLifecycleOwner) { historyList ->
-            selectedTracks = historyList
-            selectedTracksAdapter = SearchAdapter(selectedTracks)
-        }
+        /*        searchViewModel.observeHistoryList().observe(viewLifecycleOwner) { historyList ->
+                    selectedTracks = historyList
+                    selectedTracksAdapter = SearchAdapter(selectedTracks)
+        //            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex) //не помогло
+                }*/
     }
 
     private fun workWithButtonClearHistory() {
         /* Кнопка очистки прослушанных треков */
         binding.searchHistoryClearButton.setOnClickListener {
             searchViewModel.clearHistory()
-            searchViewModel.getData()
-//            selectedTracksAdapter = SearchAdapter(selectedTracks)
-            binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
-            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
-            hideUnnecessary()
-            Toast.makeText(requireContext(), "История очищена", Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                selectedTracks = searchViewModel.getData()
+                selectedTracksAdapter = SearchAdapter(selectedTracks)
+                binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
+                selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+                hideUnnecessary()
+                Toast.makeText(requireContext(), "История очищена", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -198,11 +215,17 @@ class SearchFragment : Fragment() {
     }
 
     private fun buildRecycleViewListenedTracks() {
-
-        searchViewModel.getData()
-//        selectedTracksAdapter = SearchAdapter(selectedTracks)
-        binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
-        selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+        /*
+                searchViewModel.getData()
+        //        selectedTracksAdapter = SearchAdapter(selectedTracks)
+                binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
+                selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)*/
+        lifecycleScope.launch {
+            selectedTracks = searchViewModel.getData()
+            selectedTracksAdapter = SearchAdapter(selectedTracks)
+            binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
+            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+        }
     }
 
     // Смена состояний экрана в ответ на изменение LiveData

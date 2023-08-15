@@ -16,20 +16,18 @@ import com.practicum.playlistmaker.player.presentation.ui.PlayerActivity
 import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
 import com.practicum.playlistmaker.utils.Constants.Companion.CLICK_DEBOUNCE_DELAY_MILLIS
 import com.practicum.playlistmaker.utils.Constants.Companion.PLAYLISTMAKER_SHAREDPREFS
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-var isClickAllowed = true
-
 class SearchAdapter(
     private val trackList: MutableList<Track>,
-//    private val tracksDBFavourites: TracksDBFavourites
 ) : RecyclerView.Adapter<SearchViewHolder>(), KoinComponent {
 
-//    var isClickAllowed = true
+    var isClickAllowed = true
     lateinit var view: View
     private val tracksDBFavourites: TracksDBFavourites by inject()
 
@@ -50,7 +48,7 @@ class SearchAdapter(
 
         holder.itemView.setOnClickListener {
             if (isMakedClickable()) {
-                GlobalScope.launch{ //так вообще можно?
+                CoroutineScope(Dispatchers.IO).launch {
                     SearchStorageImpl(sharedPrefs, tracksDBFavourites).saveData(track)
                 }
                 val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
@@ -62,7 +60,7 @@ class SearchAdapter(
     fun setTracks(newTracks: List<Track>) {
         trackList.clear()
         trackList.addAll(newTracks)
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0, newTracks.lastIndex)
     }
 
     private fun isMakedClickable(): Boolean {

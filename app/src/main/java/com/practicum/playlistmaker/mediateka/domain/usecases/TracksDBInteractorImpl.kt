@@ -19,4 +19,8 @@ class TracksDBInteractorImpl(private val tracksDBRepository: TracksDBRepository)
     override suspend fun getFavourites(): Flow<List<Track>> {
         return tracksDBRepository.getFavourites()
     }
+
+    override suspend fun getFavouritesTracksIds(): List<String> {
+        return tracksDBRepository.getIds()
+    }
 }
