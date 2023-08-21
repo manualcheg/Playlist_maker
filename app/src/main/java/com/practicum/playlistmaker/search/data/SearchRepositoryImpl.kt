@@ -65,7 +65,7 @@ class SearchRepositoryImpl(
         }
     }
 
-    override suspend fun getDataFromLocalStorage(): ArrayList<Track> {
+    override suspend fun getDataFromLocalStorage(): List<Track> {
         return searchStorage.getData()
     }
 

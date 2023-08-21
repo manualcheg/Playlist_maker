@@ -31,11 +31,11 @@ class PlayerViewModel(
     private var playerStateLiveData = MutableLiveData<MediaPlayerState>()
     fun getPlayerStateLiveData(): LiveData<MediaPlayerState> = playerStateLiveData
 
-    private val playbackTimeLiveData = MutableLiveData<String?>()
-    val playbackTimeLive: LiveData<String?> = playbackTimeLiveData
+    private val _playbackTimeLiveData = MutableLiveData<String?>()
+    val playbackTimeLiveData: LiveData<String?> = _playbackTimeLiveData
 
-    private val inFavouriteLiveData = MutableLiveData<Boolean>()
-    val inFavouriteLive: LiveData<Boolean> = inFavouriteLiveData
+    private val _inFavouriteLiveData = MutableLiveData<Boolean>()
+    val inFavouriteLiveData: LiveData<Boolean> = _inFavouriteLiveData
 
     private var timerJob: Job? = null
 
@@ -65,7 +65,7 @@ class PlayerViewModel(
     override fun onCompletion() {
         timerJob?.cancel()
         playerStateLiveData.postValue(MediaPlayerState.STATE_PREPARED)
-        playbackTimeLiveData.postValue(Constants.time_00_00)
+        _playbackTimeLiveData.postValue(Constants.time_00_00)
     }
 
     fun onActivityDestroy() {
@@ -99,7 +99,7 @@ class PlayerViewModel(
             while (playerState == MediaPlayerState.STATE_PLAYING) {
 
                 delay(Constants.PLAYBACK_TIME_RENEW_DELAY_MILLIS)
-                playbackTimeLiveData.postValue(
+                _playbackTimeLiveData.postValue(
                     SimpleDateFormat(
                         "mm:ss",
                         Locale.getDefault()
@@ -121,14 +121,14 @@ class PlayerViewModel(
             }
         }
         track.inFavourite = !track.inFavourite
-        inFavouriteLiveData.postValue(track.inFavourite)
+        _inFavouriteLiveData.postValue(track.inFavourite)
     }
 
     private fun checkTrackInFavourites(track:Track){
         viewModelScope.launch {
             val favouritesTracksIds = tracksDBInteractorImpl.getFavouritesTracksIds()
             track.inFavourite = favouritesTracksIds.contains(track.trackId)
-            inFavouriteLiveData.postValue(track.inFavourite)
+            _inFavouriteLiveData.postValue(track.inFavourite)
         }
     }
 }

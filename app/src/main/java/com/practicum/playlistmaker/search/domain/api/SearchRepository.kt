@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface SearchRepository {
     fun searchTracks(expression: String): Flow<Resource<List<Track>>>
-    suspend fun getDataFromLocalStorage(): ArrayList<Track>
+    suspend fun getDataFromLocalStorage(): List<Track>
     suspend fun saveDataToStorage(track: Track)
     fun clearHistoryInStorage()
     fun saveSearchHistoryList(historyList: ArrayList<Track>)

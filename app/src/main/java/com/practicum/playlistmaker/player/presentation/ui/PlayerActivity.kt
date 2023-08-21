@@ -68,7 +68,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun observeToCurrentPositionLiveData() {
         //    Подписка на изменение текущей позиции проигрывания трека
-        playerViewModel.playbackTimeLive.observe(this) {
+        playerViewModel.playbackTimeLiveData.observe(this) {
             binding.playbackTime.text = it
             playbackCurrentTime = it ?: getString(R.string._00_00)
         }
@@ -82,7 +82,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun observeToInFavouriteLiveData() {
-        playerViewModel.inFavouriteLive.observe(this) {
+        playerViewModel.inFavouriteLiveData.observe(this) {
             val heart = if (it) {
                 R.drawable.player_button_heart_like_red
             } else {

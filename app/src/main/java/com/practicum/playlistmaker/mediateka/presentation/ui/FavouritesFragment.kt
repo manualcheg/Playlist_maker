@@ -19,7 +19,8 @@ class FavouritesFragment : Fragment() {
     private var favouritesTracks: ArrayList<Track>? = ArrayList()
     private var favouritesTracksAdapter = favouritesTracks?.let { SearchAdapter(it) }
 
-    private lateinit var binding: FragmentFavouritesBinding
+    //    private lateinit var binding: FragmentFavouritesBinding
+    private var binding: FragmentFavouritesBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,13 +28,13 @@ class FavouritesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFavouritesBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.recyclerViewFavouritesTracks.adapter = favouritesTracksAdapter
+        binding?.recyclerViewFavouritesTracks?.adapter = favouritesTracksAdapter
 
         getFavouritesAndObserveToLiveData()
     }
@@ -54,16 +55,16 @@ class FavouritesFragment : Fragment() {
 
     private fun showContent(tracks: List<Track>) {
         favouritesTracksAdapter = SearchAdapter(tracks as MutableList<Track>)
-        binding.recyclerViewFavouritesTracks.adapter = favouritesTracksAdapter
+        binding?.recyclerViewFavouritesTracks?.adapter = favouritesTracksAdapter
         favouritesTracksAdapter!!.notifyItemRangeChanged(0, favouritesTracks!!.lastIndex)
 
-        binding.recyclerViewFavouritesTracks.visibility = View.VISIBLE
-        binding.placeholderFragmentFavouritesThereIsNothing.visibility = View.GONE
+        binding?.recyclerViewFavouritesTracks?.visibility = View.VISIBLE
+        binding?.placeholderFragmentFavouritesThereIsNothing?.visibility = View.GONE
     }
 
     private fun showEmpty() {
-        binding.recyclerViewFavouritesTracks.visibility = View.GONE
-        binding.placeholderFragmentFavouritesThereIsNothing.visibility = View.VISIBLE
+        binding?.recyclerViewFavouritesTracks?.visibility = View.GONE
+        binding?.placeholderFragmentFavouritesThereIsNothing?.visibility = View.VISIBLE
     }
 
     override fun onResume() {

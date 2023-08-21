@@ -100,7 +100,7 @@ class SearchFragment : Fragment() {
         /* Подписка на изменение SharedPreferences  */
         listener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
             lifecycleScope.launch {
-                selectedTracks = searchViewModel.getData()
+                selectedTracks = searchViewModel.getData() as ArrayList<Track>
                 selectedTracksAdapter = SearchAdapter(selectedTracks)
                 binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
                 selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
@@ -125,7 +125,7 @@ class SearchFragment : Fragment() {
 
     private fun createViewModelAndObserveToLiveData() {
 //          подписываемся на изменение LiveData типа SearchState
-        searchViewModel.observeState().observe(viewLifecycleOwner) {
+        searchViewModel.observeStateLiveData().observe(viewLifecycleOwner) {
             render(it)
         }
     }
@@ -135,7 +135,7 @@ class SearchFragment : Fragment() {
         binding.searchHistoryClearButton.setOnClickListener {
             searchViewModel.clearHistory()
             lifecycleScope.launch {
-                selectedTracks = searchViewModel.getData()
+                selectedTracks = searchViewModel.getData() as ArrayList<Track>
                 selectedTracksAdapter = SearchAdapter(selectedTracks)
                 binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
                 selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
@@ -202,7 +202,7 @@ class SearchFragment : Fragment() {
 
     private fun buildRecycleViewListenedTracks() {
         lifecycleScope.launch {
-            selectedTracks = searchViewModel.getData()
+            selectedTracks = searchViewModel.getData() as ArrayList<Track>
             selectedTracksAdapter = SearchAdapter(selectedTracks)
             binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
             selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
