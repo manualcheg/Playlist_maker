@@ -20,21 +20,22 @@ val searchModule = module {
     }
 
     factory<SearchStorage> {
-        SearchStorageImpl(sharedPrefs = get())
+        SearchStorageImpl(sharedPrefs = get(), tracksDBFavourites = get())
     }
 
-   /* factory<SharedPreferences> {
-        androidContext().getSharedPreferences(
-            Constants.PLAYLISTMAKER_SHAREDPREFS,
-            Context.MODE_PRIVATE
-        )
-    }*/ //эта зависимость от класса уже описана в SettingsModule
+    /* factory<SharedPreferences> {
+         androidContext().getSharedPreferences(
+             Constants.PLAYLISTMAKER_SHAREDPREFS,
+             Context.MODE_PRIVATE
+         )
+     }*/ //эта зависимость от класса уже описана в SettingsModule
 
     factory<SearchRepository> {
         SearchRepositoryImpl(
             networkClient = get(),
             searchStorage = get(),
-            context = androidContext()
+            context = androidContext(),
+            tracksDBFavourites = get()
         )
     }
 

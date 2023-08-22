@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.search.data
 
 import android.content.Context
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.mediateka.data.db.TracksDBFavourites
 import com.practicum.playlistmaker.search.data.dto.TrackSearchRequest
 import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
 import com.practicum.playlistmaker.search.domain.api.SearchRepository
@@ -13,7 +14,8 @@ import kotlinx.coroutines.flow.flow
 class SearchRepositoryImpl(
     private val networkClient: NetworkClient,
     private val searchStorage: SearchStorage,
-    private val context: Context
+    private val context: Context,
+    private val tracksDBFavourites: TracksDBFavourites
 ) : SearchRepository {
     override fun searchTracks(expression: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
@@ -46,6 +48,13 @@ class SearchRepositoryImpl(
                             previewUrl = it.previewUrl ?: ""
                         )
                     }
+                    // установка значений inFavourites для каждого трека из результатов поиска
+                    val trackInFavourites = tracksDBFavourites.favouritesDao().getTracksId()
+                    for (each in track) {
+                        if (trackInFavourites.contains(each.trackId)){
+                            each.inFavourite = true
+                        }
+                    }
                     emit(Resource.Success(track))
                 }
             }
@@ -56,11 +65,11 @@ class SearchRepositoryImpl(
         }
     }
 
-    override fun getDataFromLocalStorage(): ArrayList<Track> {
+    override suspend fun getDataFromLocalStorage(): List<Track> {
         return searchStorage.getData()
     }
 
-    override fun saveDataToStorage(track: Track) {
+    override suspend fun saveDataToStorage(track: Track) {
         searchStorage.saveData(track)
     }
 

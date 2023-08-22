@@ -23,8 +23,8 @@ class TrackRepositoryImpl(private val sharedPrefs: SharedPreferences) :
         val json = sharedPrefs.getString(Constants.SELECTED_TRACKS, "[]")
         val typeToken = object : TypeToken<ArrayList<Track>>() {}.type
         val selectedTracks: ArrayList<Track> = Gson().fromJson(json, typeToken)
-        val track = selectedTracks[0]
-        return track
+        // возвращаем объект track = selectedTracks[0]
+        return selectedTracks[0]
     }
 
     override fun preparePlayer(mediaPlayerPreparator: MediaPlayerPrepare) {

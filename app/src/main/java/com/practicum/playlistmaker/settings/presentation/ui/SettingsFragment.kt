@@ -11,7 +11,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment: Fragment() {
 
-    lateinit var binding: FragmentSettingsBinding
+    private lateinit var binding: FragmentSettingsBinding
 
     private val settingsViewModel: SettingsViewModel by viewModel()
 

@@ -14,15 +14,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.presentation.SearchViewModel
 import com.practicum.playlistmaker.search.presentation.ui.models.SearchState
 import com.practicum.playlistmaker.utils.Constants
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchFragment:Fragment() {
+class SearchFragment : Fragment() {
 
     lateinit var binding: FragmentSearchBinding
 
@@ -43,7 +45,7 @@ class SearchFragment:Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSearchBinding.inflate(inflater,container, false)
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -97,10 +99,13 @@ class SearchFragment:Fragment() {
     private fun subscribeToChangingSharedPrefs() {
         /* Подписка на изменение SharedPreferences  */
         listener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
-            selectedTracks = searchViewModel.getData()
-            selectedTracksAdapter = SearchAdapter(selectedTracks)
-            binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
-            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+            lifecycleScope.launch {
+                selectedTracks = searchViewModel.getData() as ArrayList<Track>
+                selectedTracksAdapter = SearchAdapter(selectedTracks)
+                binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
+                selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+            }
+
         }
         sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
     }
@@ -114,13 +119,13 @@ class SearchFragment:Fragment() {
                 } else {
                     View.GONE
                 }
-            binding.recyclerViewSearch.isVisible = ! binding.layoutOfListenedTracks.isVisible
+            binding.recyclerViewSearch.isVisible = !binding.layoutOfListenedTracks.isVisible
         }
     }
 
     private fun createViewModelAndObserveToLiveData() {
 //          подписываемся на изменение LiveData типа SearchState
-        searchViewModel.observeState().observe(viewLifecycleOwner) {
+        searchViewModel.observeStateLiveData().observe(viewLifecycleOwner) {
             render(it)
         }
     }
@@ -129,12 +134,14 @@ class SearchFragment:Fragment() {
         /* Кнопка очистки прослушанных треков */
         binding.searchHistoryClearButton.setOnClickListener {
             searchViewModel.clearHistory()
-            selectedTracks = searchViewModel.getData()
-            selectedTracksAdapter = SearchAdapter(selectedTracks)
-            binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
-            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
-            hideUnnecessary()
-            Toast.makeText(requireContext(), "История очищена", Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                selectedTracks = searchViewModel.getData() as ArrayList<Track>
+                selectedTracksAdapter = SearchAdapter(selectedTracks)
+                binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
+                selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+                hideUnnecessary()
+                Toast.makeText(requireContext(), "История очищена", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -187,16 +194,19 @@ class SearchFragment:Fragment() {
         /* Скрытие клавиатуры после ввода */
         val view: View? = requireActivity().currentFocus
         if (view != null) {
-            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(requireView().windowToken, 0)
         }
     }
 
     private fun buildRecycleViewListenedTracks() {
-        selectedTracks = searchViewModel.getData()
-        selectedTracksAdapter = SearchAdapter(selectedTracks)
-        binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
-        selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+        lifecycleScope.launch {
+            selectedTracks = searchViewModel.getData() as ArrayList<Track>
+            selectedTracksAdapter = SearchAdapter(selectedTracks)
+            binding.recyclerViewListenedTracks.adapter = selectedTracksAdapter
+            selectedTracksAdapter.notifyItemRangeChanged(0, selectedTracks.lastIndex)
+        }
     }
 
     // Смена состояний экрана в ответ на изменение LiveData

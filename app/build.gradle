@@ -1,16 +1,17 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
     namespace 'com.practicum.playlistmaker'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.practicum.playlistmaker"
         minSdk 23
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -57,4 +58,10 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:2.5.3"
     implementation "androidx.fragment:fragment-ktx:1.5.6"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+
+    // Room
+    def room_version = "2.5.2"
+    implementation("androidx.room:room-runtime:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
 }

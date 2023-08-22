@@ -18,6 +18,10 @@ val playerModule = module {
     }
 
     viewModel {
-        PlayerViewModel(trackInteractorImpl = get())
+        PlayerViewModel(
+            trackInteractorImpl = get(),
+            tracksDBInteractorImpl = get(),
+            dbConvertor = get()
+        )
     }
 }

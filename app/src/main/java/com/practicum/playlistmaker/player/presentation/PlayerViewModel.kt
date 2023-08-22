@@ -1,9 +1,13 @@
 package com.practicum.playlistmaker.player.presentation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.mediateka.data.db.TrackDBConvertor
+import com.practicum.playlistmaker.mediateka.domain.interfaces.TracksDBInteractor
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
@@ -15,7 +19,11 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewModel(),
+class PlayerViewModel(
+    private val trackInteractorImpl: TrackInteractor,
+    private val tracksDBInteractorImpl: TracksDBInteractor,
+    private val dbConvertor: TrackDBConvertor
+) : ViewModel(),
     MediaPlayerPrepare {
 
     private var playerState = MediaPlayerState.STATE_DEFAULT
@@ -23,8 +31,11 @@ class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewMo
     private var playerStateLiveData = MutableLiveData<MediaPlayerState>()
     fun getPlayerStateLiveData(): LiveData<MediaPlayerState> = playerStateLiveData
 
-    private val playbackTimeLiveData = MutableLiveData<String?>()
-    val playbackTimeLive: LiveData<String?> = playbackTimeLiveData
+    private val _playbackTimeLiveData = MutableLiveData<String?>()
+    val playbackTimeLiveData: LiveData<String?> = _playbackTimeLiveData
+
+    private val _inFavouriteLiveData = MutableLiveData<Boolean>()
+    val inFavouriteLiveData: LiveData<Boolean> = _inFavouriteLiveData
 
     private var timerJob: Job? = null
 
@@ -33,7 +44,9 @@ class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewMo
         playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
 
-    fun preparePlayer() {
+    fun preparePlayer(track:Track) {
+        checkTrackInFavourites(track)
+
         trackInteractorImpl.preparePlayer(this)
         playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
@@ -52,7 +65,7 @@ class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewMo
     override fun onCompletion() {
         timerJob?.cancel()
         playerStateLiveData.postValue(MediaPlayerState.STATE_PREPARED)
-        playbackTimeLiveData.postValue(Constants._00_00)
+        _playbackTimeLiveData.postValue(Constants.time_00_00)
     }
 
     fun onActivityDestroy() {
@@ -85,14 +98,37 @@ class PlayerViewModel(private val trackInteractorImpl: TrackInteractor) : ViewMo
         timerJob = viewModelScope.launch {
             while (playerState == MediaPlayerState.STATE_PLAYING) {
 
-                delay(Constants.PLAYBACK_TIME_RENEW_DELAY_MS)
-                playbackTimeLiveData.postValue(
+                delay(Constants.PLAYBACK_TIME_RENEW_DELAY_MILLIS)
+                _playbackTimeLiveData.postValue(
                     SimpleDateFormat(
                         "mm:ss",
                         Locale.getDefault()
                     ).format(trackInteractorImpl.playerGetCurrentPosition())
                 )
             }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun onFavouriteClicked(track: Track) {
+        if (track.inFavourite) {
+            viewModelScope.launch {
+                tracksDBInteractorImpl.delTrack(dbConvertor.map(track))
+            }
+        } else {
+            viewModelScope.launch {
+                tracksDBInteractorImpl.putTrack(dbConvertor.map(track))
+            }
+        }
+        track.inFavourite = !track.inFavourite
+        _inFavouriteLiveData.postValue(track.inFavourite)
+    }
+
+    private fun checkTrackInFavourites(track:Track){
+        viewModelScope.launch {
+            val favouritesTracksIds = tracksDBInteractorImpl.getFavouritesTracksIds()
+            track.inFavourite = favouritesTracksIds.contains(track.trackId)
+            _inFavouriteLiveData.postValue(track.inFavourite)
         }
     }
 }

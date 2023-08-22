@@ -9,7 +9,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.api.SearchInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.presentation.ui.models.SearchState
-import com.practicum.playlistmaker.utils.Constants.Companion.SEARCH_DEBOUNCE_DELAY
+import com.practicum.playlistmaker.utils.Constants.Companion.SEARCH_DEBOUNCE_DELAY_MILLIS
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -21,9 +21,9 @@ class SearchViewModel(application: Application, private val searchInteractor: Se
     private var latestSearchText: String? = ""
 
     private val stateLiveData = MutableLiveData<SearchState>()
-    fun observeState(): LiveData<SearchState> = stateLiveData
+    fun observeStateLiveData(): LiveData<SearchState> = stateLiveData
 
-    var searchDebounce: Job? = null
+    private var searchDebounce: Job? = null
 
     fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
@@ -76,9 +76,9 @@ class SearchViewModel(application: Application, private val searchInteractor: Se
     fun searchDebounce(newSearchText: String) {
         searchDebounce?.cancel()
         searchDebounce = viewModelScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY)
+            delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
             latestSearchText = newSearchText
-            searchRequest(newSearchText ?: "")
+            searchRequest(newSearchText)
         }
     }
 
@@ -88,7 +88,7 @@ class SearchViewModel(application: Application, private val searchInteractor: Se
         //метод postValue можно выполнять не только в главном потоке
     }
 
-    fun getData(): ArrayList<Track> {
+    suspend fun getData(): List<Track> {
         return searchInteractor.getHistoryList()
     }
 

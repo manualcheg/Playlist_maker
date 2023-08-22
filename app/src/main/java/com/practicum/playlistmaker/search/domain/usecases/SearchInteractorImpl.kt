@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.map
 
 class SearchInteractorImpl(private val repository: SearchRepository) : SearchInteractor {
 
+    // вместо Pair сделать класс и использовать
     override fun searchTracks(expression: String): Flow<Pair<List<Track>?, String?>> {
         return repository.searchTracks(expression).map { result ->
             when (result) {
@@ -22,9 +23,9 @@ class SearchInteractorImpl(private val repository: SearchRepository) : SearchInt
         }
     }
 
-    override fun addTrackToHistoryList(track: Track) {
+    override suspend fun addTrackToHistoryList(track: Track) {
 
-        val selectedTracks = repository.getDataFromLocalStorage()
+        val selectedTracks = repository.getDataFromLocalStorage() as ArrayList<Track>
         selectedTracks.remove(selectedTracks.find { it.trackId == track.trackId })
 
         if (selectedTracks.size >= 10) {
@@ -34,7 +35,7 @@ class SearchInteractorImpl(private val repository: SearchRepository) : SearchInt
         repository.saveSearchHistoryList(selectedTracks)
     }
 
-    override fun getHistoryList(): ArrayList<Track> {
+    override suspend fun getHistoryList(): List<Track> {
         return repository.getDataFromLocalStorage()
     }
 

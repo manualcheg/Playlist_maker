@@ -1,9 +1,11 @@
 package com.practicum.playlistmaker.player.presentation.ui
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -25,6 +27,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private val playerViewModel: PlayerViewModel by viewModel()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +39,8 @@ class PlayerActivity : AppCompatActivity() {
 
         playerViewModel.onActivityCreate() //  Запрос начального состояния
 
+        observeToInFavouriteLiveData()
+
         observeToStateLiveData(track)
 
         observeToCurrentPositionLiveData()
@@ -44,7 +49,7 @@ class PlayerActivity : AppCompatActivity() {
             this.finish()
         }
 
-        playerViewModel.preparePlayer()
+        playerViewModel.preparePlayer(track)
 
         binding.playPauseButton.setOnClickListener {
             if (track.previewUrl != "") {
@@ -53,11 +58,17 @@ class PlayerActivity : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.No_context_text), Toast.LENGTH_LONG).show()
             }
         }
+
+        binding.playerButtonLike.setOnClickListener {
+            playerViewModel.onFavouriteClicked(track)
+
+
+        }
     }
 
     private fun observeToCurrentPositionLiveData() {
         //    Подписка на изменение текущей позиции проигрывания трека
-        playerViewModel.playbackTimeLive.observe(this) {
+        playerViewModel.playbackTimeLiveData.observe(this) {
             binding.playbackTime.text = it
             playbackCurrentTime = it ?: getString(R.string._00_00)
         }
@@ -67,6 +78,17 @@ class PlayerActivity : AppCompatActivity() {
         //  Подписка на изменение LiveData состояния плеера из ViewModel в ответ на действия пользователя
         playerViewModel.getPlayerStateLiveData().observe(this) { playerState ->
             render(playerState, track)
+        }
+    }
+
+    private fun observeToInFavouriteLiveData() {
+        playerViewModel.inFavouriteLiveData.observe(this) {
+            val heart = if (it) {
+                R.drawable.player_button_heart_like_red
+            } else {
+                R.drawable.player_button_heart_like
+            }
+            binding.playerButtonLike.setImageResource(heart)
         }
     }
 
@@ -80,11 +102,18 @@ class PlayerActivity : AppCompatActivity() {
         playerViewModel.onActivityDestroy()
     }
 
-    private fun onPrepared() {
+    private fun onPrepared(track: Track) {
         binding.playPauseButton.isEnabled = true
         binding.playPauseButton.visibility = View.VISIBLE
         binding.playbackTime.text = playbackCurrentTime
+        //покраска кнопки "избранное" по данным из трека
         binding.playPauseButton.setImageResource(R.drawable.play_button)
+        val heart = if (track.inFavourite) {
+            R.drawable.player_button_heart_like_red
+        } else {
+            R.drawable.player_button_heart_like
+        }
+        binding.playerButtonLike.setImageResource(heart)
     }
 
     private fun render(playerState: MediaPlayerState, track: Track) {
@@ -95,7 +124,7 @@ class PlayerActivity : AppCompatActivity() {
 
             MediaPlayerState.STATE_PREPARED -> {
                 showActivity(track)
-                showPrepared()
+                showPrepared(track)
             }
 
             MediaPlayerState.STATE_PLAYING -> {
@@ -137,8 +166,8 @@ class PlayerActivity : AppCompatActivity() {
         binding.playerTextValueCountry.text = track.country ?: "-"
     }
 
-    private fun showPrepared() {
-        onPrepared()
+    private fun showPrepared(track: Track) {
+        onPrepared(track)
     }
 
     private fun showPlaying() {
