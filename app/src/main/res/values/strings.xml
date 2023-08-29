@@ -60,4 +60,10 @@
     <string name="textView_text_create_playlist">Создать</string>
     <string name="edittext_text_description_create_playlist">Описание</string>
     <string name="edittext_text_name_create_playlist">Название*</string>
+    <string name="dialogExitTitle">Завершить создание плейлиста?</string>
+    <string name="dialogExitMessage">Все несохраненные данные будут потеряны</string>
+    <string name="dialogExitCancelButton">Отмена</string>
+    <string name="dialogExitAgreeButton">Завершить</string>
+    <string name="photopicker">PhotoPicker</string>
+    <string name="no_media_selected">No media selected</string>
 </resources>

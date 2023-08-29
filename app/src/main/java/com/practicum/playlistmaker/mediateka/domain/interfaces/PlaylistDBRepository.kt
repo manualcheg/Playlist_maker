@@ -8,5 +8,5 @@ interface PlaylistDBRepository {
 
     suspend fun getPlaylist(): Flow<List<PlaylistEntity>>
 
-    suspend fun getTracksId(nameOfPlaylist:String): String?
+//    suspend fun getTracksId(playlistName:String): String?
 }

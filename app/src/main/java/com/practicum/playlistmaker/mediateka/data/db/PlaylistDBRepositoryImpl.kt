@@ -15,7 +15,7 @@ class PlaylistDBRepositoryImpl(private val playlistsDB: PlaylistsDB) : PlaylistD
         emit(playlists)
     }
 
-    override suspend fun getTracksId(nameOfPlaylist:String): String? {
-        return playlistsDB.playlistsDao().getTracksId(nameOfPlaylist)
-    }
+    /*override suspend fun getTracksId(playlistName:String): String? {
+        return playlistsDB.playlistsDao().getTracksId(playlistName)
+    }*/
 }

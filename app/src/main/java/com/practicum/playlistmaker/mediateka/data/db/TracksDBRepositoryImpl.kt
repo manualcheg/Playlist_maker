@@ -19,7 +19,6 @@ class TracksDBRepositoryImpl(
     }
 
     override suspend fun getFavourites(): Flow<List<Track>> = flow {
-//        val favourites = tracksDB.favouritesDao().getFavourites().sortedByDescending { it.timeOfAddition }
         val favourites = tracksDB.favouritesDao().getFavourites()
         emit(mapList(favourites))
     }

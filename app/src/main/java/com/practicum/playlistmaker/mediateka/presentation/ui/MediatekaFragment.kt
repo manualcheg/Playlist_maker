@@ -33,6 +33,7 @@ class MediatekaFragment: Fragment() {
                 1 -> tab.text = getString(R.string.playlists_tab_text)
             }
         }
+        binding.viewPager.currentItem = 1
         tabMediator.attach()
     }
 }

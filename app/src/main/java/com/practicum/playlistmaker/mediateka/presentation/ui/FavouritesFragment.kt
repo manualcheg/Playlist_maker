@@ -19,7 +19,6 @@ class FavouritesFragment : Fragment() {
     private var favouritesTracks: ArrayList<Track>? = ArrayList()
     private var favouritesTracksAdapter = favouritesTracks?.let { SearchAdapter(it) }
 
-    //    private lateinit var binding: FragmentFavouritesBinding
     private var binding: FragmentFavouritesBinding? = null
 
     override fun onCreateView(

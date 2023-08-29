@@ -19,7 +19,8 @@ class TrackDBConvertor {
             primaryGenreName = track.primaryGenreName,
             previewUrl = track.previewUrl,
             country = track.country,
-            timeOfAddition = java.time.LocalTime.now().toString(),
+//            timeOfAddition = java.time.LocalTime.now().toString(),
+            timeOfAddition = System.currentTimeMillis().toString(),
         )
     }
 

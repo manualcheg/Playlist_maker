@@ -1,12 +1,16 @@
 package com.practicum.playlistmaker.di
 
 import androidx.room.Room
+import com.practicum.playlistmaker.mediateka.data.db.PlaylistDBRepositoryImpl
 import com.practicum.playlistmaker.mediateka.data.db.PlaylistsDB
 import com.practicum.playlistmaker.mediateka.data.db.TracksDBFavourites
 import com.practicum.playlistmaker.mediateka.data.db.TrackDBConvertor
 import com.practicum.playlistmaker.mediateka.data.db.TracksDBRepositoryImpl
+import com.practicum.playlistmaker.mediateka.domain.interfaces.PlaylistDBInteractor
+import com.practicum.playlistmaker.mediateka.domain.interfaces.PlaylistDBRepository
 import com.practicum.playlistmaker.mediateka.domain.interfaces.TracksDBInteractor
 import com.practicum.playlistmaker.mediateka.domain.interfaces.TracksDBRepository
+import com.practicum.playlistmaker.mediateka.domain.usecases.PlaylistDBInteractorImpl
 import com.practicum.playlistmaker.mediateka.domain.usecases.TracksDBInteractorImpl
 import com.practicum.playlistmaker.mediateka.presentation.viewmodels.FavouritesFragmentViewModel
 import com.practicum.playlistmaker.mediateka.presentation.viewmodels.PlaylistCreateFragmentViewModel
@@ -28,9 +32,9 @@ val mediatekaModule = module {
 
     single<TracksDBRepository> { TracksDBRepositoryImpl(get(), get()) }
 
-    single<TracksDBInteractor> {TracksDBInteractorImpl(get())}
+    single<TracksDBInteractor> { TracksDBInteractorImpl(get()) }
 
-    viewModel{
+    viewModel {
         FavouritesFragmentViewModel(get())
     }
 
@@ -42,7 +46,11 @@ val mediatekaModule = module {
         ).build()
     }
 
+    single<PlaylistDBRepository> { PlaylistDBRepositoryImpl(get()) }
+
+    single<PlaylistDBInteractor> { PlaylistDBInteractorImpl(get()) }
+
     viewModel {
-        PlaylistCreateFragmentViewModel()
+        PlaylistCreateFragmentViewModel(get())
     }
 }

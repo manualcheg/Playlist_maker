@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.mediateka.presentation.ui
 
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -13,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -23,6 +21,10 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentCreatePlaylistBinding
+import com.practicum.playlistmaker.mediateka.data.db.entity.Playlist
+import com.practicum.playlistmaker.mediateka.data.db.entity.PlaylistEntity
+import com.practicum.playlistmaker.mediateka.presentation.viewmodels.PlaylistCreateFragmentViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
 
@@ -32,13 +34,16 @@ class PlaylistCreateFragment() : Fragment() {
     private var playlistDescription = ""
     private var isImageSet = false
     private var imageUri: Uri? = null
+    private var listOfTrackIds: String = ""
+    private var countOfTracks: Int = 0
+    private val playlistCreateFragmentViewModel: PlaylistCreateFragmentViewModel by viewModel()
 
     val dialogExit by lazy {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Завершить создание плейлиста?")
-            .setMessage("Все несохраненные данные будут потеряны")
-            .setNeutralButton("Отмена") { dialog, which -> }
-            .setPositiveButton("Завершить") { dialog, which ->
+            .setTitle(getString(R.string.dialogExitTitle))
+            .setMessage(getString(R.string.dialogExitMessage))
+            .setNeutralButton(getString(R.string.dialogExitCancelButton)) { dialog, which -> }
+            .setPositiveButton(getString(R.string.dialogExitAgreeButton)) { dialog, which ->
                 findNavController().popBackStack()
             }.create()
     }
@@ -63,34 +68,25 @@ class PlaylistCreateFragment() : Fragment() {
                     imageUri = uri
                     isImageSet = true
                 } else {
-                    Log.d("PhotoPicker", "No media selected")
+                    Log.d(getString(R.string.photopicker), getString(R.string.no_media_selected))
                     isImageSet = false
                 }
             }
 
-        /*val dialogExit = MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Завершить создание плейлиста?")
-            .setMessage("Все несохраненные данные будут потеряны")
-            .setNeutralButton("Отмена") { dialog, which -> }
-            .setPositiveButton("Завершить") { dialog, which ->
-                findNavController().popBackStack()
-            }.create()
-*/
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner, //привязка колбека диспетчера к этому фрагменту
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    workWithDialogExit()
+                }
+            })
+
         binding.imageviewAddPlaylistCover.setOnClickListener {
-            Toast.makeText(requireContext(), "Нажали на картинку", Toast.LENGTH_LONG).show()
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
         binding.searchActivityToolbar.setNavigationOnClickListener {
             workWithDialogExit()
-            /*            if (!(playlistName == "") ||
-                    !playlistDescription.equals("") ||
-                    (isImageSet)
-                ) {
-                    dialogExit.show()
-                } else {
-                    findNavController().popBackStack()
-                }*/
         }
 
         binding.edittextPlaylistName.doOnTextChanged { input, _, _, _ ->
@@ -104,10 +100,19 @@ class PlaylistCreateFragment() : Fragment() {
         }
 
         binding.textViewCreatePlaylistButton.setOnClickListener {
-            if (!isImageSet) {
-                imageUri = Uri.parse(R.drawable.placeholder_no_cover.toString())
+            if (isImageSet) {
+                saveImageToPrivateStorage(imageUri!!)
             }
-            saveImageToPrivateStorage(imageUri!!)
+
+            val playlist = PlaylistEntity(
+                0,
+                playlistName,
+                playlistDescription,
+                imageUri.toString(),
+                listOfTrackIds,
+                countOfTracks
+            )
+            playlistCreateFragmentViewModel.putPlaylist(playlist)
 
             findNavController().popBackStack()
             Toast.makeText(requireContext(), "Плейлист ${playlistName} создан", Toast.LENGTH_LONG)
@@ -117,12 +122,12 @@ class PlaylistCreateFragment() : Fragment() {
 
     private fun saveImageToPrivateStorage(uri: Uri) {
         val filePath =
-            File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum")
+            File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlists")
         if (!filePath.exists()) {
             filePath.mkdirs()
         }
-        val file = File(filePath, "first_cover.jpg")
-        val inputStream = requireActivity().contentResolver.openInputStream(uri)
+        val file = File(filePath, "$playlistName.jpg")
+        val inputStream = requireContext().contentResolver.openInputStream(uri)
         val outputStream = FileOutputStream(file)
         BitmapFactory
             .decodeStream(inputStream)
@@ -130,7 +135,8 @@ class PlaylistCreateFragment() : Fragment() {
     }
 
     private fun workWithDialogExit() {
-        if (playlistName != "" ||
+        if (
+            playlistName != "" ||
             playlistDescription != "" ||
             isImageSet
         ) {
