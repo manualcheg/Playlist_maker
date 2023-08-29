@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.di
 
 import androidx.room.Room
+import com.practicum.playlistmaker.mediateka.data.db.PlaylistsDB
 import com.practicum.playlistmaker.mediateka.data.db.TracksDBFavourites
 import com.practicum.playlistmaker.mediateka.data.db.TrackDBConvertor
 import com.practicum.playlistmaker.mediateka.data.db.TracksDBRepositoryImpl
@@ -8,6 +9,7 @@ import com.practicum.playlistmaker.mediateka.domain.interfaces.TracksDBInteracto
 import com.practicum.playlistmaker.mediateka.domain.interfaces.TracksDBRepository
 import com.practicum.playlistmaker.mediateka.domain.usecases.TracksDBInteractorImpl
 import com.practicum.playlistmaker.mediateka.presentation.viewmodels.FavouritesFragmentViewModel
+import com.practicum.playlistmaker.mediateka.presentation.viewmodels.PlaylistCreateFragmentViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -30,5 +32,17 @@ val mediatekaModule = module {
 
     viewModel{
         FavouritesFragmentViewModel(get())
+    }
+
+    single {
+        Room.databaseBuilder(
+            context = androidContext(),
+            klass = PlaylistsDB::class.java,
+            name = "playlists"
+        ).build()
+    }
+
+    viewModel {
+        PlaylistCreateFragmentViewModel()
     }
 }

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:visibility="visible">
+    android:visibility="visible"
+    tools:context=".mediateka.presentation.ui.PlaylistsFragment">
 
     <LinearLayout
         android:id="@+id/placeholder_fragment_playlist_there_is_nothing"
@@ -17,7 +19,7 @@
         android:visibility="visible">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/placeholder_fragment_favourites_button"
+            android:id="@+id/fragment_favourites_button_create_playlist"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp36"
             android:layout_gravity="center"

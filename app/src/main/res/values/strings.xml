@@ -57,4 +57,7 @@
     <string name="menu_text_search">Поиск</string>
     <string name="menu_text_mediateka">Медиатека</string>
     <string name="menu_text_settings">Настройки</string>
+    <string name="textView_text_create_playlist">Создать</string>
+    <string name="edittext_text_description_create_playlist">Описание</string>
+    <string name="edittext_text_name_create_playlist">Название*</string>
 </resources>
