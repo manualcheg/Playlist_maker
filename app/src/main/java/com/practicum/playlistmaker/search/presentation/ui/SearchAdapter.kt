@@ -10,7 +10,7 @@ import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.mediateka.data.db.TracksDBFavourites
+import com.practicum.playlistmaker.mediateka.favourites.db.TracksDBFavourites
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.player.presentation.ui.PlayerActivity
 import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl

@@ -3,7 +3,7 @@ package com.practicum.playlistmaker.search.data.storage
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.practicum.playlistmaker.mediateka.data.db.TracksDBFavourites
+import com.practicum.playlistmaker.mediateka.favourites.db.TracksDBFavourites
 import com.practicum.playlistmaker.search.data.SearchStorage
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.utils.Constants.Companion.SELECTED_TRACKS

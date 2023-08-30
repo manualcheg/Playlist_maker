@@ -7,7 +7,7 @@
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:visibility="visible"
-    tools:context=".mediateka.presentation.ui.PlaylistsFragment">
+    tools:context=".mediateka.playlists.presentation.ui.PlaylistsFragment">
 
     <LinearLayout
         android:id="@+id/placeholder_fragment_playlist_there_is_nothing"
@@ -58,10 +58,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewFavouritesTracks"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp0"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
 
 </LinearLayout>
 

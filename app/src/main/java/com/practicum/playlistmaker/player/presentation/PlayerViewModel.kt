@@ -6,8 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.playlistmaker.mediateka.data.db.TrackDBConvertor
-import com.practicum.playlistmaker.mediateka.domain.interfaces.TracksDBInteractor
+import com.practicum.playlistmaker.mediateka.favourites.domain.interfaces.TracksDBInteractor
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
@@ -22,7 +21,6 @@ import java.util.Locale
 class PlayerViewModel(
     private val trackInteractorImpl: TrackInteractor,
     private val tracksDBInteractorImpl: TracksDBInteractor,
-    private val dbConvertor: TrackDBConvertor
 ) : ViewModel(),
     MediaPlayerPrepare {
 
@@ -113,11 +111,11 @@ class PlayerViewModel(
     fun onFavouriteClicked(track: Track) {
         if (track.inFavourite) {
             viewModelScope.launch {
-                tracksDBInteractorImpl.delTrack(dbConvertor.map(track))
+                tracksDBInteractorImpl.delTrack(track)
             }
         } else {
             viewModelScope.launch {
-                tracksDBInteractorImpl.putTrack(dbConvertor.map(track))
+                tracksDBInteractorImpl.putTrack(track)
             }
         }
         track.inFavourite = !track.inFavourite

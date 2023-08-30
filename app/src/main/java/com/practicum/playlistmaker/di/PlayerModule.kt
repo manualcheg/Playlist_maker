@@ -21,7 +21,6 @@ val playerModule = module {
         PlayerViewModel(
             trackInteractorImpl = get(),
             tracksDBInteractorImpl = get(),
-            dbConvertor = get()
         )
     }
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".mediateka.presentation.ui.PlaylistCreateFragment">
+    tools:context=".mediateka.playlists.presentation.ui.PlaylistCreateFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/search_activity_toolbar"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/yandex_sans_text_medium"
             android:gravity="center_vertical"
-            android:text="Новый плейлист"
+            android:text="@string/text_new_playlist"
             android:textColor="?android:attr/textColor"
             android:textSize="@dimen/sp22" />
     </com.google.android.material.appbar.MaterialToolbar>

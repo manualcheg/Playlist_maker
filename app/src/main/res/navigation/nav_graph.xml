@@ -17,7 +17,7 @@
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/mediatekaFragment"
-        android:name="com.practicum.playlistmaker.mediateka.presentation.ui.MediatekaFragment"
+        android:name="com.practicum.playlistmaker.mediateka.mediateka.presentation.MediatekaFragment"
         android:label="fragment_mediateka"
         tools:layout="@layout/fragment_mediateka" >
         <action
@@ -26,12 +26,12 @@
     </fragment>
     <fragment
         android:id="@+id/playlistCreateFragment"
-        android:name="com.practicum.playlistmaker.mediateka.presentation.ui.PlaylistCreateFragment"
+        android:name="com.practicum.playlistmaker.mediateka.playlists.presentation.ui.PlaylistCreateFragment"
         android:label="fragment_create_playlist"
         tools:layout="@layout/fragment_create_playlist" />
     <fragment
         android:id="@+id/playlistsFragment"
-        android:name="com.practicum.playlistmaker.mediateka.presentation.ui.PlaylistsFragment"
+        android:name="com.practicum.playlistmaker.mediateka.playlists.presentation.ui.PlaylistsFragment"
         android:label="fragment_playlists"
         tools:layout="@layout/fragment_playlists" >
 
