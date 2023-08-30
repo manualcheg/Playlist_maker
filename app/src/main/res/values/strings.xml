@@ -66,4 +66,5 @@
     <string name="dialogExitAgreeButton">Завершить</string>
     <string name="photopicker">PhotoPicker</string>
     <string name="no_media_selected">No media selected</string>
+    <string name="text_new_playlist">Новый плейлист</string>
 </resources>

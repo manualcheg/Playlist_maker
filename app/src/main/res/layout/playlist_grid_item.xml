@@ -3,18 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginTop="16dp"
+    >
 
     <ImageView
         android:id="@+id/playlistGridItemImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/rounded_corners_shape"
         app:layout_constraintDimensionRatio="1:1"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/playlistGridItemTextViewPlaylistName"
@@ -22,6 +24,8 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/yandex_sans_display_regular"
         android:textSize="12sp"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/playlistGridItemImageView"
         tools:text="Название плейлиста" />
@@ -32,6 +36,8 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/yandex_sans_display_regular"
         android:gravity="start"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/playlistGridItemTextViewPlaylistName"
