@@ -18,10 +18,11 @@ class PlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         playlistName.text = playlist.playlistName
         countOfTracks.text = playlist.countOfTracks.toString()
 
+        // TODO: убрать Glide?
         Glide.with(image)
             .load(playlist.playlistCover)
             .placeholder(R.drawable.placeholder_album_cover)
-            .circleCrop()
+            .centerCrop()
             .transform(RoundedCorners(itemView.resources.getDimensionPixelSize(R.dimen.dp8)))
             .into(image)
     }

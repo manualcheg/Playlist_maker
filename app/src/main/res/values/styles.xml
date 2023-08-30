@@ -80,6 +80,9 @@
     <style name="TextInputLayoutCreatePlaylistStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="android:textColorHint">?android:attr/textColor</item>
         <item name="android:textColor">?android:attr/textColor</item>
+        <item name="boxStrokeColor">@drawable/my_mtrl_outlined_stroke_color</item>
+        <item name="hintTextColor">@drawable/my_mtrl_outlined_stroke_color</item>
+
 <!--        <item name="colorControlActivated">@color/yp_blue</item>-->
     </style>
 </resources>

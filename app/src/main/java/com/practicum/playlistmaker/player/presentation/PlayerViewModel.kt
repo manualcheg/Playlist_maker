@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.mediateka.favourites.domain.interfaces.TracksDBInteractor
+import com.practicum.playlistmaker.mediateka.playlists.domain.interfaces.PlaylistDBInteractor
+import com.practicum.playlistmaker.mediateka.playlists.domain.usecases.PlaylistDBInteractorImpl
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
@@ -21,6 +23,7 @@ import java.util.Locale
 class PlayerViewModel(
     private val trackInteractorImpl: TrackInteractor,
     private val tracksDBInteractorImpl: TracksDBInteractor,
+    private val playlistDBInteractorImpl: PlaylistDBInteractor
 ) : ViewModel(),
     MediaPlayerPrepare {
 

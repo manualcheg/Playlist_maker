@@ -19,6 +19,7 @@
         <item name="grayWhite">@color/yp_text_gray</item>
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
         <item name="whiteBlack">@color/white</item>
+
     </style>
 
     <style name="NotCapsButton" parent="Widget.AppCompat.Button">

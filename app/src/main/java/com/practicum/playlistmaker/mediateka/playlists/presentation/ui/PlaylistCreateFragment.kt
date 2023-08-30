@@ -121,6 +121,7 @@ class PlaylistCreateFragment : Fragment() {
     }
 
     private fun setImage(uri: Uri) {
+        //TODO: убрать Glide
         Glide.with(binding.imageviewAddPlaylistCover)
             .load(uri)
             .placeholder(R.drawable.placeholder_no_cover)
