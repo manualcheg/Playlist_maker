@@ -49,11 +49,6 @@ class PlaylistsFragment : Fragment() {
         }
 
         binding.fragmentFavouritesButtonCreatePlaylist.setOnClickListener {
-/*            parentFragment?.parentFragmentManager?.commit {
-                setReorderingAllowed(true)
-                replace(R.id.rootFragmentContainerView, PlaylistCreateFragment())
-                addToBackStack(null)
-            }*/
             findNavController().navigate(R.id.action_mediatekaFragment_to_playlistCreateFragment)
         }
     }

@@ -67,4 +67,5 @@
     <string name="photopicker">PhotoPicker</string>
     <string name="no_media_selected">No media selected</string>
     <string name="text_new_playlist">Новый плейлист</string>
+    <string name="text_add_to_playlist">Добавить в плейлист</string>
 </resources>

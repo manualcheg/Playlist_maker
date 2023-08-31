@@ -4,13 +4,18 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
+import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
+import com.practicum.playlistmaker.mediateka.playlists.presentation.ui.PlaylistCreateFragment
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.presentation.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
@@ -32,6 +37,42 @@ class PlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        val bottomSheetContainer = binding.bottomSheet.root
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        binding.bottomSheet.fragmentFavouritesButtonCreatePlaylist.setOnClickListener {
+            supportFragmentManager.commit {
+                replace(R.id.rootFragmentContainerView, PlaylistCreateFragment())
+                    .setReorderingAllowed(true)
+                    .addToBackStack("welcomeScreen")
+            }
+        }
+
+        bottomSheetBehavior!!.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.bg.visibility = View.GONE
+                    }
+
+                    else -> {
+                        binding.bg.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+        binding.playerButtonAddToPlaylist.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
 
         playbackCurrentTime = getString(R.string._00_00)
 
@@ -61,8 +102,6 @@ class PlayerActivity : AppCompatActivity() {
 
         binding.playerButtonLike.setOnClickListener {
             playerViewModel.onFavouriteClicked(track)
-
-
         }
     }
 
