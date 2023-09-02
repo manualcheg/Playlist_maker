@@ -68,4 +68,6 @@
     <string name="no_media_selected">No media selected</string>
     <string name="text_new_playlist">Новый плейлист</string>
     <string name="text_add_to_playlist">Добавить в плейлист</string>
+    <string name="cover_of_playlist">cover of playlist</string>
+    <string name="place_to_add_playlist_cover">place to add playlist cover</string>
 </resources>
