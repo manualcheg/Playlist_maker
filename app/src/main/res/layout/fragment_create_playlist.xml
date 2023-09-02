@@ -45,9 +45,9 @@
             android:id="@+id/imageview_add_playlist_cover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/placeholder_chose_image"
             android:scaleType="center"
-            />
+            android:src="@drawable/placeholder_chose_image"
+            android:contentDescription="@string/place_to_add_playlist_cover" />
     </androidx.cardview.widget.CardView>
 
     <com.google.android.material.textfield.TextInputLayout

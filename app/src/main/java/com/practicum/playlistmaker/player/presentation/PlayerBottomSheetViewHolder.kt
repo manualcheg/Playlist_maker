@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.mediateka.playlists.presentation
+package com.practicum.playlistmaker.player.presentation
 
 import android.view.View
 import android.widget.ImageView
@@ -9,27 +9,22 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
 
-class PlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    private val image: ImageView = itemView.findViewById(R.id.playlistGridItemImageView)
-    private val playlistName: TextView = itemView.findViewById(R.id.playlistGridItemTextViewPlaylistName)
-    private val tracksCount: TextView = itemView.findViewById(R.id.playlistGridItemTextViewCountOfTracks)
+class PlayerBottomSheetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val image: ImageView = itemView.findViewById(R.id.bottom_sheet_recyclerview_image_cover)
+    private val playlistName: TextView = itemView.findViewById(R.id.bottom_sheet_recyclerview_playlist_name)
+    private val tracksCount: TextView = itemView.findViewById(R.id.bottom_sheet_recyclerview_track_count)
     private var countOfTracks = 1
 
-    fun bind(playlist:Playlist){
+    fun bind(playlist: Playlist) {
         playlistName.text = playlist.playlistName
         countOfTracks = playlist.countOfTracks
-        tracksCount.text = buildString {
-        append(playlist.countOfTracks.toString())
-        append(" ")
-        append(defineWord())
-    }
+        "${playlist.countOfTracks} ${defineWord()}".also { tracksCount.text = it }
 
-        // TODO: убрать Glide?
         Glide.with(image)
             .load(playlist.playlistCover)
             .placeholder(R.drawable.placeholder_album_cover)
             .centerCrop()
-            .transform(RoundedCorners(itemView.resources.getDimensionPixelSize(R.dimen.dp8)))
+            .transform(RoundedCorners(itemView.resources.getDimensionPixelSize(R.dimen.dp4)))
             .into(image)
     }
 
@@ -39,9 +34,9 @@ class PlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             return "треков"
         }
         return when (countOfTracks % 10) {
-            0, in 5..9 -> {"треков"}
-            1 -> {"трек"}
-            else -> {"трека"}
-        }
+                0, in 5..9 -> {"треков"}
+                1 -> {"трек"}
+                else -> {"трека"}
+            }
     }
 }

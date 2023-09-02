@@ -19,7 +19,10 @@ class PlaylistDBInteractorImpl(private val playlistDBRepository: PlaylistDBRepos
         TODO("Not yet implemented")
     }
 
-    override suspend fun putTrackInPlaylist(trackId: String, nameOfPlaylist: String) {
+    /*override suspend fun putTrackInPlaylist(trackId:String, playlistId:Long) {
         TODO("Not yet implemented")
-    }
+
+
+        playlistDBRepository.putPlaylist(updatedPlaylist)
+    }*/
 }

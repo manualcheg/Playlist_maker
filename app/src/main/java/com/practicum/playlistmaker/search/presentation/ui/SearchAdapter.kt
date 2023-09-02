@@ -1,24 +1,19 @@
 package com.practicum.playlistmaker.search.presentation.ui
 
 import android.content.Context.MODE_PRIVATE
-import android.content.Intent
 import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.mediateka.favourites.db.TracksDBFavourites
 import com.practicum.playlistmaker.search.domain.entities.Track
-import com.practicum.playlistmaker.player.presentation.ui.PlayerActivity
 import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
-import com.practicum.playlistmaker.utils.Constants.Companion.CLICK_DEBOUNCE_DELAY_MILLIS
 import com.practicum.playlistmaker.utils.Constants.Companion.PLAYLISTMAKER_SHAREDPREFS
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -27,7 +22,6 @@ class SearchAdapter(
     private val trackList: MutableList<Track>,
 ) : RecyclerView.Adapter<SearchViewHolder>(), KoinComponent {
 
-    private var isClickAllowed = true
     private lateinit var view: View
     private val tracksDBFavourites: TracksDBFavourites by inject()
 
@@ -47,31 +41,26 @@ class SearchAdapter(
             holder.itemView.context.getSharedPreferences(PLAYLISTMAKER_SHAREDPREFS, MODE_PRIVATE)
 
         holder.itemView.setOnClickListener {
-            if (isMakedClickable()) {
                 CoroutineScope(Dispatchers.IO).launch {
                     SearchStorageImpl(sharedPrefs, tracksDBFavourites).saveData(track)
                 }
-                val intent = Intent(holder.itemView.context, PlayerActivity::class.java)
-                holder.itemView.context.startActivity(intent)
+            //вариант
+            /*                val prevousFragment = holder.itemView.findNavController().currentBackStackEntry?.destination?.id
+                            when (prevousFragment){
+                                R.id.searchFragment -> {
+                                    holder.itemView.findNavController().navigate(R.id.action_searchFragment_to_playerFragment)
+                                }
+                                else -> {
+                                    holder.itemView.findNavController().navigate(R.id.action_mediatekaFragment_to_playerFragment)
+                                }
+                            }*/
+                holder.itemView.findNavController().navigate(R.id.moveToPlayerFragment)
             }
-        }
     }
 
     fun setTracks(newTracks: List<Track>) {
         trackList.clear()
         trackList.addAll(newTracks)
         notifyItemRangeChanged(0, newTracks.lastIndex)
-    }
-
-    private fun isMakedClickable(): Boolean {
-        val currentState = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            view.findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
-                delay(CLICK_DEBOUNCE_DELAY_MILLIS)
-                isClickAllowed = true
-            }
-        }
-        return currentState
     }
 }

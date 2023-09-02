@@ -24,8 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/placeholder_chose_image"
-            android:scaleType="center"
-            />
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/cover_of_playlist" />
 
     </androidx.cardview.widget.CardView>
 

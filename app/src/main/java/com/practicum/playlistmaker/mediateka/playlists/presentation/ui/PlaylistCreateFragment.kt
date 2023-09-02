@@ -1,11 +1,10 @@
 package com.practicum.playlistmaker.mediateka.playlists.presentation.ui
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,10 +22,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentCreatePlaylistBinding
 import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
-import com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels.PlaylistCreateFragmentViewModel
+import com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels.PlaylistCreateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.io.FileOutputStream
 
 class PlaylistCreateFragment : Fragment() {
     private lateinit var binding: FragmentCreatePlaylistBinding
@@ -36,7 +33,7 @@ class PlaylistCreateFragment : Fragment() {
     private var imageUri: Uri? = null
     private var listOfTrackIds: String = ""
     private var countOfTracks: Int = 0
-    private val playlistCreateFragmentViewModel: PlaylistCreateFragmentViewModel by viewModel()
+    private val playlistCreateViewModel: PlaylistCreateViewModel by viewModel()
 
     private val dialogExit by lazy {
         MaterialAlertDialogBuilder(requireContext())
@@ -52,7 +49,7 @@ class PlaylistCreateFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentCreatePlaylistBinding.inflate(inflater)
         return binding.root
     }
@@ -64,8 +61,10 @@ class PlaylistCreateFragment : Fragment() {
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
+                    // выдача прав приложению права чтения на uri
+                    val name = requireContext().packageName
+                    requireContext().grantUriPermission(name, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     setImage(uri)
-//                    binding.imageviewAddPlaylistCover.setImageURI(uri)
                     imageUri = uri
                     isImageSet = true
                 } else {
@@ -83,8 +82,7 @@ class PlaylistCreateFragment : Fragment() {
             })
 
         binding.imageviewAddPlaylistCover.setOnClickListener {
-            playlistCreateFragmentViewModel.pickMediaLaunch(pickMedia)
-//            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            playlistCreateViewModel.pickMediaLaunch(pickMedia)
         }
 
         binding.searchActivityToolbar.setNavigationOnClickListener {
@@ -103,7 +101,7 @@ class PlaylistCreateFragment : Fragment() {
 
         binding.textViewCreatePlaylistButton.setOnClickListener {
             if (isImageSet) {
-                saveImageToPrivateStorage(imageUri!!)
+                playlistCreateViewModel.saveImageToPrivateStorage(imageUri!!, playlistName, requireContext())
             }
             val playlist = Playlist(
                 0,
@@ -113,7 +111,7 @@ class PlaylistCreateFragment : Fragment() {
                 listOfTrackIds,
                 countOfTracks
             )
-            playlistCreateFragmentViewModel.putPlaylist(playlist)
+            playlistCreateViewModel.putPlaylist(playlist)
             findNavController().popBackStack()
             Toast.makeText(requireContext(), "Плейлист $playlistName создан", Toast.LENGTH_LONG)
                 .show()
@@ -121,27 +119,12 @@ class PlaylistCreateFragment : Fragment() {
     }
 
     private fun setImage(uri: Uri) {
-        //TODO: убрать Glide
         Glide.with(binding.imageviewAddPlaylistCover)
             .load(uri)
             .placeholder(R.drawable.placeholder_no_cover)
             .centerCrop()
             .transform(RoundedCorners(this@PlaylistCreateFragment.resources.getDimensionPixelSize(R.dimen.dp8)))
             .into(binding.imageviewAddPlaylistCover)
-    }
-
-    private fun saveImageToPrivateStorage(uri: Uri) {
-        val filePath =
-            File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlists")
-        if (!filePath.exists()) {
-            filePath.mkdirs()
-        }
-        val file = File(filePath, "$playlistName.jpg")
-        val inputStream = requireActivity().contentResolver.openInputStream(uri)
-        val outputStream = FileOutputStream(file)
-        BitmapFactory
-            .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
     }
 
     private fun workWithDialogExit() {

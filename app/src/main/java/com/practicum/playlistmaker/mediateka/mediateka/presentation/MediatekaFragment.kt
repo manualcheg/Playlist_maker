@@ -10,7 +10,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentMediatekaBinding
 
 
-class MediatekaFragment: Fragment() {
+class MediatekaFragment : Fragment() {
     private lateinit var binding: FragmentMediatekaBinding
     private lateinit var tabMediator: TabLayoutMediator
 
@@ -18,7 +18,7 @@ class MediatekaFragment: Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentMediatekaBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -33,7 +33,11 @@ class MediatekaFragment: Fragment() {
                 1 -> tab.text = getString(R.string.playlists_tab_text)
             }
         }
-        binding.viewPager.currentItem = 1
         tabMediator.attach()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        tabMediator.detach()
     }
 }

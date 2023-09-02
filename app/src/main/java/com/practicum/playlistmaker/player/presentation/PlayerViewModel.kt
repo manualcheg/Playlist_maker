@@ -7,8 +7,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.mediateka.favourites.domain.interfaces.TracksDBInteractor
+import com.practicum.playlistmaker.mediateka.playlists.domain.PlaylistsState
+import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
 import com.practicum.playlistmaker.mediateka.playlists.domain.interfaces.PlaylistDBInteractor
-import com.practicum.playlistmaker.mediateka.playlists.domain.usecases.PlaylistDBInteractorImpl
+import com.practicum.playlistmaker.player.domain.ResultAddTrack
 import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
@@ -38,6 +40,12 @@ class PlayerViewModel(
     private val _inFavouriteLiveData = MutableLiveData<Boolean>()
     val inFavouriteLiveData: LiveData<Boolean> = _inFavouriteLiveData
 
+    private val _stateLiveData = MutableLiveData<PlaylistsState>()
+    fun stateLiveData(): LiveData<PlaylistsState> = _stateLiveData
+
+    private val _resultOfAddTrack = MutableLiveData<ResultAddTrack>()
+    fun resultOfAddTrack(): LiveData<ResultAddTrack> = _resultOfAddTrack
+
     private var timerJob: Job? = null
 
     fun onActivityCreate() {
@@ -45,7 +53,7 @@ class PlayerViewModel(
         playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
 
-    fun preparePlayer(track:Track) {
+    fun preparePlayer(track: Track) {
         checkTrackInFavourites(track)
 
         trackInteractorImpl.preparePlayer(this)
@@ -125,11 +133,46 @@ class PlayerViewModel(
         _inFavouriteLiveData.postValue(track.inFavourite)
     }
 
-    private fun checkTrackInFavourites(track:Track){
+    private fun checkTrackInFavourites(track: Track) {
         viewModelScope.launch {
             val favouritesTracksIds = tracksDBInteractorImpl.getFavouritesTracksIds()
             track.inFavourite = favouritesTracksIds.contains(track.trackId)
             _inFavouriteLiveData.postValue(track.inFavourite)
         }
+    }
+
+    fun getPlaylists() {
+        viewModelScope.launch {
+            playlistDBInteractorImpl.getPlaylist().collect { listOfPlaylists ->
+                if (listOfPlaylists.isEmpty()) {
+                    _stateLiveData.postValue(PlaylistsState.Empty())
+                } else {
+                    _stateLiveData.postValue(PlaylistsState.Content(listOfPlaylists))
+                }
+            }
+        }
+    }
+
+    fun putTrackToPlaylist(playlist: Playlist, trackId: String) {
+        val listTracksId = java.util.ArrayList(playlist.listOfTracksId?.split(",")!!)
+        if (listTracksId.contains(trackId)) {
+            _resultOfAddTrack.postValue(ResultAddTrack("Трек уже добавлен в плейлист ${playlist.playlistName}",false))
+        } else {
+            addTrackToPlaylistDB(listTracksId, trackId, playlist)
+        }
+    }
+
+    private fun addTrackToPlaylistDB(listTracksId: List<String>?, trackId: String, playlist: Playlist) {
+        val arrayListTracksId: List<String>? = listTracksId
+        (arrayListTracksId as ArrayList<String>).add(trackId)
+        arrayListTracksId.remove("")
+        val newListTracksId = arrayListTracksId.joinToString(separator = ",")
+
+        playlist.listOfTracksId = newListTracksId
+        playlist.countOfTracks = arrayListTracksId.size
+        viewModelScope.launch {
+            playlistDBInteractorImpl.putPlaylist(playlist)
+        }
+        _resultOfAddTrack.postValue(ResultAddTrack("Добавлено в плейлист ${playlist.playlistName}", true))
     }
 }

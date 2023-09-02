@@ -32,9 +32,9 @@ class SearchViewModel(application: Application, private val searchInteractor: Se
             viewModelScope.launch {
                 //метод searchTracks возвращает Flow:
                 searchInteractor.searchTracks(newSearchText)
-                    .collect { pair ->
-                        val foundTracks = pair.first
-                        val errorMessage = pair.second
+                    .collect { searchResult ->
+                        val foundTracks = searchResult.list
+                        val errorMessage = searchResult.message
 
                         if (foundTracks != null) {
                             tracks.clear()

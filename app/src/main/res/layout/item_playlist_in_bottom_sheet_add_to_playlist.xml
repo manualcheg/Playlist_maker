@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp61"
@@ -11,13 +10,14 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:id="@+id/image_cover"
+        android:id="@+id/bottom_sheet_recyclerview_image_cover"
         android:layout_width="@dimen/dp45"
         android:layout_height="@dimen/dp45"
         android:layout_marginStart="@dimen/dp13"
         android:layout_marginTop="@dimen/dp8"
         android:layout_marginEnd="@dimen/dp8"
         android:layout_marginBottom="@dimen/dp8"
+        android:scaleType="centerCrop"
         android:contentDescription="@string/track_cover_art" />
 
     <LinearLayout
@@ -28,7 +28,7 @@
         android:paddingVertical="@dimen/dp14">
 
         <TextView
-            android:id="@+id/track_name"
+            android:id="@+id/bottom_sheet_recyclerview_playlist_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -40,11 +40,10 @@
             tools:text="@string/tools_tint_song_name" />
 
         <TextView
-            android:id="@+id/artist_name"
+            android:id="@+id/bottom_sheet_recyclerview_track_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:layout_weight="1"
             android:ellipsize="end"
             android:fontFamily="@font/yandex_sans_display_regular"
             android:maxLines="1"

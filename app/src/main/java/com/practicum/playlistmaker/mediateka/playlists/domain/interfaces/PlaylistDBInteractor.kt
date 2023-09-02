@@ -10,7 +10,7 @@ interface PlaylistDBInteractor {
 
     suspend fun getTracksIds(nameOfPlaylist:String): String
 
-    suspend fun putTrackInPlaylist(trackId:String, nameOfPlaylist:String)
+//    suspend fun putTrackInPlaylist(trackId:String, playlistId:Long)
 
 //    suspend fun updateTrack(track:PlaylistUpdateTuple)
 }
