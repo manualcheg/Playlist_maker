@@ -15,6 +15,7 @@ import com.practicum.playlistmaker.player.domain.entities.MediaPlayerState
 import com.practicum.playlistmaker.player.domain.interfaces.MediaPlayerPrepare
 import com.practicum.playlistmaker.player.domain.interfaces.TrackInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
+import com.practicum.playlistmaker.search.presentation.SingleLiveEvent
 import com.practicum.playlistmaker.utils.Constants
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -43,15 +44,12 @@ class PlayerViewModel(
     private val _stateLiveData = MutableLiveData<PlaylistsState>()
     fun stateLiveData(): LiveData<PlaylistsState> = _stateLiveData
 
-    private val _resultOfAddTrack = MutableLiveData<ResultAddTrack>()
+    private val _resultOfAddTrack = SingleLiveEvent<ResultAddTrack>()
     fun resultOfAddTrack(): LiveData<ResultAddTrack> = _resultOfAddTrack
 
     private var timerJob: Job? = null
 
     var bottomSheetMustBeCollapsed = false
-    /*private val _bottomSheetMustBeCollapsed = MutableLiveData<Boolean>()
-    val bottomSheetMustBeCollapsed = MutableLiveData<Boolean>()
-    var countOfPlaylists:Int = 0*/
 
     fun onActivityCreate() {
         // сообщение начального состояния
@@ -154,7 +152,6 @@ class PlayerViewModel(
                 } else {
                     _stateLiveData.postValue(PlaylistsState.Content(listOfPlaylists))
                 }
-//                countOfPlaylists = listOfPlaylists.size
             }
         }
     }
@@ -162,13 +159,22 @@ class PlayerViewModel(
     fun putTrackToPlaylist(playlist: Playlist, trackId: String) {
         val listTracksId = java.util.ArrayList(playlist.listOfTracksId?.split(",")!!)
         if (listTracksId.contains(trackId)) {
-            _resultOfAddTrack.postValue(ResultAddTrack("Трек уже добавлен в плейлист ${playlist.playlistName}",false))
+            _resultOfAddTrack.postValue(
+                ResultAddTrack(
+                    "Трек уже добавлен в плейлист ${playlist.playlistName}",
+                    false
+                )
+            )
         } else {
             addTrackToPlaylistDB(listTracksId, trackId, playlist)
         }
     }
 
-    private fun addTrackToPlaylistDB(listTracksId: List<String>?, trackId: String, playlist: Playlist) {
+    private fun addTrackToPlaylistDB(
+        listTracksId: List<String>?,
+        trackId: String,
+        playlist: Playlist
+    ) {
         val arrayListTracksId: List<String>? = listTracksId
         (arrayListTracksId as ArrayList<String>).add(trackId)
         arrayListTracksId.remove("")
@@ -179,6 +185,11 @@ class PlayerViewModel(
         viewModelScope.launch {
             playlistDBInteractorImpl.putPlaylist(playlist)
         }
-        _resultOfAddTrack.postValue(ResultAddTrack("Добавлено в плейлист ${playlist.playlistName}", true))
+        _resultOfAddTrack.postValue(
+            ResultAddTrack(
+                "Добавлено в плейлист ${playlist.playlistName}",
+                true
+            )
+        )
     }
 }

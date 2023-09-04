@@ -41,21 +41,11 @@ class SearchAdapter(
             holder.itemView.context.getSharedPreferences(PLAYLISTMAKER_SHAREDPREFS, MODE_PRIVATE)
 
         holder.itemView.setOnClickListener {
-                CoroutineScope(Dispatchers.IO).launch {
-                    SearchStorageImpl(sharedPrefs, tracksDBFavourites).saveData(track)
-                }
-            //вариант
-                            /*val prevousFragment = holder.itemView.findNavController().currentBackStackEntry?.destination?.id
-                            when (prevousFragment){
-                                R.id.searchFragment -> {
-                                    holder.itemView.findNavController().navigate(R.id.action_searchFragment_to_playerFragment)
-                                }
-                                else -> {
-                                    holder.itemView.findNavController().navigate(R.id.action_mediatekaFragment_to_playerFragment)
-                                }
-                            }*/
-                holder.itemView.findNavController().navigate(R.id.moveToPlayerFragment)
+            CoroutineScope(Dispatchers.IO).launch {
+                SearchStorageImpl(sharedPrefs, tracksDBFavourites).saveData(track)
             }
+            holder.itemView.findNavController().navigate(R.id.moveToPlayerFragment)
+        }
     }
 
     fun setTracks(newTracks: List<Track>) {

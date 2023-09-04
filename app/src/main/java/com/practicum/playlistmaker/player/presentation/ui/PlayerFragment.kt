@@ -2,7 +2,6 @@ package com.practicum.playlistmaker.player.presentation.ui
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -101,11 +100,11 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
 
     private fun observeToResultOfAddToPlaylist() {
         playerViewModel.resultOfAddTrack().observe(viewLifecycleOwner) { resultAddTrack ->
-            Toast.makeText(
-                requireContext(),
-                resultAddTrack.message,
-                Toast.LENGTH_SHORT
-            ).show()
+                Toast.makeText(
+                    requireContext(),
+                    resultAddTrack.message,
+                    Toast.LENGTH_SHORT
+                ).show()
             if (resultAddTrack.success) {
                 bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
             }
@@ -242,6 +241,7 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
         }
 
         binding.bottomSheet.fragmentFavouritesButtonCreatePlaylist.setOnClickListener {
+//          Вариант поведения по проекту. Нелогичный.
 //            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
             playerViewModel.bottomSheetMustBeCollapsed = true
             playerViewModel.onActivityDestroy()  //костыль

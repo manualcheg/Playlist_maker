@@ -1,3 +1,3 @@
 package com.practicum.playlistmaker.player.domain
 
-data class ResultAddTrack(val message:String, val success:Boolean)
+data class ResultAddTrack(var message:String, var success:Boolean)
