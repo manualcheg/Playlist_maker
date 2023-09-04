@@ -45,7 +45,7 @@ class SearchAdapter(
                     SearchStorageImpl(sharedPrefs, tracksDBFavourites).saveData(track)
                 }
             //вариант
-            /*                val prevousFragment = holder.itemView.findNavController().currentBackStackEntry?.destination?.id
+                            /*val prevousFragment = holder.itemView.findNavController().currentBackStackEntry?.destination?.id
                             when (prevousFragment){
                                 R.id.searchFragment -> {
                                     holder.itemView.findNavController().navigate(R.id.action_searchFragment_to_playerFragment)

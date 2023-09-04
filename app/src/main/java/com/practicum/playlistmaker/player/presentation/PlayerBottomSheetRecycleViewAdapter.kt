@@ -12,7 +12,10 @@ import com.practicum.playlistmaker.utils.Constants
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PlayerBottomSheetRecycleViewAdapter(private val listOfPlaylists: List<Playlist>, private val playlistClickListener: PlaylistClickListener) :
+class PlayerBottomSheetRecycleViewAdapter(
+    private val listOfPlaylists: List<Playlist>,
+    private val playlistClickListener: PlaylistClickListener
+) :
     RecyclerView.Adapter<PlayerBottomSheetViewHolder>() {
     private var isClickAllowed = true
     private lateinit var view: View
@@ -35,19 +38,12 @@ class PlayerBottomSheetRecycleViewAdapter(private val listOfPlaylists: List<Play
         holder.itemView.setOnClickListener {
             if (isMakedClickable()) {
                 playlistClickListener.playlistClick(playlist)
-
-/*                Toast.makeText(
-                    holder.itemView.context,
-                    "Добавлено в плейлист ${playlist.playlistName}",
-                    Toast.LENGTH_LONG
-                ).show()*/
-
             }
         }
     }
 
-    interface PlaylistClickListener{
-        fun playlistClick(playlist:Playlist)
+    interface PlaylistClickListener {
+        fun playlistClick(playlist: Playlist)
     }
 
     private fun isMakedClickable(): Boolean {

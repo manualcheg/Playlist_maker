@@ -2,9 +2,11 @@ package com.practicum.playlistmaker.player.presentation.ui
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -32,12 +34,8 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
     private var playerBottomSheetRecycleViewAdapter =
         PlayerBottomSheetRecycleViewAdapter(ArrayList(), this@PlayerFragment)
     val track by lazy { playerViewModel.getTrack() }
-    val bottomSheetContainer by lazy { binding.bottomSheet.root }
-    val bottomSheetBehavior by lazy {
-        BottomSheetBehavior.from(bottomSheetContainer).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
-        }
-    }
+
+    private var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,6 +53,8 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
         workWithBottomSheet()
 
         observeToResultOfAddToPlaylist()
+
+        showActivity(track)
 
         playbackCurrentTime = getString(R.string._00_00)
 
@@ -104,10 +104,10 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
             Toast.makeText(
                 requireContext(),
                 resultAddTrack.message,
-                Toast.LENGTH_LONG
+                Toast.LENGTH_SHORT
             ).show()
             if (resultAddTrack.success) {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
             }
             playerViewModel.getPlaylists()
         }
@@ -163,11 +163,10 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
     private fun render(playerState: MediaPlayerState, track: Track) {
         when (playerState) {
             MediaPlayerState.STATE_DEFAULT -> {
-                showActivity(track)
+//                showActivity(track)
             }
 
             MediaPlayerState.STATE_PREPARED -> {
-                showActivity(track)
                 showPrepared(track)
             }
 
@@ -225,6 +224,14 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
     }
 
     private fun workWithBottomSheet() {
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet.root).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        if (playerViewModel.bottomSheetMustBeCollapsed) {
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+            binding.overlay.visibility = View.VISIBLE
+        }
         binding.bottomSheet.recyclerViewPlaylist.layoutManager =
             LinearLayoutManager(requireContext())
         binding.bottomSheet.recyclerViewPlaylist.adapter = playerBottomSheetRecycleViewAdapter
@@ -235,11 +242,13 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
         }
 
         binding.bottomSheet.fragmentFavouritesButtonCreatePlaylist.setOnClickListener {
-            findNavController().navigate(R.id.action_playerFragment_to_playlistCreateFragment)
+//            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+            playerViewModel.bottomSheetMustBeCollapsed = true
             playerViewModel.onActivityDestroy()  //костыль
+            findNavController().navigate(R.id.action_playerFragment_to_playlistCreateFragment)
         }
 
-        bottomSheetBehavior.addBottomSheetCallback(object :
+        bottomSheetBehavior?.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
@@ -252,11 +261,13 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
                     }
                 }
             }
+
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
 
         binding.playerButtonAddToPlaylist.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+//            Log.d("MyLog", "нажали на кнопку добавления в плейлист")
         }
     }
 

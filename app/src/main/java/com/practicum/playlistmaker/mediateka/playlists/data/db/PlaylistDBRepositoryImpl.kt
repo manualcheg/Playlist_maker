@@ -22,9 +22,4 @@ class PlaylistDBRepositoryImpl(
     private fun mapList(playlists: List<PlaylistEntity>): List<Playlist> {
         return playlists.map { playlist -> playlistDBConvertor.map(playlist) }
     }
-
-
-    /*override suspend fun getTracksId(playlistName:String): String? {
-        return playlistsDB.playlistsDao().getTracksId(playlistName)
-    }*/
 }

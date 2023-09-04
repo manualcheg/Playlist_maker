@@ -48,6 +48,11 @@ class PlayerViewModel(
 
     private var timerJob: Job? = null
 
+    var bottomSheetMustBeCollapsed = false
+    /*private val _bottomSheetMustBeCollapsed = MutableLiveData<Boolean>()
+    val bottomSheetMustBeCollapsed = MutableLiveData<Boolean>()
+    var countOfPlaylists:Int = 0*/
+
     fun onActivityCreate() {
         // сообщение начального состояния
         playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
@@ -149,6 +154,7 @@ class PlayerViewModel(
                 } else {
                     _stateLiveData.postValue(PlaylistsState.Content(listOfPlaylists))
                 }
+//                countOfPlaylists = listOfPlaylists.size
             }
         }
     }
