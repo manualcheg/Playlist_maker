@@ -32,8 +32,8 @@ class PlayerViewModel(
 
     private var playerState = MediaPlayerState.STATE_DEFAULT
 
-    private var playerStateLiveData = MutableLiveData<MediaPlayerState>()
-    fun getPlayerStateLiveData(): LiveData<MediaPlayerState> = playerStateLiveData
+    private var _playerStateLiveData = MutableLiveData<MediaPlayerState>()
+    fun getPlayerStateLiveData(): LiveData<MediaPlayerState> = _playerStateLiveData
 
     private val _playbackTimeLiveData = MutableLiveData<String?>()
     val playbackTimeLiveData: LiveData<String?> = _playbackTimeLiveData
@@ -53,30 +53,31 @@ class PlayerViewModel(
 
     fun onActivityCreate() {
         // сообщение начального состояния
-        playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
+        _playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
 
     fun preparePlayer(track: Track) {
         checkTrackInFavourites(track)
 
         trackInteractorImpl.preparePlayer(this)
-        playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
+        _playerStateLiveData.postValue(trackInteractorImpl.returnPlayerState())
     }
 
     fun onActivityPause() {
-        trackInteractorImpl.pausePlayer()
-        playerState = MediaPlayerState.STATE_PAUSED
-        playerStateLiveData.postValue(playerState)
+        if (playerState == MediaPlayerState.STATE_PLAYING) {
+            trackInteractorImpl.pausePlayer()
+        }
+        _playerStateLiveData.postValue(playerState)
         timerJob?.cancel()
     }
 
     override fun onPrepared() {
-        playerStateLiveData.postValue(MediaPlayerState.STATE_PREPARED)
+        _playerStateLiveData.postValue(MediaPlayerState.STATE_PREPARED)
     }
 
     override fun onCompletion() {
         timerJob?.cancel()
-        playerStateLiveData.postValue(MediaPlayerState.STATE_PREPARED)
+        _playerStateLiveData.postValue(MediaPlayerState.STATE_PREPARED)
         _playbackTimeLiveData.postValue(Constants.time_00_00)
     }
 
@@ -87,7 +88,7 @@ class PlayerViewModel(
     fun onPlayButtonClick() {
         trackInteractorImpl.returnPlayerState()
         playerState = trackInteractorImpl.playbackControl()
-        playerStateLiveData.postValue(playerState)
+        _playerStateLiveData.postValue(playerState)
 
         when (playerState) {
             MediaPlayerState.STATE_PLAYING -> {
@@ -172,7 +173,7 @@ class PlayerViewModel(
 
     private fun addTrackToPlaylistDB(
         listTracksId: List<String>?,
-        track:Track,
+        track: Track,
         playlist: Playlist
     ) {
         val arrayListTracksId: List<String>? = listTracksId

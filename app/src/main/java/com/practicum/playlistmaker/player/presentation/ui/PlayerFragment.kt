@@ -210,6 +210,7 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
 
     private fun showPrepared(track: Track) {
         onPrepared(track)
+//        binding.playbackTime.visibility = View.INVISIBLE
     }
 
     private fun showPlaying() {
