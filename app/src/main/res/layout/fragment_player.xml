@@ -299,5 +299,6 @@
     <!--вставка внешнего xml-файла, нашего bottomSheet-->
     <include
         android:id="@+id/bottom_sheet"
-        layout="@layout/player_bottomsheet_add_to_playlists" />
+        layout="@layout/player_bottomsheet_add_to_playlists"
+        tools:visibility="gone"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

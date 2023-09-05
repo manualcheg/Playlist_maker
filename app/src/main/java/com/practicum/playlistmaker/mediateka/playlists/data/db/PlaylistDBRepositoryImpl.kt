@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.mediateka.playlists.data.db
 import com.practicum.playlistmaker.mediateka.playlists.data.db.entity.PlaylistEntity
 import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
 import com.practicum.playlistmaker.mediateka.playlists.domain.interfaces.PlaylistDBRepository
+import com.practicum.playlistmaker.search.domain.entities.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -21,5 +22,9 @@ class PlaylistDBRepositoryImpl(
 
     private fun mapList(playlists: List<PlaylistEntity>): List<Playlist> {
         return playlists.map { playlist -> playlistDBConvertor.map(playlist) }
+    }
+
+    override suspend fun putTrackInDB(track: Track) {
+        playlistsDB.tracksInPlaylistsDao().addTrack(playlistDBConvertor.map(track))
     }
 }

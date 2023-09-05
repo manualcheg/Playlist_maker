@@ -156,9 +156,9 @@ class PlayerViewModel(
         }
     }
 
-    fun putTrackToPlaylist(playlist: Playlist, trackId: String) {
+    fun putTrackToPlaylist(playlist: Playlist, track: Track) {
         val listTracksId = java.util.ArrayList(playlist.listOfTracksId?.split(",")!!)
-        if (listTracksId.contains(trackId)) {
+        if (listTracksId.contains(track.trackId)) {
             _resultOfAddTrack.postValue(
                 ResultAddTrack(
                     "Трек уже добавлен в плейлист ${playlist.playlistName}",
@@ -166,17 +166,17 @@ class PlayerViewModel(
                 )
             )
         } else {
-            addTrackToPlaylistDB(listTracksId, trackId, playlist)
+            addTrackToPlaylistDB(listTracksId, track, playlist)
         }
     }
 
     private fun addTrackToPlaylistDB(
         listTracksId: List<String>?,
-        trackId: String,
+        track:Track,
         playlist: Playlist
     ) {
         val arrayListTracksId: List<String>? = listTracksId
-        (arrayListTracksId as ArrayList<String>).add(trackId)
+        (arrayListTracksId as ArrayList<String>).add(track.trackId)
         arrayListTracksId.remove("")
         val newListTracksId = arrayListTracksId.joinToString(separator = ",")
 
@@ -184,6 +184,7 @@ class PlayerViewModel(
         playlist.countOfTracks = arrayListTracksId.size
         viewModelScope.launch {
             playlistDBInteractorImpl.putPlaylist(playlist)
+            playlistDBInteractorImpl.addTrackToDB(track)
         }
         _resultOfAddTrack.postValue(
             ResultAddTrack(

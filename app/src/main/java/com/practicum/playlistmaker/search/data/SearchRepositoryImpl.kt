@@ -5,7 +5,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.mediateka.favourites.db.TracksDBFavourites
 import com.practicum.playlistmaker.search.data.dto.TrackSearchRequest
 import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
-import com.practicum.playlistmaker.search.domain.api.SearchRepository
+import com.practicum.playlistmaker.search.domain.interfaces.SearchRepository
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.utils.Resource
 import kotlinx.coroutines.flow.Flow

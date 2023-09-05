@@ -136,11 +136,7 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
 
     private fun observeToInFavouriteLiveData() {
         playerViewModel.inFavouriteLiveData.observe(viewLifecycleOwner) {
-            val heart = if (it) {
-                R.drawable.player_button_heart_like_red
-            } else {
-                R.drawable.player_button_heart_like
-            }
+            val heart =  inFafourite(it)
             binding.playerButtonLike.setImageResource(heart)
         }
     }
@@ -151,12 +147,16 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
         binding.playbackTime.text = playbackCurrentTime
         //покраска кнопки "избранное" по данным из трека
         binding.playPauseButton.setImageResource(R.drawable.play_button)
-        val heart = if (track.inFavourite) {
+        val heart = inFafourite(track.inFavourite)
+        binding.playerButtonLike.setImageResource(heart)
+    }
+
+    private fun inFafourite(yes:Boolean): Int {
+        return if (yes) {
             R.drawable.player_button_heart_like_red
         } else {
             R.drawable.player_button_heart_like
         }
-        binding.playerButtonLike.setImageResource(heart)
     }
 
     private fun render(playerState: MediaPlayerState, track: Track) {
@@ -241,7 +241,7 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
         }
 
         binding.bottomSheet.fragmentFavouritesButtonCreatePlaylist.setOnClickListener {
-//          Вариант поведения по проекту. Нелогичный.
+//          Вариант поведения по проекту. Нелогичный:
 //            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
             playerViewModel.bottomSheetMustBeCollapsed = true
             playerViewModel.onActivityDestroy()  //костыль
@@ -291,6 +291,6 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
     }
 
     override fun playlistClick(playlist: Playlist) {
-        playerViewModel.putTrackToPlaylist(playlist, track.trackId)
+        playerViewModel.putTrackToPlaylist(playlist, track)
     }
 }

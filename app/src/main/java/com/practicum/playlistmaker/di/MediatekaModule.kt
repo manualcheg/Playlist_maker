@@ -45,7 +45,7 @@ val mediatekaModule = module {
             context = androidContext(),
             klass = PlaylistsDB::class.java,
             name = "playlists"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     factory { PlaylistDBConvertor() }

@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.mediateka.playlists.domain.usecases
 import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
 import com.practicum.playlistmaker.mediateka.playlists.domain.interfaces.PlaylistDBInteractor
 import com.practicum.playlistmaker.mediateka.playlists.domain.interfaces.PlaylistDBRepository
+import com.practicum.playlistmaker.search.domain.entities.Track
 import kotlinx.coroutines.flow.Flow
 
 class PlaylistDBInteractorImpl(private val playlistDBRepository: PlaylistDBRepository):
@@ -15,14 +16,7 @@ class PlaylistDBInteractorImpl(private val playlistDBRepository: PlaylistDBRepos
         return playlistDBRepository.getPlaylists()
     }
 
-    override suspend fun getTracksIds(nameOfPlaylist: String): String {
-        TODO("Not yet implemented")
+    override suspend fun addTrackToDB(track: Track) {
+        playlistDBRepository.putTrackInDB(track)
     }
-
-    /*override suspend fun putTrackInPlaylist(trackId:String, playlistId:Long) {
-        TODO("Not yet implemented")
-
-
-        playlistDBRepository.putPlaylist(updatedPlaylist)
-    }*/
 }

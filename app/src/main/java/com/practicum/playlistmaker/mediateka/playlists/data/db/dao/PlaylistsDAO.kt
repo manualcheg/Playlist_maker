@@ -13,16 +13,4 @@ interface PlaylistsDAO {
 
     @Query("SELECT * FROM playlists")
     suspend fun getPlaylists(): List<PlaylistEntity>
-/*    @Query("SELECT listOfTracksId FROM playlists")
-    suspend fun getTracksId(playlistName:String): String?*/
 }
-
-/*
-* Нужно создавать плейлист - одну запись в таблице: Insert()
-* Нужно добавлять трек в плейлист - получить список уже записаных, добавить к нему
-* и записать обратно в поле этой записи: Query + Insert
-* или есть @UPDATE:
-*
-*
-*
-* */

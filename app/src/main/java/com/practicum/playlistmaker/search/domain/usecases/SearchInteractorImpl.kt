@@ -1,8 +1,8 @@
 package com.practicum.playlistmaker.search.domain.usecases
 
 import com.practicum.playlistmaker.search.domain.SearchResult
-import com.practicum.playlistmaker.search.domain.api.SearchInteractor
-import com.practicum.playlistmaker.search.domain.api.SearchRepository
+import com.practicum.playlistmaker.search.domain.interfaces.SearchInteractor
+import com.practicum.playlistmaker.search.domain.interfaces.SearchRepository
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.utils.Resource
 import kotlinx.coroutines.flow.Flow

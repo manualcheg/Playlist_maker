@@ -5,8 +5,8 @@ import com.practicum.playlistmaker.search.data.SearchRepositoryImpl
 import com.practicum.playlistmaker.search.data.SearchStorage
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
-import com.practicum.playlistmaker.search.domain.api.SearchInteractor
-import com.practicum.playlistmaker.search.domain.api.SearchRepository
+import com.practicum.playlistmaker.search.domain.interfaces.SearchInteractor
+import com.practicum.playlistmaker.search.domain.interfaces.SearchRepository
 import com.practicum.playlistmaker.search.domain.usecases.SearchInteractorImpl
 import com.practicum.playlistmaker.search.presentation.SearchViewModel
 import org.koin.android.ext.koin.androidApplication
