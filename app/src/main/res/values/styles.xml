@@ -76,4 +76,12 @@
         <item name="android:fontFamily">@font/yandex_sans_display_regular</item>
         <item name="android:textSize">@dimen/sp12</item>
     </style>
+
+    <style name="TextInputLayoutCreatePlaylistStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColorHint">?android:attr/textColor</item>
+        <item name="android:textColor">?android:attr/textColor</item>
+        <item name="boxStrokeColor">@drawable/my_mtrl_outlined_stroke_color</item>
+        <item name="hintTextColor">@drawable/my_mtrl_outlined_stroke_color</item>
+    </style>
+
 </resources>

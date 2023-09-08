@@ -44,7 +44,7 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -151,6 +151,7 @@ class SearchFragment : Fragment() {
             binding.searchActivityEdittext.setText("")
             hideUnnecessary()
             hideKeyboard()
+            binding.searchActivityEdittext.requestFocus()
         }
 
         val simpleTextWatcher = object : TextWatcher {

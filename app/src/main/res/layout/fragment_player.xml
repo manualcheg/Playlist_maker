@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Требуемый ViewGroup для обеcпечения работы bottomSheet-->
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".player.presentation.ui.PlayerFragment">
+
+    <!--Разметка самого экрана плеера-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.practicum.playlistmaker.player.presentation.ui.PlayerActivity">
+        <!-- Guideline start-->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/dp16" />
+        <!-- Guideline -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="@dimen/dp16" />
+        <!-- Guideline -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="@dimen/dp28" />
+        <!-- Стрелка Назад -->
+        <ImageView
+            android:id="@+id/player_activity_arrow_back"
+            android:layout_width="@dimen/dp16"
+            android:layout_height="@dimen/dp16"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="@dimen/dp20"
+            android:contentDescription="@string/text_button_exit_from_screen_descript"
+            android:src="@drawable/icon_arrow_back"
+            app:layout_constraintStart_toEndOf="@id/guideline_start"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/colorOnPrimary" />
+
+        <!-- Обложка -->
+        <ImageView
+            android:id="@+id/player_image_cover"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/dp4"
+            android:layout_marginTop="26dp"
+            android:layout_marginEnd="@dimen/dp4"
+            android:contentDescription="@string/text_cover_image_descript"
+            app:layout_constraintBottom_toTopOf="@id/player_track_name"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            app:layout_constraintStart_toEndOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/player_activity_arrow_back"
+            tools:layout_height="0dp"
+            tools:layout_width="0dp"
+            tools:src="@drawable/placeholder_album_cover" />
+        <!-- Название трека -->
+        <TextView
+            android:id="@+id/player_track_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp24"
+            android:ellipsize="marquee"
+            android:fontFamily="@font/yandex_sans_text_medium"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:textSize="@dimen/sp22"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@id/player_artist"
+            app:layout_constraintEnd_toEndOf="@id/player_image_cover"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@id/player_image_cover"
+            app:layout_constraintTop_toBottomOf="@id/player_image_cover"
+            tools:text="TrackName" />
+        <!-- Исполнитель -->
+        <TextView
+            android:id="@+id/player_artist"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp12"
+            android:ellipsize="marquee"
+            android:fontFamily="@font/yandex_sans_display_regular"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:textSize="@dimen/sp14"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@id/play_pause_button"
+            app:layout_constraintEnd_toEndOf="@id/player_track_name"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@id/player_track_name"
+            app:layout_constraintTop_toBottomOf="@id/player_track_name"
+            tools:text="Симфонический камерный оркестр города-героя Симерополь имени кого-то очень известного" />
+        <!-- Блок кнопок -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/play_pause_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="38dp"
+            android:layout_marginBottom="@dimen/dp12"
+            android:contentDescription="@string/text_play_pause_button_descript"
+            android:enabled="true"
+            android:src="@drawable/play_button"
+            app:backgroundTint="?attr/whiteBlack"
+            app:elevation="@dimen/dp0"
+            app:fabCustomSize="83dp"
+            app:layout_constraintBottom_toTopOf="@id/playback_time"
+            app:layout_constraintEnd_toStartOf="@id/guideline_end"
+            app:layout_constraintStart_toEndOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/player_artist"
+            app:maxImageSize="83dp"
+            app:tint="?attr/colorOnPrimary" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/player_button_add_to_playlist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/yp_text_gray"
+            android:contentDescription="@string/text_button_add_track_descript"
+            android:src="@drawable/player_button_plus"
+            app:elevation="@dimen/dp0"
+            app:fabCustomSize="@dimen/dp51"
+            app:layout_constraintBottom_toBottomOf="@id/play_pause_button"
+            app:layout_constraintEnd_toStartOf="@id/play_pause_button"
+            app:layout_constraintStart_toEndOf="@id/guideline_start"
+            app:layout_constraintTop_toTopOf="@id/play_pause_button"
+            app:tint="@color/white" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/player_button_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/yp_text_gray"
+            android:contentDescription="@string/text_button_like_descript"
+            android:src="@drawable/player_button_heart_like"
+            app:elevation="@dimen/dp0"
+            app:fabCustomSize="@dimen/dp51"
+            app:layout_constraintBottom_toBottomOf="@id/play_pause_button"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            app:layout_constraintStart_toEndOf="@id/play_pause_button"
+            app:layout_constraintTop_toTopOf="@id/play_pause_button"
+            app:tint="@null" />
+
+        <!-- Отсчёт времени вопроизведения -->
+        <TextView
+            android:id="@+id/playback_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp40"
+            android:fontFamily="@font/yandex_sans_display_regular"
+            android:textSize="@dimen/sp14"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/text_tracktime"
+            app:layout_constraintEnd_toStartOf="@id/guideline_end"
+            app:layout_constraintStart_toEndOf="@id/guideline_start"
+            tools:text="@string/tools_tint_track_time" />
+
+        <!-- Длительность -->
+        <TextView
+            android:id="@+id/text_tracktime"
+            style="@style/player_left_block_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp17"
+            android:text="@string/text_tracktime"
+            app:layout_constraintBottom_toTopOf="@id/player_text_album"
+            app:layout_constraintStart_toEndOf="@id/guideline_start" />
+        <!-- Альбом -->
+        <TextView
+            android:id="@+id/player_text_album"
+            style="@style/player_left_block_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp17"
+            android:text="@string/text_album"
+            app:layout_constraintBottom_toTopOf="@id/text_year"
+            app:layout_constraintStart_toEndOf="@id/guideline_start" />
+        <!-- Группа видимости Альбома-->
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/player_group_album_visibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="player_text_album,player_text_value_album"
+            tools:visibility="visible" />
+        <!-- Год -->
+        <TextView
+            android:id="@+id/text_year"
+            style="@style/player_left_block_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp17"
+            android:text="@string/year"
+            app:layout_constraintBottom_toTopOf="@id/text_genre"
+            app:layout_constraintStart_toEndOf="@id/guideline_start" />
+        <!-- Жанр -->
+        <TextView
+            android:id="@+id/text_genre"
+            style="@style/player_left_block_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp17"
+            android:text="@string/genre"
+            app:layout_constraintBottom_toTopOf="@id/text_coutry"
+            app:layout_constraintStart_toEndOf="@id/guideline_start" />
+        <!-- Страна -->
+        <TextView
+            android:id="@+id/text_coutry"
+            style="@style/player_left_block_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Country"
+            app:layout_constraintBottom_toBottomOf="@+id/guideline_bottom"
+            app:layout_constraintStart_toEndOf="@id/guideline_start" />
+
+        <!-- Значение Длительность -->
+        <TextView
+            android:id="@+id/player_text_value_tracktime"
+            style="@style/player_right_block_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp17"
+            app:layout_constraintBottom_toTopOf="@+id/player_text_value_album"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            tools:text="@string/tools_tint_track_time" />
+        <!-- Значение Альбом -->
+        <TextView
+            android:id="@+id/player_text_value_album"
+            style="@style/player_right_block_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp16"
+            android:layout_marginBottom="@dimen/dp17"
+            android:ellipsize="end"
+            android:singleLine="true"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@+id/player_text_value_year"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@+id/player_text_album"
+            tools:text="@string/tools_text_value_album" />
+        <!-- Значение Год -->
+        <TextView
+            android:id="@+id/player_text_value_year"
+            style="@style/player_right_block_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp17"
+            android:text="@string/tools_text_value_year"
+            app:layout_constraintBottom_toTopOf="@+id/player_text_value_genre"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end" />
+        <!-- Значение Жанр -->
+        <TextView
+            android:id="@+id/player_text_value_genre"
+            style="@style/player_right_block_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp17"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toTopOf="@+id/player_text_value_country"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            tools:text="@string/tools_text_value_genre" />
+
+        <!-- Значение Страна -->
+        <TextView
+            android:id="@+id/player_text_value_country"
+            style="@style/player_right_block_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toBottomOf="@+id/guideline_bottom"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            tools:text="@string/tools_text_country" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--View для затемнения при появлении bottomSheet-->
+    <View
+        android:visibility="gone"
+        android:id="@+id/overlay"
+        android:background="#99000000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:visibility="visible"/>
+
+    <!--вставка внешнего xml-файла, нашего bottomSheet-->
+    <include
+        android:id="@+id/bottom_sheet"
+        layout="@layout/player_bottomsheet_add_to_playlists"
+        tools:visibility="gone"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

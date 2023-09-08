@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:visibility="visible">
+    android:visibility="visible"
+    tools:context=".mediateka.playlists.presentation.ui.PlaylistsFragment">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/fragment_favourites_button_create_playlist"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp36"
+        android:layout_marginTop="@dimen/dp24"
+        android:layout_gravity="center"
+        android:background="@drawable/placeholder_button_round_corners"
+        android:fontFamily="@font/yandex_sans_text_medium"
+        android:paddingHorizontal="@dimen/dp16"
+        android:text="@string/placeholder_fragment_playlists_text_button_new_playlist"
+        android:textAllCaps="false"
+        android:textColor="?attr/whiteBlack"
+        android:textSize="@dimen/sp14"
+        android:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/placeholder_fragment_playlist_there_is_nothing"
@@ -16,19 +33,7 @@
         android:orientation="vertical"
         android:visibility="visible">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/placeholder_fragment_favourites_button"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp36"
-            android:layout_gravity="center"
-            android:background="@drawable/placeholder_button_round_corners"
-            android:fontFamily="@font/yandex_sans_text_medium"
-            android:paddingHorizontal="@dimen/dp16"
-            android:text="@string/placeholder_fragment_playlists_text_button_new_playlist"
-            android:textAllCaps="false"
-            android:textColor="?attr/whiteBlack"
-            android:textSize="@dimen/sp14"
-            android:visibility="visible" />
+
 
         <ImageView
             android:id="@+id/placeholder_fragment_playlist_image"
@@ -54,12 +59,12 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewFavouritesTracks"
+        android:id="@+id/recyclerViewPlaylist"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp0"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:layout_marginHorizontal="12dp"/>
 
 </LinearLayout>
 
