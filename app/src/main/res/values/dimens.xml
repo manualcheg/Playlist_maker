@@ -46,4 +46,5 @@
     <dimen name="dp51">51dp</dimen>
     <dimen name="start_of_data_note">0</dimen>
     <dimen name="four_number_of_year">4</dimen>
+    <dimen name="sp24">24sp</dimen>
 </resources>

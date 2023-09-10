@@ -16,7 +16,7 @@ class PlaylistsFragmentViewModel(private val playlistsDBInteractor: PlaylistDBIn
 
     fun getPlaylists() {
         viewModelScope.launch {
-            playlistsDBInteractor.getPlaylist().collect() { listOfPlaylists ->
+            playlistsDBInteractor.getPlaylist().collect { listOfPlaylists ->
                 if (listOfPlaylists.isEmpty()){
                     _stateLiveData.postValue(PlaylistsState.Empty())
                 } else {

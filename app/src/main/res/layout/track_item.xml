@@ -64,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="5dp"
-                    android:src="@drawable/dot"
+                    android:src="@drawable/dot_gray"
                     android:contentDescription="@string/separator" />
 
                 <TextView

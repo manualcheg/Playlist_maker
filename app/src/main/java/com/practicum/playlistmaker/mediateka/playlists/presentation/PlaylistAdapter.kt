@@ -13,13 +13,17 @@ import com.practicum.playlistmaker.utils.Constants
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PlaylistAdapter(private val listOfPlaylists: MutableList<Playlist>) :
+class PlaylistAdapter(
+    private val listOfPlaylists: MutableList<Playlist>,
+    private val playlistWorkPlaylistClickListener: PlaylistWorkPlaylistClickListener
+) :
     RecyclerView.Adapter<PlaylistViewHolder>() {
     private var isClickAllowed = true
     private lateinit var view: View
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
-        view = LayoutInflater.from(parent.context).inflate(R.layout.playlist_grid_item, parent, false)
+        view =
+            LayoutInflater.from(parent.context).inflate(R.layout.playlist_grid_item, parent, false)
         return PlaylistViewHolder(view)
     }
 
@@ -32,11 +36,21 @@ class PlaylistAdapter(private val listOfPlaylists: MutableList<Playlist>) :
         holder.bind(playlist)
 
         holder.itemView.setOnClickListener {
-            if (isMakedClickable()){
+            if (isMakedClickable()) {
                 //TODO: make opening playlist in future sprint
-                Toast.makeText(holder.itemView.context,"playlist ${playlist.playlistName} is clicked!", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    holder.itemView.context,
+                    "playlist ${playlist.playlistName} is clicked!",
+                    Toast.LENGTH_LONG
+                ).show()
+//                Navigation.findNavController(RootActivity(),R.id.action_playlistsFragment_to_playlistWorkFragment)
+                playlistWorkPlaylistClickListener.playlistClick(playlist)
             }
         }
+    }
+
+    interface PlaylistWorkPlaylistClickListener {
+        fun playlistClick(playlist: Playlist)
     }
 
     private fun isMakedClickable(): Boolean {
