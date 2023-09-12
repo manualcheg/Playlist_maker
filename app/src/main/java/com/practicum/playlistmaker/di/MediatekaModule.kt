@@ -28,7 +28,7 @@ val mediatekaModule = module {
             context = androidContext(),
             klass = TracksDBFavourites::class.java,
             name = "tracks_favourites"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     factory { TrackDBConvertor() }

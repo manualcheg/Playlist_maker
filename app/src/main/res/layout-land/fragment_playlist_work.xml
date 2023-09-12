@@ -140,15 +140,15 @@
 
                 <LinearLayout
                     android:id="@+id/bottom_sheet_playlist_work"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:layout_marginTop="@dimen/dp16"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/playlist_work_share_button"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:behavior_hideable="true"
+                    app:behavior_hideable="false"
                     app:behavior_peekHeight="240dp"
                     android:background="@drawable/background_bottom_sheet_player_add_to_playlist"
                     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">

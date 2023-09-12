@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.practicum.playlistmaker.mediateka.favourites.db.dao.FavouritesDao
 import com.practicum.playlistmaker.mediateka.favourites.db.entity.TrackEntity
 
-@Database(version = 1, entities = [TrackEntity::class])
+@Database(version = 2, entities = [TrackEntity::class])
 abstract class TracksDBFavourites: RoomDatabase() {
     abstract fun favouritesDao(): FavouritesDao
 }

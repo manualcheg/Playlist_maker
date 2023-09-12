@@ -10,6 +10,7 @@ data class TrackEntity(
     var artistName: String?,
     var trackTime: String?,
     var artworkUrl100: String?,
+    var artworkUrl60: String?,
     @PrimaryKey
     var trackId: String,
     var collectionName: String?,
