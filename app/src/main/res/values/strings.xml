@@ -70,4 +70,15 @@
     <string name="text_add_to_playlist">Добавить в плейлист</string>
     <string name="cover_of_playlist">cover of playlist</string>
     <string name="place_to_add_playlist_cover">place to add playlist cover</string>
+    <string name="content_description_playlist_cover">playlist cover</string>
+    <string name="content_description_share_button">Share button</string>
+    <string name="content_description_properties_button">Properties button</string>
+    <plurals name="minutes">
+        <item quantity="zero">%d минут</item>
+        <item quantity="one">%d минута</item>
+        <item quantity="two">%d минуты</item>
+        <item quantity="few">%d минуты</item>
+        <item quantity="many">%d минут</item>
+        <item quantity="other">%d минуты</item>
+    </plurals>
 </resources>

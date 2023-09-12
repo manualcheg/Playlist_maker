@@ -69,7 +69,11 @@ class PlaylistsFragment : Fragment(), PlaylistAdapter.PlaylistWorkPlaylistClickL
     }
 
     override fun playlistClick(playlist: Playlist) {
-//        bundle.put
-        findNavController().navigate(R.id.action_mediatekaFragment_to_playlistWorkFragment)
+        bundle.putLong(PLAYLISTID,playlist.playlistId)
+        findNavController().navigate(R.id.action_mediatekaFragment_to_playlistWorkFragment, bundle)
+    }
+
+    companion object{
+        const val PLAYLISTID = "playlistId"
     }
 }

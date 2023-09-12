@@ -15,6 +15,7 @@ import com.practicum.playlistmaker.mediateka.playlists.domain.usecases.PlaylistD
 import com.practicum.playlistmaker.mediateka.favourites.domain.usecases.TracksDBInteractorImpl
 import com.practicum.playlistmaker.mediateka.favourites.presentation.viewmodels.FavouritesFragmentViewModel
 import com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels.PlaylistCreateViewModel
+import com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels.PlaylistWorkFragmentViewModel
 import com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels.PlaylistsFragmentViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -60,5 +61,9 @@ val mediatekaModule = module {
 
     viewModel{
         PlaylistsFragmentViewModel(get())
+    }
+
+    viewModel{
+        PlaylistWorkFragmentViewModel(get())
     }
 }

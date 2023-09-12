@@ -41,7 +41,22 @@ class PlaylistDBConvertor {
             primaryGenreName = track.primaryGenreName,
             country = track.country,
             previewUrl = track.previewUrl,
-            timeOfAddition = track.trackTime
+            timeOfAddition = System.currentTimeMillis().toString()
+        )
+    }
+
+    fun map(track: TracksInPlaylistsEntity): Track {
+        return Track(
+            trackId = track.trackId,
+            trackName = track.trackName,
+            artistName = track.artistName,
+            trackTime = track.trackTime,
+            artworkUrl100 = track.artworkUrl100,
+            collectionName = track.collectionName,
+            releaseDate = track.releaseDate,
+            primaryGenreName = track.primaryGenreName,
+            country = track.country,
+            previewUrl = track.previewUrl,
         )
     }
 }

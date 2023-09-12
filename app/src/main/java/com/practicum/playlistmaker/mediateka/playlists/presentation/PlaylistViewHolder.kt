@@ -24,7 +24,6 @@ class PlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         append(defineWord())
     }
 
-        // TODO: убрать Glide?
         Glide.with(image)
             .load(playlist.playlistCover)
             .placeholder(R.drawable.placeholder_album_cover)

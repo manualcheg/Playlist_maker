@@ -5,14 +5,15 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/mediatekaFragment">
 
-    <action android:id="@+id/moveToPlayerFragment"
-        app:destination="@id/playerFragment"/>
+    <action
+        android:id="@+id/moveToPlayerFragment"
+        app:destination="@id/playerFragment" />
 
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.practicum.playlistmaker.search.presentation.ui.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" >
+        tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_searchFragment_to_playerFragment"
             app:destination="@id/playerFragment" />
@@ -26,7 +27,7 @@
         android:id="@+id/mediatekaFragment"
         android:name="com.practicum.playlistmaker.mediateka.mediateka.presentation.MediatekaFragment"
         android:label="fragment_mediateka"
-        tools:layout="@layout/fragment_mediateka" >
+        tools:layout="@layout/fragment_mediateka">
         <action
             android:id="@+id/action_mediatekaFragment_to_playlistCreateFragment"
             app:destination="@id/playlistCreateFragment" />
@@ -47,14 +48,15 @@
         android:id="@+id/playlistsFragment"
         android:name="com.practicum.playlistmaker.mediateka.playlists.presentation.ui.PlaylistsFragment"
         android:label="fragment_playlists"
-        tools:layout="@layout/fragment_playlists" >
+        tools:layout="@layout/fragment_playlists">
+        <!--<argument android:name="playlistId" />-->
     </fragment>
 
     <fragment
         android:id="@+id/playerFragment"
         android:name="com.practicum.playlistmaker.player.presentation.ui.PlayerFragment"
         android:label="fragment_player"
-        tools:layout="@layout/fragment_player" >
+        tools:layout="@layout/fragment_player">
         <action
             android:id="@+id/action_playerFragment_to_playlistCreateFragment"
             app:destination="@id/playlistCreateFragment" />
@@ -63,5 +65,9 @@
         android:id="@+id/playlistWorkFragment"
         android:name="com.practicum.playlistmaker.mediateka.playlists.presentation.ui.PlaylistWorkFragment"
         android:label="fragment_playlist_work"
-        tools:layout="@layout/fragment_playlist_work" />
+        tools:layout="@layout/fragment_playlist_work">
+<!--        <argument
+            android:name="playlistId"
+            app:argType="long" />-->
+    </fragment>
 </navigation>

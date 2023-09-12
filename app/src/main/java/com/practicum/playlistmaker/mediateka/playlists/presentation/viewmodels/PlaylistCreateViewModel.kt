@@ -8,6 +8,7 @@ import android.os.Environment
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
@@ -28,7 +29,7 @@ class PlaylistCreateViewModel(private val playlistDBInteractor: PlaylistDBIntera
         pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
-    fun saveImageToPrivateStorage(uri: Uri, playlistName:String, context: Context) {
+    fun saveImageToPrivateStorage(uri: Uri, playlistName:String, context: Context):Uri {
         val filePath =
             File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlists")
         if (!filePath.exists()) {
@@ -39,6 +40,7 @@ class PlaylistCreateViewModel(private val playlistDBInteractor: PlaylistDBIntera
         val outputStream = FileOutputStream(file)
         BitmapFactory
             .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+            .compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
+        return file.toUri()
     }
 }

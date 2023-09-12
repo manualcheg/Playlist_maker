@@ -27,4 +27,19 @@ class PlaylistDBRepositoryImpl(
     override suspend fun putTrackInDB(track: Track) {
         playlistsDB.tracksInPlaylistsDao().addTrack(playlistDBConvertor.map(track))
     }
+
+    override suspend fun getPlaylist(playlistID: Long): Playlist {
+        return playlistsDB.playlistsDao().getPlaylist(playlistID)
+    }
+
+    override suspend fun getTracksOfPlaylist(tracksIds: List<String>): Flow<List<Track>> = flow {
+        val tracks = playlistsDB.tracksInPlaylistsDao().getAllTracks()
+        val requestedTracks: ArrayList<Track> = arrayListOf()
+        for (track in tracks) {
+            if (tracksIds.contains(track.trackId)) {
+                requestedTracks.add(playlistDBConvertor.map(track))
+            }
+        }
+        emit(requestedTracks)
+    }
 }

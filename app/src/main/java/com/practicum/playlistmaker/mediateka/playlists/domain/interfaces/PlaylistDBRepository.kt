@@ -10,4 +10,8 @@ interface PlaylistDBRepository {
     suspend fun getPlaylists(): Flow<List<Playlist>>
 
     suspend fun putTrackInDB(track: Track)
+
+    suspend fun getPlaylist(playlistID: Long): Playlist
+
+    suspend fun getTracksOfPlaylist(tracksIds: List<String>): Flow<List<Track>>
 }
