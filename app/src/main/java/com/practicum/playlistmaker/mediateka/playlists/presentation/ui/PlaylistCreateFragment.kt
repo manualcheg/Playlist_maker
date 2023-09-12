@@ -36,7 +36,7 @@ class PlaylistCreateFragment : Fragment() {
     private val playlistCreateViewModel: PlaylistCreateViewModel by viewModel()
 
     private val dialogExit by lazy {
-        MaterialAlertDialogBuilder(requireContext())
+        MaterialAlertDialogBuilder(requireContext(),R.style.AlertDialogTheme)
             .setTitle(getString(R.string.dialogExitTitle))
             .setMessage(getString(R.string.dialogExitMessage))
             .setNeutralButton(getString(R.string.dialogExitCancelButton)) { _, _ -> }

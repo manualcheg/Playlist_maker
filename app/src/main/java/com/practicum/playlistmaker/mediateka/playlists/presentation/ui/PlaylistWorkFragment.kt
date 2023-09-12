@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistWorkBinding
 import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
+import com.practicum.playlistmaker.mediateka.playlists.presentation.PlaylistWorkAdapter
 import com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels.PlaylistWorkFragmentViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -20,6 +21,7 @@ class PlaylistWorkFragment : Fragment() {
     private var playlistInViewModule : Playlist? = null
     private var listOfTracksId = listOf<String>()
     private var listOfTracks= listOf<Track>()
+    private var playlistWorkAdapter = PlaylistWorkAdapter(listOfTracks)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,6 +34,9 @@ class PlaylistWorkFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.playlistWorkRecyclerView.adapter = playlistWorkAdapter
+//        binding.playlistWorkRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         val playlistId = requireArguments().getLong("playlistId")
         playlistFragmentWorkFragmentViewModel.getPlaylist(playlistId)
@@ -57,9 +62,13 @@ class PlaylistWorkFragment : Fragment() {
             playlistFragmentWorkFragmentViewModel.getTracksOfPlaylist(listOfTracksId)
         }
 
-//        Подписка на список треков
+//      Подписка на получение списка треков
         playlistFragmentWorkFragmentViewModel.listOfTracks.observe(viewLifecycleOwner){
             listOfTracks = it
+            playlistWorkAdapter = PlaylistWorkAdapter(listOfTracks)
+            binding.playlistWorkRecyclerView.adapter = playlistWorkAdapter
+            playlistWorkAdapter.notifyItemRangeChanged(0, listOfTracks.lastIndex)
+            binding.playlistWorkRecyclerView.visibility = View.VISIBLE
         }
 
 //        Подписка на получение общей длительности треков в плейлисте
