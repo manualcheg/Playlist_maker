@@ -15,6 +15,8 @@ import java.util.Locale
 class PlaylistWorkFragmentViewModel(private val playlistDBInteractor: PlaylistDBInteractor) :
     ViewModel() {
     var localPlaylistId: Long = 0
+    var localPlaylist: Playlist? = null
+    var localState = false
 
     private var _playlist = MutableLiveData<Playlist>()
     var playlist: LiveData<Playlist> = _playlist
@@ -31,10 +33,11 @@ class PlaylistWorkFragmentViewModel(private val playlistDBInteractor: PlaylistDB
     fun getPlaylist(playlistId: Long) {
         viewModelScope.launch {
             localPlaylistId = playlistId
-            _playlist.postValue(playlistDBInteractor.getPlaylist(playlistId))
+            localPlaylist = playlistDBInteractor.getPlaylist(playlistId)
+            _playlist.postValue(localPlaylist)
             Log.d(
                 "Mylog",
-                "getPlaylist вызван во вьюмодел ${playlistDBInteractor.getPlaylist(playlistId)}"
+                "getPlaylist вызван во вьюмодел ${localPlaylist}"
             )
         }
     }
@@ -81,10 +84,13 @@ class PlaylistWorkFragmentViewModel(private val playlistDBInteractor: PlaylistDB
     }
 
     fun delTrack(trackId: String, playlistId: Long) {
+
         viewModelScope.launch {
             playlistDBInteractor.delTrack(trackId, playlistId)
-            getPlaylist(playlistId) //не приносит результата
-            _deletedTrack.postValue(true)
+//            getPlaylist(playlistId) //не приносит результата
+            localState = !localState
+            _deletedTrack.postValue(localState)
+            Log.d("mylog", "$localState")
         }
     }
 }

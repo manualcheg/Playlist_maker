@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class PlaylistWorkAdapter(private val trackList: List<Track>, private val playlistId:Long) :
+class PlaylistWorkAdapter(private val trackList: List<Track>, private val playlistId: Long) :
     RecyclerView.Adapter<SearchViewHolder>(),
     KoinComponent {
     private lateinit var view: View
@@ -56,11 +56,11 @@ class PlaylistWorkAdapter(private val trackList: List<Track>, private val playli
         val dialog = MaterialAlertDialogBuilder(holder.itemView.context, R.style.AlertDialogTheme)
             .setTitle(holder.itemView.context.getString(R.string.playlist_work_fragment_dialog_text_deltrack))
             .setMessage(holder.itemView.context.getString(R.string.playlist_work_fragment_dialog_text_areyousure))
-            .setPositiveButton(holder.itemView.context.getString(R.string.playlist_work_fragment_dialog_text_cancel), null)
+            .setPositiveButton(holder.itemView.context.getString(R.string.playlist_work_fragment_dialog_text_cancel),null)
             .setNegativeButton(holder.itemView.context.getString(R.string.playlist_work_fragment_dialog_text_delete)) { _, _ ->
-                playlistWorkFragmentViewModel.delTrack(trackList[position].trackId, playlistId)
-                playlistWorkFragmentViewModel.getPlaylist(playlistId)
-          //      тут должен быть вызов функции, дергающей адаптер изменённым списком или внутри delTrack
+                CoroutineScope(Dispatchers.IO).launch {
+                    playlistWorkFragmentViewModel.delTrack(trackList[position].trackId, playlistId)
+                }
             }
 
         holder.itemView.setOnLongClickListener { _ ->

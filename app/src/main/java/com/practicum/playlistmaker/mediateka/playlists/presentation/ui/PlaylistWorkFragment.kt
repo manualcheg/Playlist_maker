@@ -75,6 +75,11 @@ class PlaylistWorkFragment : Fragment() {
                 resources.getQuantityString(R.plurals.minutes, it.toInt(), it.toInt())
         }
 
+        playlistWorkFragmentViewModel.deletedTrack.observe(viewLifecycleOwner){
+            playlistWorkFragmentViewModel.getPlaylist(playlistId)
+            fillingRecyclerView(listOfTracks, playlistId)
+        }
+
         binding.playlistWorkArrowBack.setOnClickListener {
             findNavController().popBackStack()
         }
