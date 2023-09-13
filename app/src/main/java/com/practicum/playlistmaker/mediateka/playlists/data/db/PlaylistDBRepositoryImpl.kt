@@ -53,13 +53,23 @@ class PlaylistDBRepositoryImpl(
         removeFromTracksInPlaylistDB(trackId)
     }
 
-    override suspend fun removeFromTracksInPlaylistDB(trackId:String){
-        getPlaylists().collect{playlists->
-            for (playlist in playlists){
-                if (playlist.listOfTracksId?.contains(trackId)==true){
-                    break
-                } else {playlistsDB.tracksInPlaylistsDao().delTrack(trackId)}
+    override suspend fun removeFromTracksInPlaylistDB(trackId: String) {
+        var allTracksId: ArrayList<String> = arrayListOf()
+        var thereIs = false
+        getPlaylists().collect { playlists ->
+            for (playlist in playlists) {
+                playlist.listOfTracksId?.let { allTracksId.add(it) }
             }
+        }
+
+        for (trackList in allTracksId){
+            if (trackList.contains(trackId)){
+                thereIs = true
+            }
+        }
+
+        if (!thereIs) {
+            playlistsDB.tracksInPlaylistsDao().delTrack(trackId)
         }
     }
 }
