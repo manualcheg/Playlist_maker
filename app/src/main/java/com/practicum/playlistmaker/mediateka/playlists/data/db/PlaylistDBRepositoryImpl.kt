@@ -42,4 +42,24 @@ class PlaylistDBRepositoryImpl(
         }
         emit(requestedTracks)
     }
+
+    override suspend fun delTrack(trackId: String, playlistId: Long) {
+        val playlist = getPlaylist(playlistId)
+        val tracksIdArrayList = java.util.ArrayList(playlist.listOfTracksId?.split(",")!!)
+        tracksIdArrayList.remove(trackId)
+        playlist.listOfTracksId = tracksIdArrayList.joinToString(separator = ",")
+        playlist.countOfTracks = tracksIdArrayList.size
+        playlistsDB.playlistsDao().putPlaylist(playlistDBConvertor.map(playlist))
+        removeFromTracksInPlaylistDB(trackId)
+    }
+
+    override suspend fun removeFromTracksInPlaylistDB(trackId:String){
+        getPlaylists().collect{playlists->
+            for (playlist in playlists){
+                if (playlist.listOfTracksId?.contains(trackId)==true){
+                    break
+                } else {playlistsDB.tracksInPlaylistsDao().delTrack(trackId)}
+            }
+        }
+    }
 }

@@ -32,7 +32,7 @@ class PlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .into(image)
     }
 
-    fun defineWord(): String {
+    private fun defineWord(): String {
         val predPosCifra = countOfTracks % 100 / 10
         if (predPosCifra == 1) {
             return "треков"

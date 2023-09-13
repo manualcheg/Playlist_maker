@@ -27,4 +27,8 @@ class PlaylistDBInteractorImpl(private val playlistDBRepository: PlaylistDBRepos
     override suspend fun getTracksFromPlaylist(tracksId: List<String>): Flow<List<Track>> {
         return playlistDBRepository.getTracksOfPlaylist(tracksId)
     }
+
+    override suspend fun delTrack(trackId: String, playlistId:Long) {
+        playlistDBRepository.delTrack(trackId, playlistId)
+    }
 }

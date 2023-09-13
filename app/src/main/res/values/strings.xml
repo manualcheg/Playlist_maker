@@ -73,6 +73,10 @@
     <string name="content_description_playlist_cover">playlist cover</string>
     <string name="content_description_share_button">Share button</string>
     <string name="content_description_properties_button">Properties button</string>
+    <string name="playlist_work_fragment_dialog_text_deltrack">Удалить трек</string>
+    <string name="playlist_work_fragment_dialog_text_areyousure">Вы уверены, что хотите удалить трек из плейлиста?</string>
+    <string name="playlist_work_fragment_dialog_text_delete">Удалить</string>
+    <string name="playlist_work_fragment_dialog_text_cancel">Отмена</string>
     <plurals name="minutes">
         <item quantity="zero">%d минут</item>
         <item quantity="one">%d минута</item>

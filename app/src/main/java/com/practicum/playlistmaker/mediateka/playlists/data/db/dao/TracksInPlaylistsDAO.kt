@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.mediateka.playlists.data.db.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -13,4 +14,7 @@ interface TracksInPlaylistsDAO {
 
     @Query("SELECT * FROM track_in_playlists")
     suspend fun getAllTracks():List<TracksInPlaylistsEntity>
+
+    @Query("DELETE FROM track_in_playlists WHERE trackId LIKE :trackId")
+    suspend fun delTrack(trackId:String)
 }

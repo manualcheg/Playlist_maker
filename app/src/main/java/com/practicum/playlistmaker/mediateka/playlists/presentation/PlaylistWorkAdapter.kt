@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.mediateka.favourites.db.TracksDBFavourites
+import com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels.PlaylistWorkFragmentViewModel
 import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.presentation.ui.SearchViewHolder
@@ -20,13 +21,15 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class PlaylistWorkAdapter(private val trackList: List<Track>,):RecyclerView.Adapter<SearchViewHolder>(),
+class PlaylistWorkAdapter(private val trackList: List<Track>, private val playlistId:Long) :
+    RecyclerView.Adapter<SearchViewHolder>(),
     KoinComponent {
     private lateinit var view: View
     private val tracksDBFavourites: TracksDBFavourites by inject()
+    private val playlistWorkFragmentViewModel: PlaylistWorkFragmentViewModel by inject()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
-        view = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent,false)
+        view = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)
         return SearchViewHolder(view)
     }
 
@@ -43,7 +46,6 @@ class PlaylistWorkAdapter(private val trackList: List<Track>,):RecyclerView.Adap
                 Context.MODE_PRIVATE
             )
 
-
         holder.itemView.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 SearchStorageImpl(sharedPrefs, tracksDBFavourites).saveData(trackList[position])
@@ -52,12 +54,16 @@ class PlaylistWorkAdapter(private val trackList: List<Track>,):RecyclerView.Adap
         }
 
         val dialog = MaterialAlertDialogBuilder(holder.itemView.context, R.style.AlertDialogTheme)
-            .setTitle("Удалить трек")
-            .setMessage("Вы уверены, что хотите удалить трек из плейлиста?")
-            .setPositiveButton("Отмена") {dialog, which -> }
-            .setNegativeButton("Удалить") {dialog, which -> holder.itemView.findNavController().popBackStack()}
+            .setTitle(holder.itemView.context.getString(R.string.playlist_work_fragment_dialog_text_deltrack))
+            .setMessage(holder.itemView.context.getString(R.string.playlist_work_fragment_dialog_text_areyousure))
+            .setPositiveButton(holder.itemView.context.getString(R.string.playlist_work_fragment_dialog_text_cancel), null)
+            .setNegativeButton(holder.itemView.context.getString(R.string.playlist_work_fragment_dialog_text_delete)) { _, _ ->
+                playlistWorkFragmentViewModel.delTrack(trackList[position].trackId, playlistId)
+                playlistWorkFragmentViewModel.getPlaylist(playlistId)
+          //      тут должен быть вызов функции, дергающей адаптер изменённым списком или внутри delTrack
+            }
 
-        holder.itemView.setOnLongClickListener{ it->
+        holder.itemView.setOnLongClickListener { _ ->
             dialog.show()
             true
         }

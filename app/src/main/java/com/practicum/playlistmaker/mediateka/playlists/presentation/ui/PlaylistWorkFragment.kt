@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.mediateka.playlists.presentation.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,11 +18,12 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistWorkFragment : Fragment() {
     private lateinit var binding: FragmentPlaylistWorkBinding
-    private val playlistFragmentWorkFragmentViewModel: PlaylistWorkFragmentViewModel by viewModel()
-    private var playlistInViewModule : Playlist? = null
+    private val playlistWorkFragmentViewModel: PlaylistWorkFragmentViewModel by viewModel()
+    private var playlistInViewModule: Playlist? = null
     private var listOfTracksId = listOf<String>()
-    private var listOfTracks= listOf<Track>()
-    private var playlistWorkAdapter = PlaylistWorkAdapter(listOfTracks)
+    private var listOfTracks = listOf<Track>()
+    private var playlistId:Long = 0
+    private var playlistWorkAdapter = PlaylistWorkAdapter(listOfTracks, playlistId)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,13 +38,12 @@ class PlaylistWorkFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.playlistWorkRecyclerView.adapter = playlistWorkAdapter
-//        binding.playlistWorkRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-
         val playlistId = requireArguments().getLong("playlistId")
-        playlistFragmentWorkFragmentViewModel.getPlaylist(playlistId)
+//        Запрос плейлиста
+        playlistWorkFragmentViewModel.getPlaylist(playlistId)
 
 //      Подписка на получение плейлиста
-        playlistFragmentWorkFragmentViewModel.playlist.observe(viewLifecycleOwner) { playlist ->
+        playlistWorkFragmentViewModel.playlist.observe(viewLifecycleOwner) { playlist ->
             playlistInViewModule = playlist
 
             binding.playlistWorkPlaylistName.text = playlist.playlistName
@@ -54,31 +55,37 @@ class PlaylistWorkFragment : Fragment() {
             }
             setImage(playlist.playlistCover)
             binding.playlistWorkTracksCount?.text =
-                playlistFragmentWorkFragmentViewModel.defineWord(
+                playlistWorkFragmentViewModel.defineWord(
                     playlist.countOfTracks
                 )
 //          Формируем список List<Int> id треков
             listOfTracksId = java.util.ArrayList(playlistInViewModule?.listOfTracksId?.split(",")!!)
-            playlistFragmentWorkFragmentViewModel.getTracksOfPlaylist(listOfTracksId)
+            playlistWorkFragmentViewModel.getTracksOfPlaylist(listOfTracksId)
         }
 
 //      Подписка на получение списка треков
-        playlistFragmentWorkFragmentViewModel.listOfTracks.observe(viewLifecycleOwner){
+        playlistWorkFragmentViewModel.listOfTracks.observe(viewLifecycleOwner) {
             listOfTracks = it
-            playlistWorkAdapter = PlaylistWorkAdapter(listOfTracks)
-            binding.playlistWorkRecyclerView.adapter = playlistWorkAdapter
-            playlistWorkAdapter.notifyItemRangeChanged(0, listOfTracks.lastIndex)
-            binding.playlistWorkRecyclerView.visibility = View.VISIBLE
+            fillingRecyclerView(it, playlistId)
         }
 
 //        Подписка на получение общей длительности треков в плейлисте
-        playlistFragmentWorkFragmentViewModel.totalDuration.observe(viewLifecycleOwner){
-            binding.playlistWorkTotalDuration.text = resources.getQuantityString(R.plurals.minutes,it.toInt(),it.toInt())
+        playlistWorkFragmentViewModel.totalDuration.observe(viewLifecycleOwner) {
+            binding.playlistWorkTotalDuration.text =
+                resources.getQuantityString(R.plurals.minutes, it.toInt(), it.toInt())
         }
 
         binding.playlistWorkArrowBack.setOnClickListener {
             findNavController().popBackStack()
         }
+    }
+
+    private fun fillingRecyclerView(listOfTracks: List<Track>, playlistId: Long) {
+        playlistWorkAdapter = PlaylistWorkAdapter(listOfTracks, playlistId)
+        binding.playlistWorkRecyclerView.adapter = playlistWorkAdapter
+        playlistWorkAdapter.notifyItemRangeChanged(0, listOfTracks.lastIndex)
+        binding.playlistWorkRecyclerView.visibility = View.VISIBLE
+        Log.d("MyLog", "Вызван метод fillingRecyclerView")
     }
 
     private fun setImage(playlistCover: String?) {

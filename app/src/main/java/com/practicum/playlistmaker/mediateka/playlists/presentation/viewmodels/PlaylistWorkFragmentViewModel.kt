@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +14,7 @@ import java.util.Locale
 
 class PlaylistWorkFragmentViewModel(private val playlistDBInteractor: PlaylistDBInteractor) :
     ViewModel() {
+    var localPlaylistId:Long = 0
 
     private var _playlist = MutableLiveData<Playlist>()
     var playlist: LiveData<Playlist> = _playlist
@@ -21,11 +23,13 @@ class PlaylistWorkFragmentViewModel(private val playlistDBInteractor: PlaylistDB
     var listOfTracks: LiveData<List<Track>> = _listOfTracks
 
     private var _totalDuration = MutableLiveData<String>()
-    var totalDuration :LiveData<String> = _totalDuration
+    var totalDuration: LiveData<String> = _totalDuration
 
     fun getPlaylist(playlistId: Long) {
         viewModelScope.launch {
+            localPlaylistId = playlistId
             _playlist.postValue(playlistDBInteractor.getPlaylist(playlistId))
+            Log.d("Mylog", "getPlaylist вызван во вьюмодел ${playlistDBInteractor.getPlaylist(playlistId)}")
         }
     }
 
@@ -51,19 +55,29 @@ class PlaylistWorkFragmentViewModel(private val playlistDBInteractor: PlaylistDB
 
     fun getTracksOfPlaylist(listTracksId: List<String>) {
         viewModelScope.launch {
-            playlistDBInteractor.getTracksFromPlaylist(listTracksId).collect { receivedListOfTracks ->
-                _listOfTracks.postValue(receivedListOfTracks)
-                // запрос на отправку общей длительности треков плейлиста
-                getTotalDuration(receivedListOfTracks)
-            }
+            playlistDBInteractor.getTracksFromPlaylist(listTracksId)
+                .collect { receivedListOfTracks ->
+                    _listOfTracks.postValue(receivedListOfTracks)
+                    // запрос на отправку общей длительности треков плейлиста
+                    getTotalDuration(receivedListOfTracks)
+                }
         }
     }
 
-    private fun getTotalDuration(listOfTracks: List<Track>){
+    private fun getTotalDuration(listOfTracks: List<Track>) {
         var totalTime = 0
-        for (track in listOfTracks){
+        for (track in listOfTracks) {
             totalTime += track.trackTime?.toInt() ?: 0
         }
-        _totalDuration.postValue(SimpleDateFormat("mm", Locale.getDefault()).format(totalTime).toString())
+        _totalDuration.postValue(
+            SimpleDateFormat("mm", Locale.getDefault()).format(totalTime).toString()
+        )
+    }
+
+    fun delTrack(trackId: String, playlistId:Long) {
+        viewModelScope.launch {
+            playlistDBInteractor.delTrack(trackId, playlistId)
+            getPlaylist(playlistId) //не приносит результата
+        }
     }
 }
