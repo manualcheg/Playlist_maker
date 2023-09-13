@@ -7,10 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.mediateka.favourites.db.TracksDBFavourites
-import com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels.PlaylistWorkFragmentViewModel
 import com.practicum.playlistmaker.search.data.storage.SearchStorageImpl
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.presentation.ui.SearchViewHolder
@@ -21,12 +19,14 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class PlaylistWorkAdapter(private val trackList: List<Track>, private val playlistId: Long) :
+class PlaylistWorkAdapter(
+    private val trackList: List<Track>,
+    private val longClickListener: LongClickListener
+) :
     RecyclerView.Adapter<SearchViewHolder>(),
     KoinComponent {
     private lateinit var view: View
     private val tracksDBFavourites: TracksDBFavourites by inject()
-    private val playlistWorkFragmentViewModel: PlaylistWorkFragmentViewModel by inject()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         view = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)
@@ -53,19 +53,13 @@ class PlaylistWorkAdapter(private val trackList: List<Track>, private val playli
             holder.itemView.findNavController().navigate(R.id.moveToPlayerFragment)
         }
 
-        val dialog = MaterialAlertDialogBuilder(holder.itemView.context, R.style.AlertDialogTheme)
-            .setTitle(holder.itemView.context.getString(R.string.playlist_work_fragment_dialog_text_deltrack))
-            .setMessage(holder.itemView.context.getString(R.string.playlist_work_fragment_dialog_text_areyousure))
-            .setPositiveButton(holder.itemView.context.getString(R.string.playlist_work_fragment_dialog_text_cancel),null)
-            .setNegativeButton(holder.itemView.context.getString(R.string.playlist_work_fragment_dialog_text_delete)) { _, _ ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    playlistWorkFragmentViewModel.delTrack(trackList[position].trackId, playlistId)
-                }
-            }
-
         holder.itemView.setOnLongClickListener { _ ->
-            dialog.show()
+            longClickListener.trackInPlaylistClick(trackList[position].trackId)
             true
         }
+    }
+
+    interface LongClickListener {
+        fun trackInPlaylistClick(currentTrackId: String)
     }
 }

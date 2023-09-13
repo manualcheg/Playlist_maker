@@ -16,7 +16,7 @@ class PlaylistWorkFragmentViewModel(private val playlistDBInteractor: PlaylistDB
     ViewModel() {
     var localPlaylistId: Long = 0
     var localPlaylist: Playlist? = null
-    var localState = false
+//    var localState = false
 
     private var _playlist = MutableLiveData<Playlist>()
     var playlist: LiveData<Playlist> = _playlist
@@ -27,8 +27,8 @@ class PlaylistWorkFragmentViewModel(private val playlistDBInteractor: PlaylistDB
     private var _totalDuration = MutableLiveData<String>()
     var totalDuration: LiveData<String> = _totalDuration
 
-    private var _deletedTrack = MutableLiveData<Boolean>()
-    var deletedTrack: LiveData<Boolean>  = _deletedTrack
+//    private var _deletedTrack = MutableLiveData<Boolean>()
+//    var deletedTrack: LiveData<Boolean>  = _deletedTrack
 
     fun getPlaylist(playlistId: Long) {
         viewModelScope.launch {
@@ -67,6 +67,7 @@ class PlaylistWorkFragmentViewModel(private val playlistDBInteractor: PlaylistDB
             playlistDBInteractor.getTracksFromPlaylist(listTracksId)
                 .collect { receivedListOfTracks ->
                     _listOfTracks.postValue(receivedListOfTracks)
+                    Log.d("mylog", "получен listOfTrack: $receivedListOfTracks")
                     // запрос на отправку общей длительности треков плейлиста
                     getTotalDuration(receivedListOfTracks)
                 }
@@ -87,10 +88,10 @@ class PlaylistWorkFragmentViewModel(private val playlistDBInteractor: PlaylistDB
 
         viewModelScope.launch {
             playlistDBInteractor.delTrack(trackId, playlistId)
-//            getPlaylist(playlistId) //не приносит результата
-            localState = !localState
+            getPlaylist(playlistId) //не приносит результата
+/*            localState = !localState
             _deletedTrack.postValue(localState)
-            Log.d("mylog", "$localState")
+            Log.d("mylog", "$localState")*/
         }
     }
 }
