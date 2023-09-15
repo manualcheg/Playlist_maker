@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -41,10 +40,6 @@ class PlaylistWorkFragmentViewModel(
             localPlaylistId = playlistId
             localPlaylist = playlistDBInteractor.getPlaylist(playlistId)
             _playlist.postValue(localPlaylist)
-            Log.d(
-                "Mylog",
-                "getPlaylist вызван во вьюмодел ${localPlaylist}"
-            )
         }
     }
 
@@ -57,11 +52,9 @@ class PlaylistWorkFragmentViewModel(
             0, in 5..9 -> {
                 "$count треков"
             }
-
             1 -> {
                 "$count трек"
             }
-
             else -> {
                 "$count трека"
             }
@@ -73,7 +66,6 @@ class PlaylistWorkFragmentViewModel(
             playlistDBInteractor.getTracksFromPlaylist(listTracksId)
                 .collect { receivedListOfTracks ->
                     _listOfTracks.postValue(receivedListOfTracks)
-                    Log.d("mylog", "получен listOfTrack: $receivedListOfTracks")
                     // запрос на отправку общей длительности треков плейлиста
                     getTotalDuration(receivedListOfTracks)
                 }
@@ -91,7 +83,6 @@ class PlaylistWorkFragmentViewModel(
     }
 
     fun delTrack(trackId: String, playlistId: Long) {
-
         viewModelScope.launch {
             playlistDBInteractor.delTrack(trackId, playlistId)
             getPlaylist(playlistId)

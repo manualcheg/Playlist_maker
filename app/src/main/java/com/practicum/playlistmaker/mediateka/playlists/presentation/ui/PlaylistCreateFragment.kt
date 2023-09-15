@@ -25,18 +25,18 @@ import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
 import com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels.PlaylistCreateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlaylistCreateFragment : Fragment() {
-    private lateinit var binding: FragmentCreatePlaylistBinding
-    private var playlistName = ""
-    private var playlistDescription = ""
-    private var isImageSet = false
-    private var imageUri: Uri? = null
-    private var listOfTrackIds: String = ""
-    private var countOfTracks: Int = 0
-    private val playlistCreateViewModel: PlaylistCreateViewModel by viewModel()
+open class PlaylistCreateFragment : Fragment() {
+    lateinit var binding: FragmentCreatePlaylistBinding
+    var playlistName = ""
+    var playlistDescription = ""
+    var isImageSet = false
+    var imageUri: Uri? = null
+    var listOfTrackIds: String = ""
+    var countOfTracks: Int = 0
+    open val playlistCreateViewModel: PlaylistCreateViewModel by viewModel()
 
     private val dialogExit by lazy {
-        MaterialAlertDialogBuilder(requireContext(),R.style.AlertDialogTheme)
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
             .setTitle(getString(R.string.dialogExitTitle))
             .setMessage(getString(R.string.dialogExitMessage))
             .setNeutralButton(getString(R.string.dialogExitCancelButton)) { _, _ -> }
@@ -62,7 +62,10 @@ class PlaylistCreateFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
                     // выдача прав приложению права чтения на uri
-                    requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    requireContext().contentResolver.takePersistableUriPermission(
+                        uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
                     setImage(uri)
                     imageUri = uri
                     isImageSet = true
@@ -98,9 +101,17 @@ class PlaylistCreateFragment : Fragment() {
             playlistDescription = input.toString()
         }
 
+        playlistCreateViewModel.uri.observe(viewLifecycleOwner) { newUri ->
+            imageUri = newUri
+        }
+
         binding.textViewCreatePlaylistButton.setOnClickListener {
             if (isImageSet) {
-                imageUri = playlistCreateViewModel.saveImageToPrivateStorage(imageUri!!, playlistName, requireContext())
+                playlistCreateViewModel.saveImageToPrivateStorage(
+                    imageUri!!,
+                    playlistName,
+                    requireContext()
+                )
             }
             val playlist = Playlist(
                 0,
@@ -122,11 +133,11 @@ class PlaylistCreateFragment : Fragment() {
             .load(uri)
             .placeholder(R.drawable.placeholder_no_cover)
             .centerCrop()
-            .transform(RoundedCorners(this@PlaylistCreateFragment.resources.getDimensionPixelSize(R.dimen.dp8)))
+            .transform(RoundedCorners(this.resources.getDimensionPixelSize(R.dimen.dp8)))
             .into(binding.imageviewAddPlaylistCover)
     }
 
-    private fun workWithDialogExit() {
+    open fun workWithDialogExit() {
         if (
             playlistName != "" ||
             playlistDescription != "" ||

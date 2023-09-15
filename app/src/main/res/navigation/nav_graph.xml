@@ -69,5 +69,12 @@
 <!--        <argument
             android:name="playlistId"
             app:argType="long" />-->
+        <action
+            android:id="@+id/action_playlistWorkFragment_to_playlistEditFragment"
+            app:destination="@id/playlistEditFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/playlistEditFragment"
+        android:name="com.practicum.playlistmaker.mediateka.playlists.presentation.ui.PlaylistEditFragment"
+        android:label="PlaylistEditFragment" />
 </navigation>

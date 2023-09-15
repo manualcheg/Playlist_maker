@@ -149,7 +149,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:behavior_hideable="false"
-                    app:behavior_peekHeight="240dp"
+                    app:behavior_peekHeight="100dp"
                     android:background="@drawable/background_bottom_sheet_player_add_to_playlist"
                     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 

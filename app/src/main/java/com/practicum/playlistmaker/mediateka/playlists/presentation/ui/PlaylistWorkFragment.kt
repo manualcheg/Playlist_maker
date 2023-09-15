@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.mediateka.playlists.presentation.ui
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +32,7 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
     private var playlistId: Long = 0
     private var playlistWorkAdapter = PlaylistWorkAdapter(listOfTracks, this)
     private var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
+    private val bundle = Bundle()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,60 +40,41 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPlaylistWorkBinding.inflate(inflater, container, false)
-//        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT //блокировка поворота
+        requireActivity().requestedOrientation =
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT //блокировка поворота
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        screenInit()
+
+        settingObserversForData()
+
+        settingOnClickListenersInPlaylistWorkScreen()
+
+        workWithOverridingBottomSheetBehaviorOnStateChanged()
+
+        settingOnClickListenersInBottomSheet()
+    }
+
+    private fun screenInit() {
         binding.playlistWorkRecyclerView.adapter = playlistWorkAdapter
         playlistId = requireArguments().getLong("playlistId")
 //        Запрос плейлиста
         playlistWorkFragmentViewModel.getPlaylist(playlistId)
 
-//      Подписка на получение плейлиста
-        playlistWorkFragmentViewModel.playlist.observe(viewLifecycleOwner) { playlist ->
-            playlistFromViewModule = playlist
-
-            binding.playlistWorkPlaylistName.text = playlist.playlistName
-            if (playlist.playlistDescription != "") {
-                binding.playlistWorkPlaylistDescription.visibility = View.VISIBLE
-                binding.playlistWorkPlaylistDescription.text = playlist.playlistDescription
-            } else {
-                binding.playlistWorkPlaylistDescription.visibility = View.GONE
-            }
-            setImage(playlist.playlistCover)
-            binding.playlistWorkTracksCount?.text =
-                playlistWorkFragmentViewModel.defineWord(
-                    playlist.countOfTracks
-                )
-//          Формируем список List<Int> id треков
-            listOfTracksId =
-                java.util.ArrayList(playlistFromViewModule?.listOfTracksId?.split(",")!!)
-            playlistWorkFragmentViewModel.getTracksOfPlaylist(listOfTracksId)
-        }
-
-//      Подписка на получение списка треков
-        playlistWorkFragmentViewModel.listOfTracks.observe(viewLifecycleOwner) {
-            listOfTracks = it
-            fillingRecyclerView(it)
-        }
-
-//        Подписка на получение общей длительности треков в плейлисте
-        playlistWorkFragmentViewModel.totalDuration.observe(viewLifecycleOwner) {
-            binding.playlistWorkTotalDuration.text =
-                resources.getQuantityString(R.plurals.minutes, it.toInt(), it.toInt())
-        }
-
-        binding.playlistWorkArrowBack.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
         bottomSheetBehavior = binding.bottomSheetPlaylistWorkMenu?.let { it1 ->
             BottomSheetBehavior.from(it1.root).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
             }
+        }
+    }
+
+    private fun settingOnClickListenersInPlaylistWorkScreen() {
+        binding.playlistWorkArrowBack.setOnClickListener {
+            findNavController().popBackStack()
         }
 
         binding.playlistWorkShareButton.setOnClickListener {
@@ -110,10 +93,48 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
                 playlistFromViewModule?.playlistName
             binding.bottomSheetPlaylistWorkMenu!!.bottomSheetPlaylistWorkCountTracks.text =
                 countOfTracksWithWord()
-
             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         }
+    }
 
+    private fun settingObserversForData() {
+        //      Подписка на получение плейлиста
+        playlistWorkFragmentViewModel.playlist.observe(viewLifecycleOwner) { playlist ->
+            workWithReceivedPlaylist(playlist)
+        }
+
+//      Подписка на получение списка треков
+        playlistWorkFragmentViewModel.listOfTracks.observe(viewLifecycleOwner) {
+            listOfTracks = it
+            fillingRecyclerView(it)
+        }
+
+//        Подписка на получение общей длительности треков в плейлисте
+        playlistWorkFragmentViewModel.totalDuration.observe(viewLifecycleOwner) {
+            binding.playlistWorkTotalDuration.text =
+                resources.getQuantityString(R.plurals.minutes, it.toInt(), it.toInt())
+        }
+    }
+
+    private fun settingOnClickListenersInBottomSheet() {
+        binding.bottomSheetPlaylistWorkMenu?.bottomSheetPlaylistWorkButtonShare?.setOnClickListener {
+            workWithSharePlaylist()
+        }
+
+        binding.bottomSheetPlaylistWorkMenu?.bottomSheetPlaylistWorkButtonEdit?.setOnClickListener {
+            bundle.putLong(PlaylistsFragment.PLAYLISTID, playlistId)
+            findNavController().navigate(
+                R.id.action_playlistWorkFragment_to_playlistEditFragment,
+                bundle
+            )
+        }
+
+        binding.bottomSheetPlaylistWorkMenu?.bottomSheetPlaylistWorkButtonDelete?.setOnClickListener {
+            workWithDeletePlaylist()
+        }
+    }
+
+    private fun workWithOverridingBottomSheetBehaviorOnStateChanged() {
         bottomSheetBehavior?.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -128,20 +149,27 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
             }
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
+    }
 
-        binding.bottomSheetPlaylistWorkMenu?.bottomSheetPlaylistWorkButtonShare?.setOnClickListener {
-            workWithSharePlaylist()
-        }
+    private fun workWithReceivedPlaylist(playlist: Playlist) {
+        playlistFromViewModule = playlist
 
-        binding.bottomSheetPlaylistWorkMenu?.bottomSheetPlaylistWorkButtonEdit?.setOnClickListener {
-            Toast.makeText(
-                requireContext(), "Нажали на Редактировать", Toast.LENGTH_SHORT
-            ).show()
+        binding.playlistWorkPlaylistName.text = playlist.playlistName
+        if (playlist.playlistDescription != "") {
+            binding.playlistWorkPlaylistDescription.visibility = View.VISIBLE
+            binding.playlistWorkPlaylistDescription.text = playlist.playlistDescription
+        } else {
+            binding.playlistWorkPlaylistDescription.visibility = View.GONE
         }
-
-        binding.bottomSheetPlaylistWorkMenu?.bottomSheetPlaylistWorkButtonDelete?.setOnClickListener {
-            workWithDeletePlaylist()
-        }
+        setImage(playlist.playlistCover)
+        binding.playlistWorkTracksCount?.text =
+            playlistWorkFragmentViewModel.defineWord(
+                playlist.countOfTracks
+            )
+//          Формируем список List<Int> id треков
+        listOfTracksId =
+            java.util.ArrayList(playlistFromViewModule?.listOfTracksId?.split(",")!!)
+        playlistWorkFragmentViewModel.getTracksOfPlaylist(listOfTracksId)
     }
 
     private fun workWithDeletePlaylist() {
@@ -151,7 +179,9 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
             .setMessage("Хотите удалить плейлист?")
             .setPositiveButton("Удалить") { _, _ ->
                 Toast.makeText(
-                    requireContext(), "Плейлист ${playlistFromViewModule?.playlistName} удалён!", Toast.LENGTH_SHORT
+                    requireContext(),
+                    "Плейлист ${playlistFromViewModule?.playlistName} удалён!",
+                    Toast.LENGTH_SHORT
                 ).show()
 //                playlistWorkFragmentViewModel.delTrack(currentTrackId, playlistId)
                 playlistWorkFragmentViewModel.delPlaylist(playlistFromViewModule!!)
@@ -170,8 +200,8 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
     }
 
     private fun sharePlaylist() {
-        playlistWorkFragmentViewModel.makeTextFromListOfTracks(listOfTracks,playlistFromViewModule)
-        playlistWorkFragmentViewModel.playlistTextForShare.observe(viewLifecycleOwner){playlistText->
+        playlistWorkFragmentViewModel.makeTextFromListOfTracks(listOfTracks, playlistFromViewModule)
+        playlistWorkFragmentViewModel.playlistTextForShare.observe(viewLifecycleOwner) { playlistText ->
             useIntent(playlistText)
         }
     }
@@ -229,7 +259,10 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
         MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
             .setTitle(requireContext().getString(R.string.playlist_work_fragment_dialog_text_deltrack))
             .setMessage(requireContext().getString(R.string.playlist_work_fragment_dialog_text_areyousure))
-            .setNegativeButton(requireContext().getString(R.string.playlist_work_fragment_dialog_text_cancel),null)
+            .setNegativeButton(
+                requireContext().getString(R.string.playlist_work_fragment_dialog_text_cancel),
+                null
+            )
             .setPositiveButton(requireContext().getString(R.string.playlist_work_fragment_dialog_text_delete)) { _, _ ->
                 playlistWorkFragmentViewModel.delTrack(currentTrackId, playlistId)
             }.show()
