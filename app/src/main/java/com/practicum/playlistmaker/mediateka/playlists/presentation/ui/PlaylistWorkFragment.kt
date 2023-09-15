@@ -70,6 +70,7 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
                 state = BottomSheetBehavior.STATE_HIDDEN
             }
         }
+        binding.playlistWorkPlaylistDescription.isSelected = true
     }
 
     private fun settingOnClickListenersInPlaylistWorkScreen() {

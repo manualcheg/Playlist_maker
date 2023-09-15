@@ -39,27 +39,33 @@
 
         <TextView
             android:id="@+id/playlist_work_playlist_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginHorizontal="@dimen/dp16"
             android:layout_marginTop="24dp"
             android:fontFamily="@font/yandex_sans_display_regular"
+            android:singleLine="true"
             android:textColor="@color/yp_black"
             android:textSize="@dimen/sp24"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/playlist_work_playlist_cover"
             tools:text="Название плейлиста" />
 
         <TextView
             android:id="@+id/playlist_work_playlist_description"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp16"
             android:layout_marginTop="@dimen/dp8"
+            android:layout_marginHorizontal="@dimen/dp16"
+            android:ellipsize="marquee"
+            android:layout_gravity="start"
             android:fontFamily="@font/yandex_sans_display_regular"
+            android:singleLine="true"
             android:textColor="@color/yp_black"
             android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/playlist_work_playlist_name"
             tools:text="Описание плейлиста" />
