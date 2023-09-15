@@ -31,4 +31,8 @@ class PlaylistDBInteractorImpl(private val playlistDBRepository: PlaylistDBRepos
     override suspend fun delTrack(trackId: String, playlistId:Long) {
         playlistDBRepository.delTrack(trackId, playlistId)
     }
+
+    override suspend fun delPlaylist(playlistId: Long) {
+        playlistDBRepository.delPlaylist(playlistId)
+    }
 }

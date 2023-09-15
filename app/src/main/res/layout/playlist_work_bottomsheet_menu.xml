@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_sheet_playlist_work_menu"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_bottom_sheet_player_add_to_playlist"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="400dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="@dimen/dp12"
+        android:src="@drawable/rectangle_bottom_sheet_player_add_to_playlist"
+        tools:ignore="ContentDescription" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp61"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/dp8">
+
+        <ImageView
+            android:id="@+id/bottom_sheet_playlist_work_playlist_cover"
+            android:layout_width="@dimen/dp45"
+            android:layout_height="@dimen/dp45"
+            android:layout_marginStart="@dimen/dp13"
+            android:layout_marginTop="@dimen/dp8"
+            android:layout_marginEnd="@dimen/dp8"
+            android:layout_marginBottom="@dimen/dp8"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/avatars"
+            android:contentDescription="@string/description_image_playlist_cover" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingVertical="@dimen/dp14">
+
+            <TextView
+                android:id="@+id/bottom_sheet_playlist_work_playlist_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:ellipsize="end"
+                android:fontFamily="@font/yandex_sans_display_regular"
+                android:maxLines="1"
+                android:textColor="?attr/colorOnPrimary"
+                android:textSize="16sp"
+                tools:text="Название плейлиста" />
+
+
+            <TextView
+                android:id="@+id/bottom_sheet_playlist_work_count_tracks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:ellipsize="end"
+                android:fontFamily="@font/yandex_sans_display_regular"
+                android:maxLines="1"
+                android:textSize="11sp"
+                tools:text="25 треков" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/bottom_sheet_playlist_work_button_share"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp61"
+        android:fontFamily="@font/yandex_sans_display_regular"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="@string/bottom_sheet_work_playlist_menu_text_share"
+        android:textSize="@dimen/sp16" />
+    <TextView
+        android:id="@+id/bottom_sheet_playlist_work_button_edit"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp61"
+        android:fontFamily="@font/yandex_sans_display_regular"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="@string/bottom_sheet_work_playlist_menu_text_edit"
+        android:textSize="@dimen/sp16" />
+    <TextView
+        android:id="@+id/bottom_sheet_playlist_work_button_delete"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp61"
+        android:fontFamily="@font/yandex_sans_display_regular"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="@string/bottom_sheet_work_playlist_menu_text_delete_playlist"
+        android:textSize="@dimen/sp16" />
+</LinearLayout>

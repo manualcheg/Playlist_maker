@@ -77,6 +77,12 @@
     <string name="playlist_work_fragment_dialog_text_areyousure">Вы уверены, что хотите удалить трек из плейлиста?</string>
     <string name="playlist_work_fragment_dialog_text_delete">Удалить</string>
     <string name="playlist_work_fragment_dialog_text_cancel">Отмена</string>
+    <string name="text_there_isnt_playlist">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="bottomsheet_playlistwork_text_there_isnt_any_tracks">В этом плейлисте нет треков</string>
+    <string name="bottom_sheet_work_playlist_menu_text_share">Поделиться</string>
+    <string name="bottom_sheet_work_playlist_menu_text_edit">Редактировать информацию</string>
+    <string name="bottom_sheet_work_playlist_menu_text_delete_playlist">Удалить плейлист</string>
+    <string name="description_image_playlist_cover">Playlist cover</string>
     <plurals name="minutes">
         <item quantity="zero">%d минут</item>
         <item quantity="one">%d минута</item>

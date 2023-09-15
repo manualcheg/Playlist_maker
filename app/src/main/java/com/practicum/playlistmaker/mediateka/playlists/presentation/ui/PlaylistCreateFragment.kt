@@ -62,10 +62,7 @@ class PlaylistCreateFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
                     // выдача прав приложению права чтения на uri
-//                    val name = requireContext().packageName
                     requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-//                    requireContext().grantUriPermission(name, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
                     setImage(uri)
                     imageUri = uri
                     isImageSet = true

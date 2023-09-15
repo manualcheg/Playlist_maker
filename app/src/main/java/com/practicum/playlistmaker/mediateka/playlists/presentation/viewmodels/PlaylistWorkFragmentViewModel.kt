@@ -1,22 +1,28 @@
 package com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels
 
+import android.app.Application
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
 import com.practicum.playlistmaker.mediateka.playlists.domain.interfaces.PlaylistDBInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
 import kotlinx.coroutines.launch
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlaylistWorkFragmentViewModel(private val playlistDBInteractor: PlaylistDBInteractor) :
+class PlaylistWorkFragmentViewModel(
+    private val playlistDBInteractor: PlaylistDBInteractor,
+    private val application: Application
+) :
     ViewModel() {
     var localPlaylistId: Long = 0
     var localPlaylist: Playlist? = null
-//    var localState = false
 
     private var _playlist = MutableLiveData<Playlist>()
     var playlist: LiveData<Playlist> = _playlist
@@ -27,8 +33,8 @@ class PlaylistWorkFragmentViewModel(private val playlistDBInteractor: PlaylistDB
     private var _totalDuration = MutableLiveData<String>()
     var totalDuration: LiveData<String> = _totalDuration
 
-//    private var _deletedTrack = MutableLiveData<Boolean>()
-//    var deletedTrack: LiveData<Boolean>  = _deletedTrack
+    private var _playlistTextForShare = MutableLiveData<String>()
+    var playlistTextForShare: LiveData<String> = _playlistTextForShare
 
     fun getPlaylist(playlistId: Long) {
         viewModelScope.launch {
@@ -88,10 +94,42 @@ class PlaylistWorkFragmentViewModel(private val playlistDBInteractor: PlaylistDB
 
         viewModelScope.launch {
             playlistDBInteractor.delTrack(trackId, playlistId)
-            getPlaylist(playlistId) //не приносит результата
-/*            localState = !localState
-            _deletedTrack.postValue(localState)
-            Log.d("mylog", "$localState")*/
+            getPlaylist(playlistId)
         }
+    }
+
+    fun makeTextFromListOfTracks(localListOfTracks: List<Track>, playlist: Playlist?) {
+        var plainTextTracks = ""
+        localListOfTracks.forEachIndexed { index, track ->
+            plainTextTracks += "\n${index + 1}. ${track.artistName} - ${track.trackName} (${
+                SimpleDateFormat(
+                    "mm:ss",
+                    Locale.getDefault()
+                ).format(track.trackTime?.toInt())
+            })"
+        }
+        _playlistTextForShare.postValue(
+            "${playlist?.playlistName}\n" +
+                    "${playlist?.playlistDescription}\n" +
+                    countOfTracksWithWord(playlist) +
+                    plainTextTracks
+        )
+    }
+
+    private fun countOfTracksWithWord(playlist: Playlist?): String {
+        val countOfTracksInt = playlist?.countOfTracks!!
+        return application.resources.getQuantityString(
+            R.plurals.tracks,
+            countOfTracksInt,
+            countOfTracksInt
+        )
+    }
+
+    fun delPlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            playlistDBInteractor.delPlaylist(playlist.playlistId)
+        }
+        val file = playlist.playlistCover?.toUri()?.path?.let { File(it) }
+        file?.delete()
     }
 }

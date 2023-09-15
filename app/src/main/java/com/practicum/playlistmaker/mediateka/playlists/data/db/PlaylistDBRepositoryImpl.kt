@@ -54,7 +54,7 @@ class PlaylistDBRepositoryImpl(
     }
 
     override suspend fun removeFromTracksInPlaylistDB(trackId: String) {
-        var allTracksId: ArrayList<String> = arrayListOf()
+        val allTracksId: ArrayList<String> = arrayListOf()
         var thereIs = false
         getPlaylists().collect { playlists ->
             for (playlist in playlists) {
@@ -71,5 +71,9 @@ class PlaylistDBRepositoryImpl(
         if (!thereIs) {
             playlistsDB.tracksInPlaylistsDao().delTrack(trackId)
         }
+    }
+
+    override suspend fun delPlaylist(playlistId: Long) {
+        playlistsDB.playlistsDao().delPlaylist(playlistId)
     }
 }

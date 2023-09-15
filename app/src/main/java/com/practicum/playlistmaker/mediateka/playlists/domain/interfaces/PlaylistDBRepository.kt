@@ -18,4 +18,5 @@ interface PlaylistDBRepository {
     suspend fun delTrack(trackId: String, playlistId:Long)
 
     suspend fun removeFromTracksInPlaylistDB(trackId:String)
+    suspend fun delPlaylist(playlistId: Long)
 }

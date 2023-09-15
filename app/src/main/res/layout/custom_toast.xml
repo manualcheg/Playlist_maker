@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:textColor="#FFF"
-        android:gravity="bottom"
+        android:gravity="bottom|center_horizontal"
         tools:text = "Some"
         android:textSize="@dimen/sp14"
         android:fontFamily="@font/yandex_sans_display_regular"

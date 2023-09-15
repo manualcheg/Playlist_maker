@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistWorkBinding
@@ -18,8 +21,6 @@ import com.practicum.playlistmaker.mediateka.playlists.presentation.PlaylistWork
 import com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels.PlaylistWorkFragmentViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
     private lateinit var binding: FragmentPlaylistWorkBinding
@@ -29,6 +30,7 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
     private var listOfTracks = listOf<Track>()
     private var playlistId: Long = 0
     private var playlistWorkAdapter = PlaylistWorkAdapter(listOfTracks, this)
+    private var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +38,7 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPlaylistWorkBinding.inflate(inflater, container, false)
+//        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT //блокировка поворота
         return binding.root
     }
 
@@ -85,66 +88,134 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
             findNavController().popBackStack()
         }
 
+        bottomSheetBehavior = binding.bottomSheetPlaylistWorkMenu?.let { it1 ->
+            BottomSheetBehavior.from(it1.root).apply {
+                state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        }
+
+        binding.playlistWorkShareButton.setOnClickListener {
+            workWithSharePlaylist()
+        }
+
+        binding.playlistWorkMenuButton?.setOnClickListener {
+//          Заполнение инфы о плейлисте в меню
+            Glide.with(binding.bottomSheetPlaylistWorkMenu!!.bottomSheetPlaylistWorkPlaylistCover)
+                .load(playlistFromViewModule?.playlistCover)
+                .placeholder(R.drawable.placeholder_album_cover)
+                .centerCrop()
+                .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.dp4)))
+                .into(binding.bottomSheetPlaylistWorkMenu!!.bottomSheetPlaylistWorkPlaylistCover)
+            binding.bottomSheetPlaylistWorkMenu!!.bottomSheetPlaylistWorkPlaylistName.text =
+                playlistFromViewModule?.playlistName
+            binding.bottomSheetPlaylistWorkMenu!!.bottomSheetPlaylistWorkCountTracks.text =
+                countOfTracksWithWord()
+
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        bottomSheetBehavior?.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay?.visibility = View.GONE
+                    }
+                    else -> {
+                        binding.overlay?.visibility = View.VISIBLE
+                    }
+                }
+            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+        binding.bottomSheetPlaylistWorkMenu?.bottomSheetPlaylistWorkButtonShare?.setOnClickListener {
+            workWithSharePlaylist()
+        }
+
+        binding.bottomSheetPlaylistWorkMenu?.bottomSheetPlaylistWorkButtonEdit?.setOnClickListener {
+            Toast.makeText(
+                requireContext(), "Нажали на Редактировать", Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        binding.bottomSheetPlaylistWorkMenu?.bottomSheetPlaylistWorkButtonDelete?.setOnClickListener {
+            workWithDeletePlaylist()
+        }
+    }
+
+    private fun workWithDeletePlaylist() {
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+            .setTitle("Удалить плейлист")
+            .setMessage("Хотите удалить плейлист?")
+            .setPositiveButton("Удалить") { _, _ ->
+                Toast.makeText(
+                    requireContext(), "Плейлист ${playlistFromViewModule?.playlistName} удалён!", Toast.LENGTH_SHORT
+                ).show()
+//                playlistWorkFragmentViewModel.delTrack(currentTrackId, playlistId)
+                playlistWorkFragmentViewModel.delPlaylist(playlistFromViewModule!!)
+                findNavController().popBackStack()
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+    private fun workWithSharePlaylist() {
+        if (playlistFromViewModule?.listOfTracksId == "") {
+            showToastAboutEmpty()
+        } else {
+            sharePlaylist()
+        }
+    }
+
+    private fun sharePlaylist() {
+        playlistWorkFragmentViewModel.makeTextFromListOfTracks(listOfTracks,playlistFromViewModule)
+        playlistWorkFragmentViewModel.playlistTextForShare.observe(viewLifecycleOwner){playlistText->
+            useIntent(playlistText)
+        }
+    }
+
+    private fun useIntent(playlistText: String) {
+        Intent.createChooser(Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            putExtra(
+                Intent.EXTRA_TEXT,
+                playlistText
+            )
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            requireContext().startActivity(this)
+        }, "Share APK")
+    }
+
+    private fun showToastAboutEmpty() {
         val customToast = LayoutInflater.from(requireContext()).inflate(
             R.layout.custom_toast,
             requireActivity().findViewById(R.id.custom_toast_layout_id)
         )
-
-        binding.playlistWorkShareButton.setOnClickListener {
-            // можно вынести во ViewModel?
-            if (playlistFromViewModule?.listOfTracksId == "") {
-                customToast.findViewById<TextView>(R.id.text).text =
-                    "В этом плейлисте нет списка треков, которым можно поделиться"
-                val toast = Toast.makeText(
-                    requireContext(),
-                    "В этом плейлисте нет списка треков, которым можно поделиться",
-                    Toast.LENGTH_SHORT
-                )
-                toast.setView(customToast)
-                toast.show()
-            } else {
-                var plainTextTracks = ""
-                listOfTracks.forEachIndexed { index, track ->
-                    plainTextTracks += "\n${index+1}. ${track.artistName} - ${track.trackName} (${
-                        SimpleDateFormat(
-                            "mm:ss",
-                            Locale.getDefault()
-                        ).format(track.trackTime?.toInt())
-                    })"
-                }
-                val countOfTracksInt = playlistFromViewModule?.countOfTracks!!
-                val countOfTrackWithWord = resources.getQuantityString(
-                    R.plurals.tracks,
-                    countOfTracksInt,
-                    countOfTracksInt
-                )
-                Intent.createChooser(Intent().apply {
-                    action = Intent.ACTION_SEND
-                    type = "text/plain"
-                    putExtra(
-                        Intent.EXTRA_TEXT,
-                        "${playlistFromViewModule?.playlistName}\n" +
-                                "${playlistFromViewModule?.playlistDescription}\n" +
-                                countOfTrackWithWord +
-                                plainTextTracks
-                    )
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    requireContext().startActivity(this)
-                }, "Share APK")
-            }
-
-            binding.playlistWorkMenuButton?.setOnClickListener{
-                Toast.makeText(requireContext(),"Нажали на меню",Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
+        customToast.findViewById<TextView>(R.id.text).text =
+            getString(R.string.text_there_isnt_playlist)
+        val toast = Toast.makeText(
+            requireContext(),
+            getString(R.string.text_there_isnt_playlist),
+            Toast.LENGTH_SHORT
+        )
+        toast.setView(customToast)
+        toast.show()
     }
 
     private fun fillingRecyclerView(listOfTracks: List<Track>) {
-        playlistWorkAdapter = PlaylistWorkAdapter(listOfTracks, this)
-        binding.playlistWorkRecyclerView.adapter = playlistWorkAdapter
-        playlistWorkAdapter.notifyItemRangeChanged(0, listOfTracks.lastIndex)
-        binding.playlistWorkRecyclerView.visibility = View.VISIBLE
+        if (listOfTracks.isEmpty()) {
+            binding.bottomsheetPlaylistworkTextviewThereIsntAnyTracks?.visibility = View.VISIBLE
+            binding.playlistWorkRecyclerView.visibility = View.GONE
+        } else {
+            playlistWorkAdapter = PlaylistWorkAdapter(listOfTracks, this)
+            binding.playlistWorkRecyclerView.adapter = playlistWorkAdapter
+            playlistWorkAdapter.notifyItemRangeChanged(0, listOfTracks.lastIndex)
+            binding.playlistWorkRecyclerView.visibility = View.VISIBLE
+            binding.bottomsheetPlaylistworkTextviewThereIsntAnyTracks?.visibility = View.GONE
+        }
     }
 
     private fun setImage(playlistCover: String?) {
@@ -158,12 +229,18 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
         MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
             .setTitle(requireContext().getString(R.string.playlist_work_fragment_dialog_text_deltrack))
             .setMessage(requireContext().getString(R.string.playlist_work_fragment_dialog_text_areyousure))
-            .setPositiveButton(
-                requireContext().getString(R.string.playlist_work_fragment_dialog_text_cancel),
-                null
-            )
-            .setNegativeButton(requireContext().getString(R.string.playlist_work_fragment_dialog_text_delete)) { _, _ ->
+            .setNegativeButton(requireContext().getString(R.string.playlist_work_fragment_dialog_text_cancel),null)
+            .setPositiveButton(requireContext().getString(R.string.playlist_work_fragment_dialog_text_delete)) { _, _ ->
                 playlistWorkFragmentViewModel.delTrack(currentTrackId, playlistId)
             }.show()
+    }
+
+    private fun countOfTracksWithWord(): String {
+        val countOfTracksInt = playlistFromViewModule?.countOfTracks!!
+        return resources.getQuantityString(
+            R.plurals.tracks,
+            countOfTracksInt,
+            countOfTracksInt
+        )
     }
 }

@@ -12,9 +12,15 @@ interface PlaylistsDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun putPlaylist(playlist: PlaylistEntity)
 
-    @Query("SELECT * FROM playlists")
+    @Query("SELECT * FROM playlists ORDER BY playlistId DESC")
     suspend fun getPlaylists(): List<PlaylistEntity>
 
     @Query("SELECT * FROM playlists WHERE playlistId LIKE :playlistId")
     suspend fun getPlaylist(playlistId: Long): Playlist
+
+    @Query("DELETE FROM playlists WHERE playlistId LIKE :playlistId")
+    suspend fun delPlaylist(playlistId: Long)
+
+/*    @Delete(entity = PlaylistEntity::class)
+    suspend fun delPlaylist(playlistId: Long)*/
 }
