@@ -179,14 +179,17 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
             .setTitle("Удалить плейлист")
             .setMessage("Хотите удалить плейлист?")
             .setPositiveButton("Удалить") { _, _ ->
-                Toast.makeText(
-                    requireContext(),
-                    "Плейлист ${playlistFromViewModule?.playlistName} удалён!",
-                    Toast.LENGTH_SHORT
-                ).show()
-//                playlistWorkFragmentViewModel.delTrack(currentTrackId, playlistId)
-                playlistWorkFragmentViewModel.delPlaylist(playlistFromViewModule!!)
-                findNavController().popBackStack()
+
+//                playlistWorkFragmentViewModel.delEveryTrackFromTable(playlistFromViewModule!!)
+                playlistWorkFragmentViewModel.delPlaylist(playlistFromViewModule!!){
+                    Toast.makeText(
+                        requireContext(),
+                        "Плейлист ${playlistFromViewModule?.playlistName} удалён!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    findNavController().popBackStack()
+                }
             }
             .setNegativeButton("Отмена", null)
             .show()
@@ -198,6 +201,7 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
         } else {
             sharePlaylist()
         }
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     private fun sharePlaylist() {
@@ -265,7 +269,12 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
                 null
             )
             .setPositiveButton(requireContext().getString(R.string.playlist_work_fragment_dialog_text_delete)) { _, _ ->
-                playlistWorkFragmentViewModel.delTrack(currentTrackId, playlistId)
+//                playlistWorkFragmentViewModel.delTrack(currentTrackId, playlistId)
+                playlistFromViewModule?.let {
+                    playlistWorkFragmentViewModel.delTrack(currentTrackId,
+                        it
+                    )
+                }
             }.show()
     }
 

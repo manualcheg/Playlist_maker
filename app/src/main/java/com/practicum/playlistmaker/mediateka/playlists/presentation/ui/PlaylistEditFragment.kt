@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.mediateka.playlists.presentation.ui
 
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
@@ -11,15 +12,16 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
 import com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels.PlaylistEditFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 
 class PlaylistEditFragment : PlaylistCreateFragment() {
     override val playlistCreateViewModel: PlaylistEditFragmentViewModel by viewModel()
+    var oldPlaylist: Playlist? = null
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val playlistId = requireArguments().getLong("playlistId")
-        var oldPlaylist: Playlist? = null
         playlistCreateViewModel.getPlaylist(playlistId)
 
         playlistCreateViewModel.playlist.observe(viewLifecycleOwner) { playlist ->
@@ -38,36 +40,54 @@ class PlaylistEditFragment : PlaylistCreateFragment() {
         }
 
         binding.textViewCreatePlaylistButton.setOnClickListener {
-            if (isImageSet) {
-                val nameOfFile = if (oldPlaylist?.playlistCover.toString()=="null"){
-                    playlistName
-                } else {
-                    (oldPlaylist?.playlistCover.toString().substringAfterLast("/")).substringBefore(".jpg")+"_"
-                }
-                playlistCreateViewModel.saveImageToPrivateStorage(
-                    imageUri!!,
-                    nameOfFile,
-                    requireContext()
-                )
-                playlistCreateViewModel.delPlaylistCover(oldPlaylist?.playlistCover.toString())
-            } else {
-                imageUri = oldPlaylist?.playlistCover?.toUri()
-            }
-
-            val playlist = Playlist(
-                playlistId,
-                playlistName,
-                playlistDescription,
-                imageUri.toString(),
-                oldPlaylist!!.listOfTracksId,
-                oldPlaylist!!.countOfTracks
-            )
-            playlistCreateViewModel.putPlaylist(playlist)
-            findNavController().popBackStack()
+            clickCreateButtonFun()
         }
     }
 
     override fun workWithDialogExit() {
+        findNavController().popBackStack()
+    }
+
+    override fun clickCreateButtonFun() {
+        if (isImageSet) {
+            val newNameOfFile = if (oldPlaylist?.playlistCover.toString() == "null") {
+                playlistName
+            } else {
+                (oldPlaylist?.playlistCover.toString()
+                    .substringAfterLast("/")).substringBefore(".jpg") + "_"
+            }
+            playlistCreateViewModel.saveImageToPrivateStorage(
+                imageUri!!,
+                newNameOfFile,
+                requireContext()
+            )
+
+            val filePath =
+                File(
+                    requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                    "playlists"
+                )
+            imageUri = File(filePath, "$newNameOfFile.jpg").toUri()
+
+            playlistCreateViewModel.delPlaylistCover(oldPlaylist?.playlistCover.toString())
+        } else {
+            if (oldPlaylist?.playlistCover != null) {
+                imageUri = oldPlaylist?.playlistCover?.toUri()
+            } else {
+                imageUri = null
+            }
+
+        }
+
+        val playlist = Playlist(
+            oldPlaylist?.playlistId ?: 0,
+            playlistName,
+            playlistDescription,
+            imageUri.toString(),
+            oldPlaylist!!.listOfTracksId,
+            oldPlaylist!!.countOfTracks
+        )
+        playlistCreateViewModel.putPlaylist(playlist)
         findNavController().popBackStack()
     }
 }

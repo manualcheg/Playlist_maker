@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -24,6 +26,7 @@ import com.practicum.playlistmaker.databinding.FragmentCreatePlaylistBinding
 import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
 import com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels.PlaylistCreateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 
 open class PlaylistCreateFragment : Fragment() {
     lateinit var binding: FragmentCreatePlaylistBinding
@@ -101,31 +104,40 @@ open class PlaylistCreateFragment : Fragment() {
             playlistDescription = input.toString()
         }
 
-        playlistCreateViewModel.uri.observe(viewLifecycleOwner) { newUri ->
-            imageUri = newUri
+        binding.textViewCreatePlaylistButton.setOnClickListener {
+            clickCreateButtonFun()
+        }
+    }
+
+    open fun clickCreateButtonFun() {
+        var file: Uri?
+        if (isImageSet) {
+            playlistCreateViewModel.saveImageToPrivateStorage(
+                imageUri!!,
+                playlistName,
+                requireContext()
+            )
+        }
+        if (imageUri != null) {
+            val filePath =
+                File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),"playlists")
+            file = File(filePath, "$playlistName.jpg").toUri()
+        } else {
+            file = null
         }
 
-        binding.textViewCreatePlaylistButton.setOnClickListener {
-            if (isImageSet) {
-                playlistCreateViewModel.saveImageToPrivateStorage(
-                    imageUri!!,
-                    playlistName,
-                    requireContext()
-                )
-            }
-            val playlist = Playlist(
-                0,
-                playlistName,
-                playlistDescription,
-                imageUri.toString(),
-                listOfTrackIds,
-                countOfTracks
-            )
-            playlistCreateViewModel.putPlaylist(playlist)
-            findNavController().popBackStack()
-            Toast.makeText(requireContext(), "Плейлист $playlistName создан", Toast.LENGTH_LONG)
-                .show()
-        }
+        val playlist = Playlist(
+            0,
+            playlistName,
+            playlistDescription,
+            file.toString(),
+            listOfTrackIds,
+            countOfTracks
+        )
+        playlistCreateViewModel.putPlaylist(playlist)
+        findNavController().popBackStack()
+        Toast.makeText(requireContext(), "Плейлист $playlistName создан", Toast.LENGTH_LONG)
+            .show()
     }
 
     private fun setImage(uri: Uri) {

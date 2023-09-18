@@ -52,9 +52,11 @@ class PlaylistWorkFragmentViewModel(
             0, in 5..9 -> {
                 "$count треков"
             }
+
             1 -> {
                 "$count трек"
             }
+
             else -> {
                 "$count трека"
             }
@@ -82,10 +84,10 @@ class PlaylistWorkFragmentViewModel(
         )
     }
 
-    fun delTrack(trackId: String, playlistId: Long) {
+    fun delTrack(trackId: String, playlist: Playlist) {
         viewModelScope.launch {
-            playlistDBInteractor.delTrack(trackId, playlistId)
-            getPlaylist(playlistId)
+            playlistDBInteractor.delTrack(trackId, playlist)
+            getPlaylist(playlist.playlistId)
         }
     }
 
@@ -116,11 +118,34 @@ class PlaylistWorkFragmentViewModel(
         )
     }
 
-    fun delPlaylist(playlist: Playlist) {
-        viewModelScope.launch {
-            playlistDBInteractor.delPlaylist(playlist.playlistId)
+    fun delPlaylist(playlist: Playlist, onResultListener: () -> Unit) {
+        /*        viewModelScope.launch {
+                    playlistDBInteractor.delEveryTrack(playlist)
+                }*/
+        /*        delEveryTrackFromTable(playlist){
+                    viewModelScope.launch {
+                        playlistDBInteractor.delPlaylist(playlist)
+        //            playlistDBInteractor.delEveryTrack(playlist)
+                    }
+                }*/
+        val job = viewModelScope.launch {
+            delEveryTrackFromTable(playlist)
         }
+        job.invokeOnCompletion {
+            viewModelScope.launch {
+                playlistDBInteractor.delPlaylist(playlist)
+            }
+        }
+        onResultListener()
+
+        // Удаление обложки
         val file = playlist.playlistCover?.toUri()?.path?.let { File(it) }
         file?.delete()
+    }
+
+    fun delEveryTrackFromTable(playlist: Playlist) {
+        viewModelScope.launch {
+            playlistDBInteractor.delEveryTrack(playlist)
+        }
     }
 }

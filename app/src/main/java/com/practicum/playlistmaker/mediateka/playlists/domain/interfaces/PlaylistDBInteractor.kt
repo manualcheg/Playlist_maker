@@ -15,6 +15,9 @@ interface PlaylistDBInteractor {
 
     suspend fun getTracksFromPlaylist(tracksId: List<String>): Flow<List<Track>>
 
-    suspend fun delTrack(trackId:String, playlistId:Long)
-    suspend fun delPlaylist(playlistId: Long)
+    suspend fun delTrack(trackId:String, playlist:Playlist)
+
+    suspend fun delPlaylist(playlist:Playlist)
+
+    suspend fun delEveryTrack(playlist:Playlist)
 }

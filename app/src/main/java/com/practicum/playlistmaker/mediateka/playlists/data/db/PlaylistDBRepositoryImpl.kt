@@ -43,8 +43,8 @@ class PlaylistDBRepositoryImpl(
         emit(requestedTracks)
     }
 
-    override suspend fun delTrack(trackId: String, playlistId: Long) {
-        val playlist = getPlaylist(playlistId)
+    override suspend fun delTrackFromPlaylist(trackId: String, playlist: Playlist) {
+//        val playlist = getPlaylist(playlistId)
         val tracksIdArrayList = java.util.ArrayList(playlist.listOfTracksId?.split(",")!!)
         tracksIdArrayList.remove(trackId)
         playlist.listOfTracksId = tracksIdArrayList.joinToString(separator = ",")
@@ -53,19 +53,20 @@ class PlaylistDBRepositoryImpl(
         removeFromTracksInPlaylistDB(trackId)
     }
 
+    //работает почему-то только для удаления трека из плейлиста.
+    //при удалении плейлиста не срабатывает
     override suspend fun removeFromTracksInPlaylistDB(trackId: String) {
-            val allTracksId: ArrayList<String> = arrayListOf()
+        val allTracksId: ArrayList<String> = arrayListOf()
         var thereIs = false
+
         getPlaylists().collect { playlists ->
             for (playlist in playlists) {
                 playlist.listOfTracksId?.let { allTracksId.add(it) }
             }
         }
 
-        for (trackList in allTracksId){
-            if (trackList.contains(trackId)){
-                thereIs = true
-            }
+        for (trackList in allTracksId) {
+            thereIs = trackList.contains(trackId)
         }
 
         if (!thereIs) {
@@ -73,7 +74,31 @@ class PlaylistDBRepositoryImpl(
         }
     }
 
-    override suspend fun delPlaylist(playlistId: Long) {
-        playlistsDB.playlistsDao().delPlaylist(playlistId)
+    override suspend fun delPlaylist(playlist: Playlist) {
+        /*val tracksIdArrayList = playlist.listOfTracksId?.split(",")?.let { java.util.ArrayList(it) }
+        if (tracksIdArrayList != null) {
+            for (trackId in tracksIdArrayList) {
+                delTrack(trackId, playlist.playlistId)
+            }
+        }*/
+
+        playlistsDB.playlistsDao().delPlaylist(playlist.playlistId)
+
+
+//        delEveryTrack(playlist.listOfTracksId!!)
+        /*val tracksIdArrayList = java.util.ArrayList(playlist.listOfTracksId?.split(","))
+        for (trackId in tracksIdArrayList) {
+            removeFromTracksInPlaylistDB(trackId)
+        }*/
+    }
+
+    //    override suspend fun delEveryTrack(listOfTracksId: String) {
+    override suspend fun delEveryTrack(playlist: Playlist) {
+        val tracksIdArrayList = playlist.listOfTracksId?.split(",")?.let { java.util.ArrayList(it) }
+        if (tracksIdArrayList != null) {
+            for (trackId in tracksIdArrayList) {
+                delTrackFromPlaylist(trackId, playlist)
+            }
+        }
     }
 }

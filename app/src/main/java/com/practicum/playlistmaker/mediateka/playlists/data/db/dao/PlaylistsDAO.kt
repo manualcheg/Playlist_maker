@@ -20,7 +20,4 @@ interface PlaylistsDAO {
 
     @Query("DELETE FROM playlists WHERE playlistId LIKE :playlistId")
     suspend fun delPlaylist(playlistId: Long)
-
-/*    @Delete(entity = PlaylistEntity::class)
-    suspend fun delPlaylist(playlistId: Long)*/
 }

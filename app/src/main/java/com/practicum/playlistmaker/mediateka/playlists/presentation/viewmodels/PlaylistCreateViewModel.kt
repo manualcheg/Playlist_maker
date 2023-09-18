@@ -8,9 +8,6 @@ import android.os.Environment
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toUri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
@@ -21,8 +18,8 @@ import java.io.FileOutputStream
 
 open class PlaylistCreateViewModel(private val playlistDBInteractor: PlaylistDBInteractor):ViewModel() {
 
-    private var _uri = MutableLiveData<Uri>()
-    var uri : LiveData<Uri> = _uri
+//    private var _uri = MutableLiveData<Uri>()
+//    var uri : LiveData<Uri> = _uri
 
     fun putPlaylist(playlist: Playlist){
         viewModelScope.launch {
@@ -46,6 +43,6 @@ open class PlaylistCreateViewModel(private val playlistDBInteractor: PlaylistDBI
         BitmapFactory
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
-        _uri.postValue(file.toUri())
+//        _uri.postValue(file.toUri())
     }
 }

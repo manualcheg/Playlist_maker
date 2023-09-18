@@ -6,7 +6,7 @@ import com.practicum.playlistmaker.mediateka.playlists.domain.interfaces.Playlis
 import com.practicum.playlistmaker.search.domain.entities.Track
 import kotlinx.coroutines.flow.Flow
 
-class PlaylistDBInteractorImpl(private val playlistDBRepository: PlaylistDBRepository):
+class PlaylistDBInteractorImpl(private val playlistDBRepository: PlaylistDBRepository) :
     PlaylistDBInteractor {
     override suspend fun putPlaylist(playlist: Playlist) {
         playlistDBRepository.putPlaylist(playlist)
@@ -28,11 +28,15 @@ class PlaylistDBInteractorImpl(private val playlistDBRepository: PlaylistDBRepos
         return playlistDBRepository.getTracksOfPlaylist(tracksId)
     }
 
-    override suspend fun delTrack(trackId: String, playlistId:Long) {
-        playlistDBRepository.delTrack(trackId, playlistId)
+    override suspend fun delTrack(trackId: String, playlist: Playlist) {
+        playlistDBRepository.delTrackFromPlaylist(trackId, playlist)
     }
 
-    override suspend fun delPlaylist(playlistId: Long) {
-        playlistDBRepository.delPlaylist(playlistId)
+    override suspend fun delPlaylist(playlist: Playlist) {
+        playlistDBRepository.delPlaylist(playlist)
+    }
+
+    override suspend fun delEveryTrack(playlist: Playlist) {
+        playlistDBRepository.delEveryTrack(playlist)
     }
 }
