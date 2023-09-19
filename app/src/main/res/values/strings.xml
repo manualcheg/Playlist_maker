@@ -85,6 +85,7 @@
     <string name="description_image_playlist_cover">Playlist cover</string>
     <string name="playlist_edit_fragment_text_title">Редактировать</string>
     <string name="playlist_edit_fragment_text_button_save">Сохранить</string>
+    <string name="share_title_text">Share APK</string>
     <plurals name="minutes">
         <item quantity="zero">%d минут</item>
         <item quantity="one">%d минута</item>

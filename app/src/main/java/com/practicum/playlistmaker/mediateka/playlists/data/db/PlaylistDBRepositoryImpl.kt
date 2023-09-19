@@ -4,11 +4,8 @@ import com.practicum.playlistmaker.mediateka.playlists.data.db.entity.PlaylistEn
 import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
 import com.practicum.playlistmaker.mediateka.playlists.domain.interfaces.PlaylistDBRepository
 import com.practicum.playlistmaker.search.domain.entities.Track
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 
 class PlaylistDBRepositoryImpl(
     private val playlistsDB: PlaylistsDB,
@@ -47,7 +44,6 @@ class PlaylistDBRepositoryImpl(
     }
 
     override suspend fun delTrackFromPlaylist(trackId: String, playlist: Playlist) {
-//        val playlist = getPlaylist(playlist.playlistId)
         val tracksIdArrayList = java.util.ArrayList(playlist.listOfTracksId?.split(",")!!)
         tracksIdArrayList.remove(trackId)
         playlist.listOfTracksId = tracksIdArrayList.joinToString(separator = ",")
@@ -58,19 +54,15 @@ class PlaylistDBRepositoryImpl(
 
     //работает почему-то только для удаления трека из плейлиста.
     //при удалении плейлиста не срабатывает .collect{...} и не выполняется весь код ниже этой функции
+    // ! Потому что в случае с удалением трека корутины успевают выполниться, а в случае с плейлистом
+    // - закрывается экран и отменяются корутины не успев закончить выполнение
     override suspend fun removeFromTracksInPlaylistDB(trackId: String) {
         val allTracksId: ArrayList<String> = arrayListOf()
         var thereIs = false
 
-        coroutineScope {
-            launch {
-                async {
-                    getPlaylists().collect { playlists ->
-                        for (playlist in playlists) {
-                            playlist.listOfTracksId?.let { allTracksId.add(it) }
-                        }
-                    }
-                }.await()
+        getPlaylists().collect { playlists ->
+            for (playlist in playlists) {
+                playlist.listOfTracksId?.let { allTracksId.add(it) }
             }
         }
 
@@ -84,32 +76,14 @@ class PlaylistDBRepositoryImpl(
     }
 
     override suspend fun delPlaylist(playlist: Playlist) {
-        /*val tracksIdArrayList = playlist.listOfTracksId?.split(",")?.let { java.util.ArrayList(it) }
-        if (tracksIdArrayList != null) {
-            for (trackId in tracksIdArrayList) {
-                delTrack(trackId, playlist.playlistId)
-            }
-        }*/
-
         playlistsDB.playlistsDao().delPlaylist(playlist.playlistId)
-
-
-//        delEveryTrack(playlist.listOfTracksId!!)
-        /*val tracksIdArrayList = java.util.ArrayList(playlist.listOfTracksId?.split(","))
-        for (trackId in tracksIdArrayList) {
-            removeFromTracksInPlaylistDB(trackId)
-        }*/
     }
 
-    //    override suspend fun delEveryTrack(listOfTracksId: String) {
     override suspend fun delEveryTrack(playlist: Playlist) {
-        val tracksIdArrayList = playlist.listOfTracksId?.split(",")?.let { java.util.ArrayList(it) }
-        if (tracksIdArrayList != null) {
-
-            tracksIdArrayList.forEach { trackId ->
-//                delTrackFromPlaylist(trackId, playlist) //для удаления из плейлиста перед удаление плейлиста
-                removeFromTracksInPlaylistDB(trackId)   //для удаления после удаления плейлиста
-            }
+        val tracksIdArrayList =
+            playlist.listOfTracksId?.split(",")?.let { java.util.ArrayList(it) }
+        tracksIdArrayList?.forEach { trackId ->
+            removeFromTracksInPlaylistDB(trackId)
         }
     }
 }

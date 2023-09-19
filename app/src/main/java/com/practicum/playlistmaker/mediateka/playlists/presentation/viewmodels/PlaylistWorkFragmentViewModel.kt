@@ -87,7 +87,7 @@ class PlaylistWorkFragmentViewModel(
 
     fun delTrack(trackId: String, playlist: Playlist) {
         viewModelScope.launch {
-            async { playlistDBInteractor.delTrack(trackId, playlist) }.await()
+            playlistDBInteractor.delTrack(trackId, playlist)
             getPlaylist(playlist.playlistId)
         }
     }
@@ -121,28 +121,11 @@ class PlaylistWorkFragmentViewModel(
 
     fun delPlaylist(playlist: Playlist, onResultListener: () -> Unit) {
 
-        /*        val job = viewModelScope.launch {
-                    delEveryTrackFromTable(playlist)
-                }
-                job.invokeOnCompletion {
-                    viewModelScope.launch {
-                        playlistDBInteractor.delPlaylist(playlist)
-                    }
-                }*/
-
-        /*        viewModelScope.launch {
-                    async{ playlistDBInteractor.delPlaylist(playlist) }.await()
-                    async { playlistDBInteractor.delEveryTrack(playlist) }.await()
-                }*/
-
-        val job =
-            viewModelScope.launch { async { playlistDBInteractor.delPlaylist(playlist) }.await() }
-        job.invokeOnCompletion {
-            viewModelScope.launch {
-                async { playlistDBInteractor.delEveryTrack(playlist) }.await()
-                onResultListener()  //тут он на своем месте. Закрытие экрана теперь происходит вовремя
-                                    // и корутины не отменяются
-            }
+        viewModelScope.launch {
+            playlistDBInteractor.delPlaylist(playlist)
+            async { playlistDBInteractor.delEveryTrack(playlist) }.await()
+            onResultListener()  // тут вызов метода на своем месте. Закрытие экрана теперь
+                                // происходит вовремя и корутины не отменяются
         }
 
         // Удаление обложки

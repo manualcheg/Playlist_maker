@@ -219,7 +219,7 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
             )
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             requireContext().startActivity(this)
-        }, "Share APK")
+        }, getString(R.string.share_title_text))
     }
 
     private fun showToastAboutEmpty() {
@@ -267,7 +267,6 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
                 null
             )
             .setPositiveButton(requireContext().getString(R.string.playlist_work_fragment_dialog_text_delete)) { _, _ ->
-//                playlistWorkFragmentViewModel.delTrack(currentTrackId, playlistId)
                 playlistFromViewModule?.let {
                     playlistWorkFragmentViewModel.delTrack(currentTrackId,
                         it
