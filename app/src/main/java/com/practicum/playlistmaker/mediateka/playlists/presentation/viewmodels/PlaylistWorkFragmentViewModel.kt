@@ -10,6 +10,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
 import com.practicum.playlistmaker.mediateka.playlists.domain.interfaces.PlaylistDBInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
@@ -86,7 +87,7 @@ class PlaylistWorkFragmentViewModel(
 
     fun delTrack(trackId: String, playlist: Playlist) {
         viewModelScope.launch {
-            playlistDBInteractor.delTrack(trackId, playlist)
+            async { playlistDBInteractor.delTrack(trackId, playlist) }.await()
             getPlaylist(playlist.playlistId)
         }
     }
@@ -119,33 +120,33 @@ class PlaylistWorkFragmentViewModel(
     }
 
     fun delPlaylist(playlist: Playlist, onResultListener: () -> Unit) {
-        /*        viewModelScope.launch {
-                    playlistDBInteractor.delEveryTrack(playlist)
-                }*/
-        /*        delEveryTrackFromTable(playlist){
+
+        /*        val job = viewModelScope.launch {
+                    delEveryTrackFromTable(playlist)
+                }
+                job.invokeOnCompletion {
                     viewModelScope.launch {
                         playlistDBInteractor.delPlaylist(playlist)
-        //            playlistDBInteractor.delEveryTrack(playlist)
                     }
                 }*/
-        val job = viewModelScope.launch {
-            delEveryTrackFromTable(playlist)
-        }
+
+        /*        viewModelScope.launch {
+                    async{ playlistDBInteractor.delPlaylist(playlist) }.await()
+                    async { playlistDBInteractor.delEveryTrack(playlist) }.await()
+                }*/
+
+        val job =
+            viewModelScope.launch { async { playlistDBInteractor.delPlaylist(playlist) }.await() }
         job.invokeOnCompletion {
             viewModelScope.launch {
-                playlistDBInteractor.delPlaylist(playlist)
+                async { playlistDBInteractor.delEveryTrack(playlist) }.await()
+                onResultListener()  //тут он на своем месте. Закрытие экрана теперь происходит вовремя
+                                    // и корутины не отменяются
             }
         }
-        onResultListener()
 
         // Удаление обложки
         val file = playlist.playlistCover?.toUri()?.path?.let { File(it) }
         file?.delete()
-    }
-
-    fun delEveryTrackFromTable(playlist: Playlist) {
-        viewModelScope.launch {
-            playlistDBInteractor.delEveryTrack(playlist)
-        }
     }
 }

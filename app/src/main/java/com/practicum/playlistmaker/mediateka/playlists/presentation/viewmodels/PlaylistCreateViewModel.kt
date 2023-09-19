@@ -18,9 +18,6 @@ import java.io.FileOutputStream
 
 open class PlaylistCreateViewModel(private val playlistDBInteractor: PlaylistDBInteractor):ViewModel() {
 
-//    private var _uri = MutableLiveData<Uri>()
-//    var uri : LiveData<Uri> = _uri
-
     fun putPlaylist(playlist: Playlist){
         viewModelScope.launch {
             playlistDBInteractor.putPlaylist(playlist)
@@ -43,6 +40,5 @@ open class PlaylistCreateViewModel(private val playlistDBInteractor: PlaylistDBI
         BitmapFactory
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
-//        _uri.postValue(file.toUri())
     }
 }

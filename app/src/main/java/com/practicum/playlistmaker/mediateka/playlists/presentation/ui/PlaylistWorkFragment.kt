@@ -179,8 +179,6 @@ class PlaylistWorkFragment : Fragment(), PlaylistWorkAdapter.LongClickListener {
             .setTitle("Удалить плейлист")
             .setMessage("Хотите удалить плейлист?")
             .setPositiveButton("Удалить") { _, _ ->
-
-//                playlistWorkFragmentViewModel.delEveryTrackFromTable(playlistFromViewModule!!)
                 playlistWorkFragmentViewModel.delPlaylist(playlistFromViewModule!!){
                     Toast.makeText(
                         requireContext(),
