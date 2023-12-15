@@ -15,11 +15,12 @@ import com.practicum.playlistmaker.mediateka.playlists.presentation.PlaylistAdap
 import com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels.PlaylistsFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlaylistsFragment : Fragment() {
+class PlaylistsFragment : Fragment(), PlaylistAdapter.PlaylistWorkPlaylistClickListener {
     private lateinit var binding: FragmentPlaylistsBinding
     private val playlistsFragmentViewModel: PlaylistsFragmentViewModel by viewModel()
     private val playlists: ArrayList<Playlist> = ArrayList()
-    private var playlistAdapter = PlaylistAdapter(playlists)
+    private var playlistAdapter = PlaylistAdapter(playlists,this)
+    private val bundle = Bundle()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,7 +55,7 @@ class PlaylistsFragment : Fragment() {
     }
 
     private fun showContent(playlists: List<Playlist>) {
-        playlistAdapter = PlaylistAdapter(playlists as MutableList<Playlist>)
+        playlistAdapter = PlaylistAdapter(playlists as MutableList<Playlist>, this)
         binding.recyclerViewPlaylist.adapter = playlistAdapter
         playlistAdapter.notifyItemRangeChanged(0, playlists.lastIndex)
 
@@ -65,5 +66,14 @@ class PlaylistsFragment : Fragment() {
     private fun showEmpty() {
         binding.recyclerViewPlaylist.visibility = View.GONE
         binding.placeholderFragmentPlaylistThereIsNothing.visibility = View.VISIBLE
+    }
+
+    override fun playlistClick(playlist: Playlist) {
+        bundle.putLong(PLAYLISTID,playlist.playlistId)
+        findNavController().navigate(R.id.action_mediatekaFragment_to_playlistWorkFragment, bundle)
+    }
+
+    companion object{
+        const val PLAYLISTID = "playlistId"
     }
 }

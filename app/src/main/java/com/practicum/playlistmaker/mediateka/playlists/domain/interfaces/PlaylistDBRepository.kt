@@ -10,4 +10,15 @@ interface PlaylistDBRepository {
     suspend fun getPlaylists(): Flow<List<Playlist>>
 
     suspend fun putTrackInDB(track: Track)
+
+    suspend fun getPlaylist(playlistID: Long): Playlist
+
+    suspend fun getTracksOfPlaylist(tracksIds: List<String>): Flow<List<Track>>
+
+    suspend fun delTrackFromPlaylist(trackId: String, playlist:Playlist)
+
+    suspend fun removeFromTracksInPlaylistDB(trackId:String)
+    suspend fun delPlaylist(playlist: Playlist)
+
+    suspend fun delEveryTrack(playlist: Playlist)
 }

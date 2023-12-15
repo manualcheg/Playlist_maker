@@ -256,13 +256,11 @@ class PlayerFragment : Fragment(), PlayerBottomSheetRecycleViewAdapter.PlaylistC
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         binding.overlay.visibility = View.GONE
                     }
-
                     else -> {
                         binding.overlay.visibility = View.VISIBLE
                     }
                 }
             }
-
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
 

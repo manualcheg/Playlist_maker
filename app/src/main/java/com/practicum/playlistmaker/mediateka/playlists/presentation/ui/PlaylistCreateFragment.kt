@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -24,19 +26,20 @@ import com.practicum.playlistmaker.databinding.FragmentCreatePlaylistBinding
 import com.practicum.playlistmaker.mediateka.playlists.domain.entities.Playlist
 import com.practicum.playlistmaker.mediateka.playlists.presentation.viewmodels.PlaylistCreateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 
-class PlaylistCreateFragment : Fragment() {
-    private lateinit var binding: FragmentCreatePlaylistBinding
-    private var playlistName = ""
-    private var playlistDescription = ""
-    private var isImageSet = false
-    private var imageUri: Uri? = null
-    private var listOfTrackIds: String = ""
-    private var countOfTracks: Int = 0
-    private val playlistCreateViewModel: PlaylistCreateViewModel by viewModel()
+open class PlaylistCreateFragment : Fragment() {
+    lateinit var binding: FragmentCreatePlaylistBinding
+    var playlistName = ""
+    var playlistDescription = ""
+    var isImageSet = false
+    var imageUri: Uri? = null
+    var listOfTrackIds: String = ""
+    var countOfTracks: Int = 0
+    open val playlistCreateViewModel: PlaylistCreateViewModel by viewModel()
 
     private val dialogExit by lazy {
-        MaterialAlertDialogBuilder(requireContext())
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
             .setTitle(getString(R.string.dialogExitTitle))
             .setMessage(getString(R.string.dialogExitMessage))
             .setNeutralButton(getString(R.string.dialogExitCancelButton)) { _, _ -> }
@@ -62,8 +65,10 @@ class PlaylistCreateFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
                     // выдача прав приложению права чтения на uri
-                    val name = requireContext().packageName
-                    requireContext().grantUriPermission(name, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    requireContext().contentResolver.takePersistableUriPermission(
+                        uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
                     setImage(uri)
                     imageUri = uri
                     isImageSet = true
@@ -100,22 +105,39 @@ class PlaylistCreateFragment : Fragment() {
         }
 
         binding.textViewCreatePlaylistButton.setOnClickListener {
-            if (isImageSet) {
-                playlistCreateViewModel.saveImageToPrivateStorage(imageUri!!, playlistName, requireContext())
-            }
-            val playlist = Playlist(
-                0,
-                playlistName,
-                playlistDescription,
-                imageUri.toString(),
-                listOfTrackIds,
-                countOfTracks
-            )
-            playlistCreateViewModel.putPlaylist(playlist)
-            findNavController().popBackStack()
-            Toast.makeText(requireContext(), "Плейлист $playlistName создан", Toast.LENGTH_LONG)
-                .show()
+            clickCreateButtonFun()
         }
+    }
+
+    open fun clickCreateButtonFun() {
+        var file: Uri?
+        if (isImageSet) {
+            playlistCreateViewModel.saveImageToPrivateStorage(
+                imageUri!!,
+                playlistName,
+                requireContext()
+            )
+        }
+        if (imageUri != null) {
+            val filePath =
+                File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),"playlists")
+            file = File(filePath, "$playlistName.jpg").toUri()
+        } else {
+            file = null
+        }
+
+        val playlist = Playlist(
+            0,
+            playlistName,
+            playlistDescription,
+            file.toString(),
+            listOfTrackIds,
+            countOfTracks
+        )
+        playlistCreateViewModel.putPlaylist(playlist)
+        findNavController().popBackStack()
+        Toast.makeText(requireContext(), "Плейлист $playlistName создан", Toast.LENGTH_LONG)
+            .show()
     }
 
     private fun setImage(uri: Uri) {
@@ -123,11 +145,11 @@ class PlaylistCreateFragment : Fragment() {
             .load(uri)
             .placeholder(R.drawable.placeholder_no_cover)
             .centerCrop()
-            .transform(RoundedCorners(this@PlaylistCreateFragment.resources.getDimensionPixelSize(R.dimen.dp8)))
+            .transform(RoundedCorners(this.resources.getDimensionPixelSize(R.dimen.dp8)))
             .into(binding.imageviewAddPlaylistCover)
     }
 
-    private fun workWithDialogExit() {
+    open fun workWithDialogExit() {
         if (
             playlistName != "" ||
             playlistDescription != "" ||

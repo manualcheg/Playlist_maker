@@ -25,7 +25,7 @@ class SearchViewHolder(private val track_item: View): RecyclerView.ViewHolder(tr
             SimpleDateFormat("mm:ss", Locale.getDefault()).format(it?.toInt()) }
 
         Glide.with(imageCover)
-            .load(model.artworkUrl100)
+            .load(model.artworkUrl60)
             .placeholder(R.drawable.placeholder_no_cover)
             .centerCrop()
             .transform(RoundedCorners(track_item.resources.getDimensionPixelSize(R.dimen.dp4)))

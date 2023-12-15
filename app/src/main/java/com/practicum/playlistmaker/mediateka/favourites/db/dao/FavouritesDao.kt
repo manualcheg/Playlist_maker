@@ -20,8 +20,4 @@ interface FavouritesDao {
 
     @Query("SELECT trackId FROM tracks_liked")
     suspend fun getTracksId(): List<String>
-//
-//    //Для проверки присустствия в избранном
-//    @Query("SELECT trackId FROM tracks_liked WHERE trackId LIKE :searchedTrackId")
-//    suspend fun searchTrack(searchedTrackId: String): TrackEntity
 }

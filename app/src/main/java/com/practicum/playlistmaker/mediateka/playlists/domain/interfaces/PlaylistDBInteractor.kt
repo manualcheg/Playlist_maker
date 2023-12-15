@@ -7,7 +7,17 @@ import kotlinx.coroutines.flow.Flow
 interface PlaylistDBInteractor {
     suspend fun putPlaylist(playlist: Playlist)
 
-    suspend fun getPlaylist(): Flow<List<Playlist>>
+    suspend fun getPlaylists(): Flow<List<Playlist>>
 
-    suspend fun addTrackToDB(track:Track)
+    suspend fun addTrackToDB(track: Track)
+
+    suspend fun getPlaylist(playlistId: Long): Playlist
+
+    suspend fun getTracksFromPlaylist(tracksId: List<String>): Flow<List<Track>>
+
+    suspend fun delTrack(trackId:String, playlist:Playlist)
+
+    suspend fun delPlaylist(playlist:Playlist)
+
+    suspend fun delEveryTrack(playlist:Playlist)
 }

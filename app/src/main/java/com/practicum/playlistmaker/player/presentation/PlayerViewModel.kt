@@ -147,7 +147,7 @@ class PlayerViewModel(
 
     fun getPlaylists() {
         viewModelScope.launch {
-            playlistDBInteractorImpl.getPlaylist().collect { listOfPlaylists ->
+            playlistDBInteractorImpl.getPlaylists().collect { listOfPlaylists ->
                 if (listOfPlaylists.isEmpty()) {
                     _stateLiveData.postValue(PlaylistsState.Empty())
                 } else {

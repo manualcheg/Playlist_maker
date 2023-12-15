@@ -70,4 +70,36 @@
     <string name="text_add_to_playlist">Добавить в плейлист</string>
     <string name="cover_of_playlist">cover of playlist</string>
     <string name="place_to_add_playlist_cover">place to add playlist cover</string>
+    <string name="content_description_playlist_cover">playlist cover</string>
+    <string name="content_description_share_button">Share button</string>
+    <string name="content_description_properties_button">Properties button</string>
+    <string name="playlist_work_fragment_dialog_text_deltrack">Удалить трек</string>
+    <string name="playlist_work_fragment_dialog_text_areyousure">Вы уверены, что хотите удалить трек из плейлиста?</string>
+    <string name="playlist_work_fragment_dialog_text_delete">Удалить</string>
+    <string name="playlist_work_fragment_dialog_text_cancel">Отмена</string>
+    <string name="text_there_isnt_playlist">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="bottomsheet_playlistwork_text_there_isnt_any_tracks">В этом плейлисте нет треков</string>
+    <string name="bottom_sheet_work_playlist_menu_text_share">Поделиться</string>
+    <string name="bottom_sheet_work_playlist_menu_text_edit">Редактировать информацию</string>
+    <string name="bottom_sheet_work_playlist_menu_text_delete_playlist">Удалить плейлист</string>
+    <string name="description_image_playlist_cover">Playlist cover</string>
+    <string name="playlist_edit_fragment_text_title">Редактировать</string>
+    <string name="playlist_edit_fragment_text_button_save">Сохранить</string>
+    <string name="share_title_text">Share APK</string>
+    <plurals name="minutes">
+        <item quantity="zero">%d минут</item>
+        <item quantity="one">%d минута</item>
+        <item quantity="two">%d минуты</item>
+        <item quantity="few">%d минуты</item>
+        <item quantity="many">%d минут</item>
+        <item quantity="other">%d минуты</item>
+    </plurals>
+    <plurals name="tracks">
+        <item quantity="zero">%d треков</item>
+        <item quantity="one">%d трек</item>
+        <item quantity="two">%d трека</item>
+        <item quantity="few">%d трека</item>
+        <item quantity="many">%d треков</item>
+        <item quantity="other">%d трека</item>
+    </plurals>
 </resources>

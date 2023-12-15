@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 
-class PlaylistCreateViewModel(private val playlistDBInteractor: PlaylistDBInteractor):ViewModel() {
+open class PlaylistCreateViewModel(private val playlistDBInteractor: PlaylistDBInteractor):ViewModel() {
 
     fun putPlaylist(playlist: Playlist){
         viewModelScope.launch {
@@ -39,6 +39,6 @@ class PlaylistCreateViewModel(private val playlistDBInteractor: PlaylistDBIntera
         val outputStream = FileOutputStream(file)
         BitmapFactory
             .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+            .compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
     }
 }
